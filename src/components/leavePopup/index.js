@@ -13,6 +13,8 @@ import LeaveType from "./leave_type"
 
 const SideModal = ({ setPopup }) => {
 
+    const setLocal = typeof localStorage;
+
     const { RangePicker } = DatePicker;
 
     const [size, setSize] = useState("");
@@ -47,7 +49,7 @@ const SideModal = ({ setPopup }) => {
     };
 
     const pushData = (leaveType, pushTime, reason) => {
-        if (typeof localStorage !== `undefined`) {
+        if (setLocal !== `undefined`) {
             let leave_records = [];
             leave_records = JSON.parse(localStorage.getItem("leave_records")) ? JSON.parse(localStorage.getItem("leave_records")) : [];
             leave_records.push({

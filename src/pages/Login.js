@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import login_logo from '../data/assets/login_logo.svg';
 import google from "../data/assets/google.svg";
 import { navigate } from "gatsby";
@@ -7,8 +7,6 @@ import { LoginContainer } from '../components/Login/styles';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Login = () => {
-
-    const [setLoginNav] = useState(false);
 
     const signInWithGoogle = () => {
         const firebaseConfig = {
@@ -29,14 +27,10 @@ const Login = () => {
         const provider = new GoogleAuthProvider();
 
         signInWithPopup(auth, provider).then((result) => {
-            setLoginNav(result);
             if (typeof localStorage !== `undefined`) {
                 localStorage.setItem('userData', JSON.stringify(result));
             }
-
-            if (result) {
-                navigate('/Board/?' + (result.user.displayName));
-            }
+            navigate('/Board/?' + (result.user.displayName));
         }).catch((error) => console.log(error))
     }
 
