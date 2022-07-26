@@ -1,23 +1,41 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import login_logo from '../data/assets/login_logo.svg';
-import google from "../data/assets/google.svg"
-import { Link, navigate } from "gatsby";
-import { auth, provider } from "./Firebase/firebase"
-import { signInWithPopup } from "firebase/auth";
+import google from "../data/assets/google.svg";
+import { navigate } from "gatsby";
+import { initializeApp } from "firebase/app";
 import { LoginContainer } from '../components/Login/styles';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Login = () => {
 
-    const [loginNav, setLoginNav] = useState(false);
+    const [setLoginNav] = useState(false);
 
     const signInWithGoogle = () => {
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMpDGKR-zFk0p2ZJgJe5n2_s8USXmdi6I",
+            authDomain: "leave-tracker-2bcd5.firebaseapp.com",
+            projectId: "leave-tracker-2bcd5",
+            storageBucket: "leave-tracker-2bcd5.appspot.com",
+            messagingSenderId: "232535910229",
+            appId: "1:232535910229:web:cffd139a832a477c8ab1dc",
+            measurementId: "G-LKD4R5QG5G"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+        const provider = new GoogleAuthProvider();
+
         signInWithPopup(auth, provider).then((result) => {
-            console.log(result)
-            setLoginNav(result)
-            localStorage.setItem('userData', JSON.stringify(result))
+            setLoginNav(result);
+            if (typeof localStorage !== `undefined`) {
+                localStorage.setItem('userData', JSON.stringify(result));
+            }
 
             if (result) {
-                navigate('/Board/?' + (result.user.displayName))
+                navigate('/Board/?' + (result.user.displayName));
             }
         }).catch((error) => console.log(error))
     }

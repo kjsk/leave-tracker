@@ -10,7 +10,7 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Badge, Modal, Popover } from 'antd';
+import { Modal, Popover } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
@@ -21,12 +21,14 @@ const Board = () => {
     const [sideToggle, setSideToggle] = useState(1)
     const [getDatas, setGetDatas] = useState('');
 
-    let userData = JSON.parse(localStorage.getItem('userData'))
+    let userData = typeof sessionStorage !== `undefined` && JSON.parse(localStorage.getItem('userData'))
     console.log(userData)
 
+    let userDataMain = userData?.user;
+
     useEffect(() => {
-        setGetDatas(JSON.parse(localStorage.getItem("leave_records")))
-    }, [])
+        setGetDatas(typeof sessionStorage !== `undefined` && JSON.parse(localStorage.getItem("leave_records")))
+    }, []);
 
 
 
@@ -36,11 +38,11 @@ const Board = () => {
                 <div id="side_menu">
                     <h1><img src={login_logo} alt="img" />Leave Tracker</h1>
                     <ul>
-                        <li className={sideToggle === 1 ? "active" : ""} onClick={() => setSideToggle(1)}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />Home</li>
-                        <li className={sideToggle === 3 ? "active" : ""} onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? Calendar2 : Calendar} alt="img" />Calendar</li>
+                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => setSideToggle(1)}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />Home</li>
+                        <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? Calendar2 : Calendar} alt="img" />Calendar</li>
                     </ul>
                     <ul>
-                        <li className={sideToggle === 2 ? "active" : ""} onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? settings2 : settings} alt="img" />Settings</li>
+                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? settings2 : settings} alt="img" />Settings</li>
                     </ul>
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
@@ -54,8 +56,9 @@ const Board = () => {
                             </Popover>
 
                             <div id="mini_block_name">
-                                <p>{userData.user.displayName}</p>
-                                <img src={userData.user.photoURL} alt="img" id="profile" />
+                                <p>{userDataMain?.displayName}</p>
+                                {console.log('userDataMain?.photoURL', userDataMain?.photoURL)}
+                                <img src={userDataMain?.photoURL} alt="img" id="profile" />
                             </div>
                         </div>
                     </div>
@@ -64,7 +67,7 @@ const Board = () => {
                         <>
                             <div id="score">
                                 <div id="score_card">
-                                    <h2 id="score">{16 - getDatas.length}</h2>
+                                    <h2 id="score">{16 - getDatas?.length}</h2>
                                     <p>Available Leaves</p>
                                 </div>
                                 <div id="score_card">
@@ -72,7 +75,7 @@ const Board = () => {
                                     <p>Previous unused Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{getDatas.length}</h2>
+                                    <h2 id="score">0{getDatas?.length}</h2>
                                     <p>Pending Leaves Requests</p>
                                 </div>
                                 <div id="score_card">

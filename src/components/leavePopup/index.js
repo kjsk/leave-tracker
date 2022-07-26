@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { PopupContainer } from './styles';
 import user from '../../data/assets/user.svg';
 import leave_type from '../../data/assets/leave_type.svg';
 import cal from '../../data/assets/pop_Calendar.svg';
 import Edit from '../../data/assets/Edit.svg';
-import { DatePicker, Radio, Menu, Dropdown, Button, Popover, message } from 'antd';
+import { DatePicker, Dropdown, Popover, message } from 'antd';
 import moment from "moment"
 import Leave from "./leave"
 import LeaveType from "./leave_type"
@@ -47,28 +47,31 @@ const SideModal = ({ setPopup }) => {
     };
 
     const pushData = (leaveType, pushTime, reason) => {
-        let leave_records = new Array();
-        leave_records = JSON.parse(localStorage.getItem("leave_records")) ? JSON.parse(localStorage.getItem("leave_records")) : [];
-        leave_records.push({
-            "leaveType": leaveType,
-            "from": pushTime[0].format("MMM Do, YY - LT"),
-            "to": pushTime[1].format("MMM Do, YY - LT"),
-            "reason": reason
-        })
-        localStorage.setItem("leave_records", JSON.stringify(leave_records))
+        if (typeof localStorage !== `undefined`) {
+            let leave_records = [];
+            leave_records = JSON.parse(localStorage.getItem("leave_records")) ? JSON.parse(localStorage.getItem("leave_records")) : [];
+            leave_records.push({
+                "leaveType": leaveType,
+                "from": pushTime[0].format("MMM Do, YY - LT"),
+                "to": pushTime[1].format("MMM Do, YY - LT"),
+                "reason": reason
+            })
+            localStorage.setItem("leave_records", JSON.stringify(leave_records))
 
-        const getData = localStorage.getItem("leave_records")
+            const getData = localStorage.getItem("leave_records")
 
-        if (getData) {
-            setSize()
-            setPushTime()
-            setLeaveType('Paid Leave')
-            setLeavePer('First Half')
-            setReason("")
-            setPopup(false)
-            success();
-        } else {
-            error()
+            if (getData) {
+                setSize()
+                setPushTime()
+                setLeaveType('Paid Leave')
+                setLeavePer('First Half')
+                setReason("")
+                setPopup(false)
+                success();
+            } else {
+                error()
+            }
+
         }
     }
 
@@ -87,7 +90,7 @@ const SideModal = ({ setPopup }) => {
                         {size ?
                             <>
                                 {size?.map((date, i) =>
-                                    <span id="dateSpan">{date.format("MMM Do, YY")} <span id="toSpan">{i == 0 ? 'TO' : ""}</span></span>
+                                    <span id="dateSpan">{date.format("MMM Do, YY")} <span id="toSpan">{i === 0 ? 'TO' : ""}</span></span>
                                 )}
                             </> :
                             <span>{moment().format("MMM Do, YY")}</span>}
@@ -110,7 +113,7 @@ const SideModal = ({ setPopup }) => {
                 </div>
                 <div id="buttons">
                     <button style={{ color: '#3751FF', border: '1px solid #3751FF', cursor: `pointer` }} onClick={() => setPopup(false)}>Cancel</button>
-                    {size == "" || reason.length < 5 ?
+                    {size === "" || reason.length < 5 ?
                         <button style={{ background: 'gray', color: 'white', cursor: `pointer` }} >Submit</button>
                         :
                         <button style={{ background: '#3751FF', color: 'white', cursor: `pointer` }} onClick={() => pushData(leaveType, pushTime, reason)}>Submit</button>}

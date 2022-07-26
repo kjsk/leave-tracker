@@ -4,9 +4,9 @@ import { LeaveContainer } from './styles';
 const Leave = ({ setLeavePer }) => {
     return (
         <LeaveContainer>
-            <p onClick={() => setLeavePer('Full day')}>Full day</p>
-            <p onClick={() => setLeavePer('First Half')}>First Half</p>
-            <p onClick={() => setLeavePer('Second Half')}>Second Half</p>
+            <p role="presentation" onClick={() => setLeavePer('Full day')}>Full day</p>
+            <p role="presentation" onClick={() => setLeavePer('First Half')}>First Half</p>
+            <p role="presentation" onClick={() => setLeavePer('Second Half')}>Second Half</p>
         </LeaveContainer>
     )
 }

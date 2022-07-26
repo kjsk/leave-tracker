@@ -1,7 +1,5 @@
-import React, { Fragment, useState } from "react"
-import { navigate } from 'gatsby';
+import React, { Fragment } from "react"
 import Login from './Login'
-import Board from './Board'
 import SEO from "../components/seo"
 
 
