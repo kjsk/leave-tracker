@@ -23,7 +23,7 @@ const Board = ({ location }) => {
     const [sideToggle, setSideToggle] = useState(1);
     const [userLeaveData, setUserLeaveData] = useState([]);
 
-    let userData = typeof localStorage !== `undefined` && JSON.parse(localStorage.getItem('userData'))
+    let userData = typeof window !== 'undefined' && JSON.parse(window.localStorage.getItem('userData'))
 
     let userDataMain = userData?.user;
 
@@ -43,7 +43,7 @@ const Board = ({ location }) => {
 
     useEffect(() => {
         getLeaves();
-    }, [getLeaves]);
+    }, []);
 
     return (
         <BoardContainer>

@@ -11,7 +11,7 @@ import { getHeaders } from "../utils/urls"
 const Login = () => {
 
 
-  let localToken = typeof localStorage !== `undefined` && JSON.parse(localStorage.getItem('userData'))
+  let localToken = typeof window !== 'undefined' && JSON.parse(window.localStorage.getItem('userData'))
   const headers = getHeaders(localToken?.tokens?.accessToken);
 
   console.log('headers', headers)
@@ -21,7 +21,7 @@ const Login = () => {
     } else {
       signInWithGoogle();
     }
-  }, [localToken]);
+  }, []);
 
   const signInWithGoogle = () => {
     const firebaseConfig = {
@@ -47,6 +47,12 @@ const Login = () => {
 
 
 
+  console.log('window', window)
+  console.log(' typeof window !==', typeof window !== 'undefined' ? true : false)
+
+
+
+
   // Admin register
   const adminRegister = (name, email) => {
     axios({
@@ -64,7 +70,7 @@ const Login = () => {
           }
         }
         );
-        typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
+        typeof window !== `undefined` && window.localStorage.setItem('userData', JSON.stringify(res.data));
       })
       .catch(error => {
         alert(error?.response?.data?.message)
@@ -88,7 +94,7 @@ const Login = () => {
             item: res,
           }
         });
-        typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
+        typeof window.localStorage !== `undefined` && window.localStorage.setItem('userData', JSON.stringify(res.data));
       })
       .catch(error => console.log(error))
   }
