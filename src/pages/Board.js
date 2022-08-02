@@ -66,8 +66,7 @@ const Board = () => {
     const nameProf = (name) => {
         let text = name;
         const myArray = text?.split(" ");
-        console.log('myArray', myArray)
-        return myArray[0][0] + ' ' + myArray[1][0]
+        return (myArray && myArray[0][0] + ' ' + myArray[1][0])
     }
     return (
         <BoardContainer>
