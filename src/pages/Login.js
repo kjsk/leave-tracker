@@ -24,6 +24,7 @@ const Login = () => {
   }, []);
 
   const signInWithGoogle = () => {
+    alert(1)
     const firebaseConfig = {
       apiKey: "AIzaSyCMpDGKR-zFk0p2ZJgJe5n2_s8USXmdi6I",
       authDomain: "leave-tracker-2bcd5.firebaseapp.com",
@@ -41,7 +42,12 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider).then(result => {
-      adminRegister(result.user.displayName, result.user.email)
+      alert(2)
+      adminRegister(result?.user?.displayName, result?.user?.email)
+      console.log("result", result)
+    }).catch((error) => {
+      alert(3)
+      console.log("dddddddd", error)
     })
   }
 
