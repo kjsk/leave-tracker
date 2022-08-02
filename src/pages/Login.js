@@ -24,15 +24,13 @@ const Login = () => {
   }, []);
 
   const signInWithGoogle = () => {
-    alert(1)
     const firebaseConfig = {
-      apiKey: "AIzaSyCMpDGKR-zFk0p2ZJgJe5n2_s8USXmdi6I",
-      authDomain: "leave-tracker-2bcd5.firebaseapp.com",
-      projectId: "leave-tracker-2bcd5",
-      storageBucket: "leave-tracker-2bcd5.appspot.com",
-      messagingSenderId: "232535910229",
-      appId: "1:232535910229:web:cffd139a832a477c8ab1dc",
-      measurementId: "G-LKD4R5QG5G",
+      apiKey: "AIzaSyDfrrgmSPERncXsNZwkkTU17GyI1gyqlIg",
+      authDomain: "leave-tracker-applicatio-d51b2.firebaseapp.com",
+      projectId: "leave-tracker-applicatio-d51b2",
+      storageBucket: "leave-tracker-applicatio-d51b2.appspot.com",
+      messagingSenderId: "40042950399",
+      appId: "1:40042950399:web:e71861c5700098a8d2e6ca"
     }
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -42,18 +40,12 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider).then(result => {
-      alert(2)
-      adminRegister(result?.user?.displayName, result?.user?.email)
-      console.log("result", result)
+      adminRegister(result?.user?.displayName, result?.user?.email);
+      console.log("result", result);
     }).catch((error) => {
-      alert(3)
-      console.log("dddddddd", error)
+      console.log("error", error);
     })
   }
-
-  console.log(' typeof window !==', typeof window !== 'undefined' ? true : false)
-
-
 
 
   // Admin register
