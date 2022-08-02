@@ -45,9 +45,6 @@ const Login = () => {
     })
   }
 
-
-
-  console.log('window', window)
   console.log(' typeof window !==', typeof window !== 'undefined' ? true : false)
 
 
