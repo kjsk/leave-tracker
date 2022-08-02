@@ -130,10 +130,23 @@ export const BoardContainer = styled.div`
     border-left: 0.072463768115942vw solid #dfe0eb;
   }
 
-  #BoardContainer #main_menu #header #mini_block #mini_block_name p {
+  #BoardContainer #main_menu #header #mini_block #mini_block_name #name_main {
     font-weight: 600;
     font-size: 1.01vw;
     color: #252733;
+    display: flex;
+    flex-direction: column;
+    line-height: 0.9vw;
+  }
+  #BoardContainer #main_menu #header #mini_block #mini_block_name span {
+    font-weight: 600;
+    font-size: 0.9vw;
+    color: #14db51;
+    background: #f2fff6;
+    width: fit-content;
+    padding: 0.1vw 0.8vw;
+    border-radius: 1vw;
+    margin-top: 0.5vw;
   }
 
   #BoardContainer #main_menu #header #mini_block #mini_block_name #profile-icon {

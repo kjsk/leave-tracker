@@ -93,7 +93,7 @@ const Board = () => {
 
                             <div id="mini_block_name">
                                 <p id="profile-icon">{nameProf(userDataMain?.name)}</p>
-                                <p>{userDataMain?.name}</p>
+                                <p id="name_main">{userDataMain?.name}<span>{userDataMain?.role}</span></p>
                                 {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
                             </div>
                         </div>
