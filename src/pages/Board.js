@@ -10,30 +10,46 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Modal, Popover } from 'antd';
+import { Modal, Popover, Drawer } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
 import axios from 'axios';
 import { getHeaders } from "../utils/urls"
 
-const Board = ({ location }) => {
+const Board = () => {
 
     const [popup, setPopup] = useState(false);
     const [sideToggle, setSideToggle] = useState(1);
     const [userLeaveData, setUserLeaveData] = useState([]);
 
-    let userData = typeof window !== 'undefined' && JSON.parse(window.localStorage.getItem('userData'))
+    let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
     let userDataMain = userData?.user;
 
-    const header = getHeaders(userData?.tokens?.accessToken);
+    const headers = getHeaders(userData?.tokens?.accessToken);
+
+    // Admin Login
+    const adminLogin = (email) => {
+        axios({
+            method: 'POST',
+            url: `https://fidisyslt.herokuapp.com/api/v2/auth/login`,
+            data: {
+                email: email,
+            },
+            headers: headers
+        })
+            .then((res) => {
+                typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
+            })
+            .catch(error => { console.log(error) })
+    }
 
     const getLeaves = () => {
         axios({
             method: 'GET',
             url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
-            headers: header
+            headers: headers
         }).then((res) => {
             setUserLeaveData(res?.data);
         }).catch((_err) => {
@@ -43,8 +59,16 @@ const Board = ({ location }) => {
 
     useEffect(() => {
         getLeaves();
+        adminLogin(userDataMain?.user?.email);
     }, []);
 
+
+    const nameProf = (name) => {
+        let text = name;
+        const myArray = text?.split(" ");
+        console.log('myArray', myArray)
+        return myArray[0][0] + ' ' + myArray[1][0]
+    }
     return (
         <BoardContainer>
             <div id="BoardContainer" >
@@ -69,7 +93,7 @@ const Board = ({ location }) => {
                             </Popover>
 
                             <div id="mini_block_name">
-                                <p id="profile-icon">{userDataMain?.name[0]}{userDataMain?.name[1]}</p>
+                                <p id="profile-icon">{nameProf(userDataMain?.name)}</p>
                                 <p>{userDataMain?.name}</p>
                                 {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
                             </div>
@@ -107,7 +131,7 @@ const Board = ({ location }) => {
                                     <h3>Status</h3>
                                     <h3>Action</h3>
                                 </div>
-                                {userLeaveData ?
+                                {userLeaveData?.length !== 0 ?
                                     <div id="message_block2">
                                         {userLeaveData?.leaves?.map((item, i) =>
                                             <div id="task_container" key={i}>
@@ -250,20 +274,13 @@ const Board = ({ location }) => {
                 </div>
 
             </div>
-
-            <Modal
-                centered
+            <Drawer
                 visible={popup}
-                onCancel={() => setPopup(false)}
-                width={0}
-                okButtonProps={{ style: { display: 'none' } }}
-                cancelButtonProps={{ style: { display: 'none' } }}
-                bodyStyle={{ backgroundColor: `rgb(0 0 0 / 62%)`, width: '100%', height: `100vh`, position: 'fixed' }}
-                style={{ backgroundColor: `transparent`, height: `100%` }}
-                maskStyle={{ backgroundColor: `transparent`, height: `fit-content`, padding: `0` }}
+                onClose={() => setPopup(false)}
+                width="600"
             >
-                <SideModal setPopup={setPopup} header={header} getLeaves={getLeaves} />
-            </Modal>
+                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} adminLogin={adminLogin} />
+            </Drawer>
         </BoardContainer>
     )
 }

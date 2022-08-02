@@ -10,7 +10,7 @@ import moment from "moment"
 import Leave from "./leave"
 import LeaveType from "./leave_type"
 
-const SideModal = ({ setPopup, header, getLeaves }) => {
+const SideModal = ({ setPopup, headers, getLeaves, userDataMain, adminLogin }) => {
 
   const { RangePicker } = DatePicker
 
@@ -48,24 +48,22 @@ const SideModal = ({ setPopup, header, getLeaves }) => {
         type: leaveType,
         days: 2
       },
-      headers: header
+      headers: headers
     }).then((_res) => {
       getLeaves();
-      success();
+      setPopup(false);
+      adminLogin(userDataMain?.email);
+      setReason("");
+      setPushTime(false);
+      message.success("Your Leave Request submitted successfully");
     }).catch((_err) => {
       getLeaves();
-      error();
+      setPopup(false);
+      setReason("");
+      setPushTime(false);
+      adminLogin(userDataMain?.email);
+      message.error("Try again");
     })
-  }
-
-
-
-  const success = () => {
-    message.success("Your Leave Request submitted successfully")
-  }
-
-  const error = () => {
-    message.error("Try again")
   }
   return (
     <PopupContainer>
@@ -73,7 +71,7 @@ const SideModal = ({ setPopup, header, getLeaves }) => {
         <h1>Apply for Leave</h1>
         <div id="name_block">
           <img src={user} alt="img" />
-          <p>Vignesh</p>
+          <p>{userDataMain?.name}</p>
         </div>
         <div id="name_block">
           <img src={cal} alt="img" />
@@ -110,7 +108,7 @@ const SideModal = ({ setPopup, header, getLeaves }) => {
             <img src={leave_type} alt="img" />
             <input
               type="text"
-              value={leaveType}
+              value={leaveType == 'gen' ? 'Paid Leave' : 'Cassual Leave'}
               id="input"
               placeholder="Select leave type"
             />
@@ -136,32 +134,14 @@ const SideModal = ({ setPopup, header, getLeaves }) => {
           >
             Cancel
           </button>
-          {/* {size === "" || reason.length < 5 ? (
-            <button
-              style={{ background: "gray", color: "white", cursor: `pointer` }}
-              disabled
-            >
-              Submit
-            </button>
-          ) : (
-            <button
-              style={{
-                background: "#3751FF",
-                color: "white",
-                cursor: `pointer`,
-              }}
-              onClick={() => createLeave(leaveType, pushTime, reason)}
-            >
-              Submit
-            </button>
-          )} */}
           <button
             style={{
-              background: "#3751FF",
+              background: pushTime && reason.length > 5 ? '#3751FF' : 'gray',
               color: "white",
               cursor: `pointer`,
             }}
             onClick={() => createLeave(leaveType, pushTime, reason)}
+            disabled={pushTime && reason.length > 5 ? false : true}
           >
             Submit
           </button>

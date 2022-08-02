@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
@@ -7,23 +7,18 @@ import { LoginContainer } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
 import { getHeaders } from "../utils/urls"
+import { message } from "antd"
 
 const Login = () => {
 
 
-  let localToken = typeof window !== 'undefined' && JSON.parse(window.localStorage.getItem('userData'))
+  let localToken = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
   const headers = getHeaders(localToken?.tokens?.accessToken);
-
+  const [btnDisable, setBtnDisable] = useState(false);
   console.log('headers', headers)
-  useEffect(() => {
-    if (localToken) {
-      navigate(`/Board/`);
-    } else {
-      signInWithGoogle();
-    }
-  }, []);
 
   const signInWithGoogle = () => {
+    setBtnDisable(true);
     const firebaseConfig = {
       apiKey: "AIzaSyDfrrgmSPERncXsNZwkkTU17GyI1gyqlIg",
       authDomain: "leave-tracker-applicatio-d51b2.firebaseapp.com",
@@ -59,22 +54,18 @@ const Login = () => {
       }
     })
       .then((res) => {
-        navigate(`/Board/`, {
-          state: {
-            item: res,
-          }
-        }
-        );
-        typeof window !== `undefined` && window.localStorage.setItem('userData', JSON.stringify(res.data));
+        message.success(res?.response?.data?.message);
+        typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
+        navigate(`/Board/`);
       })
-      .catch(error => {
-        alert(error?.response?.data?.message)
+      .catch((error) => {
+        message.warning(error?.response?.data?.message);
         adminLogin(email);
       })
   }
 
   // Admin Login
-  const adminLogin = (name, email) => {
+  const adminLogin = (email) => {
     axios({
       method: 'POST',
       url: `https://fidisyslt.herokuapp.com/api/v2/auth/login`,
@@ -84,14 +75,11 @@ const Login = () => {
       headers: headers
     })
       .then((res) => {
-        navigate(`/Board/`, {
-          state: {
-            item: res,
-          }
-        });
-        typeof window.localStorage !== `undefined` && window.localStorage.setItem('userData', JSON.stringify(res.data));
+        typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
+        setBtnDisable(false);
+        navigate(`/Board/`);
       })
-      .catch(error => console.log(error))
+      .catch(error => { console.log(error); setBtnDisable(false) })
   }
   return (
     <LoginContainer>
@@ -99,7 +87,7 @@ const Login = () => {
         <img src={login_logo} alt="login_logo" />
         <h2>Log In to Leave Tracker</h2>
         <h4>Connect with Google Account</h4>
-        <button onClick={signInWithGoogle}>
+        <button onClick={signInWithGoogle} disabled={btnDisable} style={{ background: btnDisable ? 'gray' : '#FCFDFE' }}>
           <img src={google} alt="img" />
           Sign in with Google
         </button>

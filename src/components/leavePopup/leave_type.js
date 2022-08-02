@@ -5,7 +5,6 @@ const LeaveType = ({ leaveFun }) => {
     return (
         <LeaveContainers>
             <p role="presentation" onClick={() => leaveFun('gen')}>Paid Leave</p>
-            <p role="presentation" onClick={() => leaveFun('cos')}>Sick Leave</p>
             <p role="presentation" onClick={() => leaveFun('cos')}>Cassual Leave</p>
         </LeaveContainers>
     )

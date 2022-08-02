@@ -56,7 +56,6 @@ align-items: center;
     font-size: 14px;
     letter-spacing: 0.3px;
     color: #252733;
-    background: #FCFDFE;
     border: 1px solid #EDEDEE;
     box-sizing: border-box;
     border-radius: 8px;
