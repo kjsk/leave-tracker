@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { PopupContainer } from "./styles"
+import axios from 'axios';
 import user from "../../data/assets/user.svg"
 import leave_type from "../../data/assets/leave_type.svg"
 import cal from "../../data/assets/pop_Calendar.svg"
@@ -9,8 +10,7 @@ import moment from "moment"
 import Leave from "./leave"
 import LeaveType from "./leave_type"
 
-const SideModal = ({ setPopup }) => {
-  const setLocal = typeof localStorage
+const SideModal = ({ setPopup, header, getLeaves }) => {
 
   const { RangePicker } = DatePicker
 
@@ -18,24 +18,48 @@ const SideModal = ({ setPopup }) => {
 
   console.log(size)
 
-  const [pushTime, setPushTime] = useState(false)
+  const [pushTime, setPushTime] = useState(false);
 
-  const [leaveType, setLeaveType] = useState("Paid Leave")
+  const [leaveType, setLeaveType] = useState("gen");
 
-  const [leavePer, setLeavePer] = useState("First Half")
+  const [leavePer, setLeavePer] = useState("First Half");
 
-  const [reason, setReason] = useState("")
+  const [reason, setReason] = useState("");
 
-  console.log(leaveType)
 
   const onChange = date => {
-    setSize(date)
-    setPushTime(date)
+    setSize(date);
+    setPushTime(date);
   }
 
   const leaveFun = e => {
     setLeaveType(e)
+    console.log('leaveFun', e)
   }
+
+  const createLeave = (leaveType, pushTime, reason) => {
+    axios({
+      method: 'POST',
+      url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
+      data: {
+        startDate: pushTime[0].format("MM-DD-YYYY"),
+        endDate: pushTime[1].format("MM-DD-YYYY"),
+        reason: reason,
+        type: leaveType,
+        days: 2
+      },
+      headers: header
+    }).then((_res) => {
+      getLeaves();
+      success();
+    }).catch((_err) => {
+      getLeaves();
+      error();
+    })
+  }
+
+
+
   const success = () => {
     message.success("Your Leave Request submitted successfully")
   }
@@ -43,37 +67,6 @@ const SideModal = ({ setPopup }) => {
   const error = () => {
     message.error("Try again")
   }
-
-  const pushData = (leaveType, pushTime, reason) => {
-    if (setLocal !== `undefined`) {
-      let leave_records = []
-      leave_records = JSON.parse(localStorage.getItem("leave_records"))
-        ? JSON.parse(localStorage.getItem("leave_records"))
-        : []
-      leave_records.push({
-        leaveType: leaveType,
-        from: pushTime[0].format("MMM Do, YY - LT"),
-        to: pushTime[1].format("MMM Do, YY - LT"),
-        reason: reason,
-      })
-      localStorage.setItem("leave_records", JSON.stringify(leave_records))
-
-      const getData = localStorage.getItem("leave_records")
-
-      if (getData) {
-        setSize()
-        setPushTime()
-        setLeaveType("Paid Leave")
-        setLeavePer("First Half")
-        setReason("")
-        setPopup(false)
-        success()
-      } else {
-        error()
-      }
-    }
-  }
-
   return (
     <PopupContainer>
       <div id="popup">
@@ -143,7 +136,7 @@ const SideModal = ({ setPopup }) => {
           >
             Cancel
           </button>
-          {size === "" || reason.length < 5 ? (
+          {/* {size === "" || reason.length < 5 ? (
             <button
               style={{ background: "gray", color: "white", cursor: `pointer` }}
               disabled
@@ -157,11 +150,21 @@ const SideModal = ({ setPopup }) => {
                 color: "white",
                 cursor: `pointer`,
               }}
-              onClick={() => pushData(leaveType, pushTime, reason)}
+              onClick={() => createLeave(leaveType, pushTime, reason)}
             >
               Submit
             </button>
-          )}
+          )} */}
+          <button
+            style={{
+              background: "#3751FF",
+              color: "white",
+              cursor: `pointer`,
+            }}
+            onClick={() => createLeave(leaveType, pushTime, reason)}
+          >
+            Submit
+          </button>
         </div>
       </div>
     </PopupContainer>

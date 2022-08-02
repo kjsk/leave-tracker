@@ -14,23 +14,36 @@ import { Modal, Popover } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
+import axios from 'axios';
+import { getHeaders } from "../utils/urls"
 
-const Board = () => {
+const Board = ({ location }) => {
 
-    const [popup, setPopup] = useState(false)
-    const [sideToggle, setSideToggle] = useState(1)
-    const [getDatas, setGetDatas] = useState('');
+    const [popup, setPopup] = useState(false);
+    const [sideToggle, setSideToggle] = useState(1);
+    const [userLeaveData, setUserLeaveData] = useState([]);
 
-    let userData = typeof sessionStorage !== `undefined` && JSON.parse(localStorage.getItem('userData'))
-    console.log(userData)
+    let userData = typeof localStorage !== `undefined` && JSON.parse(localStorage.getItem('userData'))
 
     let userDataMain = userData?.user;
 
+    const header = getHeaders(userData?.tokens?.accessToken);
+
+    const getLeaves = () => {
+        axios({
+            method: 'GET',
+            url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
+            headers: header
+        }).then((res) => {
+            setUserLeaveData(res?.data);
+        }).catch((_err) => {
+            console.log('Error', _err);
+        })
+    }
+
     useEffect(() => {
-        setGetDatas(typeof sessionStorage !== `undefined` && JSON.parse(localStorage.getItem("leave_records")))
-    }, []);
-
-
+        getLeaves();
+    }, [getLeaves]);
 
     return (
         <BoardContainer>
@@ -56,9 +69,9 @@ const Board = () => {
                             </Popover>
 
                             <div id="mini_block_name">
-                                <p>{userDataMain?.displayName}</p>
-                                {console.log('userDataMain?.photoURL', userDataMain?.photoURL)}
-                                <img src={userDataMain?.photoURL} alt="img" id="profile" />
+                                <p id="profile-icon">{userDataMain.name[0]}{userDataMain.name[1]}</p>
+                                <p>{userDataMain?.name}</p>
+                                {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
                             </div>
                         </div>
                     </div>
@@ -67,7 +80,7 @@ const Board = () => {
                         <>
                             <div id="score">
                                 <div id="score_card">
-                                    <h2 id="score">{16 - getDatas?.length}</h2>
+                                    <h2 id="score">00</h2>
                                     <p>Available Leaves</p>
                                 </div>
                                 <div id="score_card">
@@ -75,11 +88,11 @@ const Board = () => {
                                     <p>Previous unused Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{getDatas?.length}</h2>
+                                    <h2 id="score">0{userDataMain?.leaverequestcount?.pending}</h2>
                                     <p>Pending Leaves Requests</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">02</h2>
+                                    <h2 id="score">0{userDataMain?.leaverequestcount?.rejected}</h2>
                                     <p>Rejected Leaves</p>
                                 </div>
                             </div>
@@ -94,16 +107,16 @@ const Board = () => {
                                     <h3>Status</h3>
                                     <h3>Action</h3>
                                 </div>
-                                {getDatas ?
+                                {userLeaveData ?
                                     <div id="message_block2">
-                                        {getDatas.map((item, i) =>
+                                        {userLeaveData?.leaves?.map((item, i) =>
                                             <div id="task_container" key={i}>
                                                 <p>{i + 1}</p>
-                                                <p>{item.leaveType}</p>
-                                                <p>{item.from}</p>
-                                                <p>{item.to}</p>
-                                                <p>{item.reason}</p>
-                                                <p style={{ color: '#CB5A08', fontWeight: '600' }}>Pending</p>
+                                                <p>{item?.type === "gen" ? 'Paid Leave' : 'Cassual Leave'}</p>
+                                                <p>{item?.startDate}</p>
+                                                <p>{item?.endDate}</p>
+                                                <p>{item?.reason}</p>
+                                                <p style={{ color: '#CB5A08', fontWeight: '600' }}>{item?.status}</p>
                                                 <p><DeleteOutlined className='delete_icon' /></p>
                                             </div>
                                         )}
@@ -249,7 +262,7 @@ const Board = () => {
                 style={{ backgroundColor: `transparent`, height: `100%` }}
                 maskStyle={{ backgroundColor: `transparent`, height: `fit-content`, padding: `0` }}
             >
-                <SideModal setPopup={setPopup} />
+                <SideModal setPopup={setPopup} header={header} getLeaves={getLeaves} />
             </Modal>
         </BoardContainer>
     )

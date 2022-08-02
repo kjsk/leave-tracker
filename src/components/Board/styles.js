@@ -136,6 +136,21 @@ export const BoardContainer = styled.div`
     color: #252733;
   }
 
+  #BoardContainer #main_menu #header #mini_block #mini_block_name #profile-icon {
+    font-weight: 600;
+    font-size: 1.01vw;
+    color: #0c1eff;
+    width: 2.7vw;
+    height: 2.7vw;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    border-radius: 2.17391304347826vw;
+    border: 0.144927536231884vw solid #c4c4c4;
+    background:#f2f3ff;
+    margin-right: 0.5vw;
+  }
+
   #BoardContainer #main_menu #header #mini_block #mini_block_name img {
     width: 3.18840579710145vw;
     height: 3.18840579710145vw;
