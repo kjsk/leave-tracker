@@ -69,7 +69,7 @@ const Board = ({ location }) => {
                             </Popover>
 
                             <div id="mini_block_name">
-                                <p id="profile-icon">{userDataMain.name[0]}{userDataMain.name[1]}</p>
+                                <p id="profile-icon">{userDataMain?.name[0]}{userDataMain?.name[1]}</p>
                                 <p>{userDataMain?.name}</p>
                                 {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
                             </div>
