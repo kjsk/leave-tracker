@@ -60,7 +60,7 @@ const Login = () => {
       }
     })
       .then((res) => {
-        message.success(`${res?.data?.user?.name}registered successfully`);
+        message.success(`${res?.data?.user?.name} registered successfully`);
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
         navigate(`/Board/`);
       })
