@@ -70,6 +70,7 @@ margin-bottom: 1.5vw;
   #BoardContainer #side_menu ul .active {
     color: #dde2ff;
     background: #9fa2b43d;
+    transition: 0.5s ease-in-out;
     border-left: 0.217391304347826vw solid white;
   }
 
@@ -376,6 +377,7 @@ color: #A2A2A2;
     background: #ffffff;
     border-radius: 0.86vw;
     padding: 2.82vw 1.01vw;
+    height: 100%;
   }
   #BoardContainer #admin #admin_block1 {
     display: flex;
@@ -417,10 +419,11 @@ color: #A2A2A2;
     position: relative;
     transition: 0.5s ease-in-out;
   }
-  #BoardContainer #admin #admin_tab h2:hover {
+  #BoardContainer #admin #admin_tab .active {
     color: #3751ff;
+    transition: 0.5s ease-in-out;
   }
-  #BoardContainer #admin #admin_tab h2:hover:before {
+  #BoardContainer #admin #admin_tab .active:before {
     content: "";
     width: 100%;
     height: 0.3vw;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import login_logo from '../data/assets/login_logo.svg';
 import overview from '../data/assets/overview.svg';
 import overview2 from '../data/assets/overview_hover.svg';
@@ -13,15 +13,17 @@ import logout_hover from '../data/assets/logout_hover.svg';
 import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
-import { DeleteOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer, Badge, message } from 'antd';
+import { DeleteOutlined, SettingOutlined, CalendarOutlined } from '@ant-design/icons';
+import { Empty, Popover, Drawer, Badge, message, Result } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
+import emptyFile from '../data/assets/empty-file.gif';
 import axios from 'axios';
 import { getHeaders } from "../utils/urls"
 import { navigate } from "gatsby"
 import Loader from "../components/loader";
+import NotificationSound from "../utils/notification.mp3"
 
 const Board = () => {
 
@@ -29,6 +31,7 @@ const Board = () => {
     const [sideToggle, setSideToggle] = useState(1);
     const [userLeaveData, setUserLeaveData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
+    const [adminToggle, setAdminToggle] = useState('pending');
 
     let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -52,7 +55,12 @@ const Board = () => {
     }
 
     useEffect(() => {
-        getLeaves();
+        if (userData) {
+            getLeaves();
+        } else {
+            logOut();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -66,6 +74,7 @@ const Board = () => {
     const logOut = () => {
         typeof localStorage !== `undefined` && localStorage.removeItem('userData');
         navigate(`/`);
+        message.success('Logout Successfully');
     }
 
 
@@ -78,15 +87,28 @@ const Board = () => {
         }).then((res) => {
             getLeaves();
             message.success(res?.data?.message);
+            playAudio();
         }).catch((_err) => {
             setActiveLoader(false);
             console.log('Error', _err);
         })
     }
 
+    const audioPlayer = useRef(null);
+
+    function playAudio() {
+        audioPlayer.current.play();
+    }
+
+
+    const leaveMap = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
+    console.log('leaveMap', leaveMap)
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
+            <audio ref={audioPlayer} src={NotificationSound}>
+                <track src="captions_es.vtt" kind="captions" srclang="es" label="spanish_captions" />
+            </audio>
             <div id="BoardContainer" >
                 <div id="side_menu">
                     <h1><img src={login_logo} alt="img" />Leave Tracker</h1>
@@ -128,11 +150,11 @@ const Board = () => {
                         <>
                             <div id="score">
                                 <div id="score_card">
-                                    <h2 id="score">00</h2>
+                                    <h2 id="score">02</h2>
                                     <p>Available Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">00</h2>
+                                    <h2 id="score">02</h2>
                                     <p>Previous unused Leaves</p>
                                 </div>
                                 <div id="score_card">
@@ -140,7 +162,7 @@ const Board = () => {
                                     <p>Pending Leaves Requests</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{userDataMain?.leaverequestcount?.rejected}</h2>
+                                    <h2 id="score">01</h2>
                                     <p>Rejected Leaves</p>
                                 </div>
                             </div>
@@ -187,12 +209,12 @@ const Board = () => {
                                     :
                                     <div id="message_blocks">
                                         <Empty
-                                            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                            image={emptyFile}
                                             imageStyle={{
                                                 height: 200,
                                             }}
                                             description={
-                                                <span>
+                                                <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
                                                     No Leaves Applied
                                                 </span>
                                             }
@@ -206,61 +228,96 @@ const Board = () => {
                     }
 
 
-                    {sideToggle === 3 ?
+                    {sideToggle === 2 &&
+                        <Result
+                            icon={<CalendarOutlined />}
+                            title="Hello, Calender comming soon!"
+                        />
+
+                    }
+
+                    {sideToggle === 3 &&
                         <div id="admin">
                             <div id="admin_block1">
                                 <h1>Leave Requests</h1>
                                 <p id="share"><img src={share} alt="share" />Share</p>
                             </div>
                             <div id="admin_tab">
-                                <h2>All</h2>
-                                <h2>Approve</h2>
-                                <h2>Pending</h2>
+                                <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>
+                                <h2 role='presentation' onClick={() => setAdminToggle('approved')} className={adminToggle === 'approved' && "active"}>Approved</h2>
+                                <h2 role='presentation' onClick={() => setAdminToggle('rejected')} className={adminToggle === 'rejected' && "active"}>Rejected</h2>
                             </div>
-                            <div id="message">
-                                <div id="message_block1">
-                                    <h3>SNo</h3>
-                                    <h3>Name & ID</h3>
-                                    <h3>Date</h3>
-                                    <h3>Leave Type</h3>
-                                    <h3>Reason</h3>
-                                    <h3>Action</h3>
-                                </div>
-                                <div id="message_block2">
-                                    {userLeaveData?.leaves?.map((item, i) =>
-                                        <div id="task_container">
-                                            <p>1</p>
-                                            <div id="profile_box">
-                                                <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                                <div id="profile_text">
-                                                    <h2>Vignesh</h2>
-                                                    <p>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
-                                                </div>
-                                            </div>
-                                            <p>{item?.startDate} to {item?.endDate}</p>
-                                            <p>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
-                                            <p>{item?.reason}</p>
-                                            <div id="btns">
-                                                {item.status === 'approved' ? <p style={{
-                                                    color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
-                                                }}>Approved</p> : item.status === 'rejected' ?
-                                                    <p style={{
-                                                        color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
-                                                    }}>Rejected</p> :
-                                                    <>
-                                                        <button onClick={() => approveLeave('approve', item?.id)}>Approve</button>
-                                                        <button onClick={() => approveLeave('reject', item?.id)}>Reject</button>
-                                                    </>
+                            {leaveMap?.length !== 0 ?
+                                <div id="message">
+                                    <div id="message_block1">
+                                        <h3>SNo</h3>
+                                        <h3>Name & ID</h3>
+                                        <h3>Date</h3>
+                                        <h3>Leave Type</h3>
+                                        <h3>Reason</h3>
+                                        <h3>Action</h3>
+                                    </div>
+                                    <div id="message_block2">
+                                        {userLeaveData?.leaves?.map((item, i) =>
+                                            <div>
+                                                {item.status === adminToggle &&
+                                                    <div id="task_container">
+                                                        <p>1</p>
+                                                        <div id="profile_box">
+                                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                            <div id="profile_text">
+                                                                <h2>Vignesh</h2>
+                                                                <p>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
+                                                            </div>
+                                                        </div>
+                                                        <p>{item?.startDate} to {item?.endDate}</p>
+                                                        <p>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
+                                                        <p>{item?.reason}</p>
+                                                        <div id="btns">
+                                                            {item.status === 'approved' ? <p style={{
+                                                                color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
+                                                            }}>Approved</p> : item.status === 'rejected' ?
+                                                                <p style={{
+                                                                    color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
+                                                                }}>Rejected</p> :
+                                                                <>
+                                                                    <button onClick={() => approveLeave('approve', item?.id)}>Approve</button>
+                                                                    <button onClick={() => approveLeave('reject', item?.id)}>Reject</button>
+                                                                </>
+                                                            }
+                                                        </div>
+                                                    </div>
                                                 }
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                                :
+                                <Empty
+                                    image={emptyFile}
+                                    imageStyle={{
+                                        height: 250,
+                                        width: 200,
+                                        margin: '7vw auto auto auto',
+                                    }}
+                                    description={
+                                        <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
+                                            No {adminToggle} leaves!
+                                        </span>
+                                    }
+                                />
+                            }
                         </div>
-                        :
-                        ""}
+                    }
 
+
+                    {sideToggle === 4 &&
+                        <Result
+                            icon={<SettingOutlined />}
+                            title="Hello, Calender comming soon!"
+                        />
+
+                    }
 
                 </div>
 
@@ -270,7 +327,7 @@ const Board = () => {
                 onClose={() => setPopup(false)}
                 width="fit-content"
             >
-                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} />
+                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} />
             </Drawer>
         </BoardContainer >
     )

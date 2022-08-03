@@ -7,7 +7,8 @@ import { LoginContainer } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
 import { getHeaders } from "../utils/urls"
-import { message } from "antd"
+import { message } from "antd";
+import Loader from "../components/loader";
 
 const Login = () => {
 
@@ -15,6 +16,7 @@ const Login = () => {
   let localToken = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
   const headers = getHeaders(localToken?.tokens?.accessToken);
   const [btnDisable, setBtnDisable] = useState(false);
+  const [activeLoader, setActiveLoader] = useState(false);
   console.log('headers', headers)
 
   useEffect(() => {
@@ -22,9 +24,11 @@ const Login = () => {
       typeof localStorage !== `undefined` && localStorage.removeItem('userData');
       signInWithGoogle();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const signInWithGoogle = () => {
+    setActiveLoader(true);
     setBtnDisable(true);
     const firebaseConfig = {
       apiKey: "AIzaSyDfrrgmSPERncXsNZwkkTU17GyI1gyqlIg",
@@ -42,8 +46,11 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider).then(result => {
+      message.success(`verfied User`);
       adminRegister(result?.user?.displayName, result?.user?.email);
     }).catch((error) => {
+      message.error(`You should be an fidisys employee`);
+      setActiveLoader(false);
       console.log("error", error);
     })
   }
@@ -85,10 +92,11 @@ const Login = () => {
         setBtnDisable(false);
         navigate(`/Board/`);
       })
-      .catch(error => { console.log(error); setBtnDisable(false) })
+      .catch(error => { console.log(error); setBtnDisable(false); setActiveLoader(false); })
   }
   return (
     <LoginContainer>
+      {activeLoader && <Loader />}
       <div id="LoginContainer">
         <img src={login_logo} alt="login_logo" />
         <h2>Log In to Leave Tracker</h2>

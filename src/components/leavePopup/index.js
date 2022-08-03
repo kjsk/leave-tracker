@@ -5,12 +5,10 @@ import user from "../../data/assets/user.svg"
 import leave_type from "../../data/assets/leave_type.svg"
 import cal from "../../data/assets/pop_Calendar.svg"
 import Edit from "../../data/assets/Edit.svg"
-import { DatePicker, Dropdown, Popover, message } from "antd"
-import moment from "moment"
-import Leave from "./leave"
+import { DatePicker, Dropdown, message } from "antd"
 import LeaveType from "./leave_type"
 
-const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader }) => {
+const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio }) => {
 
   const { RangePicker } = DatePicker
 
@@ -22,7 +20,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
 
   const [leaveType, setLeaveType] = useState("");
 
-  const [leavePer, setLeavePer] = useState("First Half");
+  // const [leavePer, setLeavePer] = useState("First Half");
 
   const [reason, setReason] = useState("");
   const [LeaveDrop, setLeaveDrop] = useState(false);
@@ -39,6 +37,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
   }
 
   const createLeave = (leaveType, pushTime, reason) => {
+    setPopup(false);
     setActiveLoader(true);
     axios({
       method: 'POST',
@@ -53,9 +52,9 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       headers: headers
     }).then((_res) => {
       getLeaves();
-      setPopup(false);
       setReason("");
       setPushTime(false);
+      playAudio();
       message.success("Your Leave Request submitted successfully");
     }).catch((_err) => {
       getLeaves();
@@ -94,7 +93,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
           trigger={['click']}
           visible={LeaveDrop}
         >
-          <div id="name_block" onClick={() => setLeaveDrop(!LeaveDrop)}>
+          <div id="name_block" onClick={() => setLeaveDrop(!LeaveDrop)} role='presentation'>
             <img src={leave_type} alt="img" />
             <input
               type="text"
