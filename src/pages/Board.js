@@ -21,12 +21,14 @@ import share from '../data/assets/share.svg';
 import axios from 'axios';
 import { getHeaders } from "../utils/urls"
 import { navigate } from "gatsby"
+import Loader from "../components/loader";
 
 const Board = () => {
 
     const [popup, setPopup] = useState(false);
     const [sideToggle, setSideToggle] = useState(1);
     const [userLeaveData, setUserLeaveData] = useState([]);
+    const [activeLoader, setActiveLoader] = useState(false);
 
     let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -35,13 +37,16 @@ const Board = () => {
     const headers = getHeaders(userData?.tokens?.accessToken);
 
     const getLeaves = () => {
+        setActiveLoader(true);
         axios({
             method: 'GET',
             url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
             headers: headers
         }).then((res) => {
+            setActiveLoader(false);
             setUserLeaveData(res?.data);
         }).catch((_err) => {
+            setActiveLoader(false);
             console.log('Error', _err);
         })
     }
@@ -65,6 +70,7 @@ const Board = () => {
 
 
     const approveLeave = (type, leaveId) => {
+        setActiveLoader(true);
         axios({
             method: 'PUT',
             url: `https://fidisyslt.herokuapp.com/api/v2/leaves/${type}/${leaveId}`,
@@ -73,12 +79,14 @@ const Board = () => {
             getLeaves();
             message.success(res?.data?.message);
         }).catch((_err) => {
+            setActiveLoader(false);
             console.log('Error', _err);
         })
     }
 
     return (
         <BoardContainer>
+            {activeLoader && <Loader />}
             <div id="BoardContainer" >
                 <div id="side_menu">
                     <h1><img src={login_logo} alt="img" />Leave Tracker</h1>
@@ -235,7 +243,10 @@ const Board = () => {
                                             <div id="btns">
                                                 {item.status === 'approved' ? <p style={{
                                                     color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
-                                                }}>Approved</p> :
+                                                }}>Approved</p> : item.status === 'rejected' ?
+                                                    <p style={{
+                                                        color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
+                                                    }}>Rejected</p> :
                                                     <>
                                                         <button onClick={() => approveLeave('approve', item?.id)}>Approve</button>
                                                         <button onClick={() => approveLeave('reject', item?.id)}>Reject</button>
@@ -259,7 +270,7 @@ const Board = () => {
                 onClose={() => setPopup(false)}
                 width="fit-content"
             >
-                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} />
+                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} />
             </Drawer>
         </BoardContainer >
     )

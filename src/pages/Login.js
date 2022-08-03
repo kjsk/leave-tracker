@@ -60,12 +60,12 @@ const Login = () => {
       }
     })
       .then((res) => {
-        message.success("User registered successfully");
+        message.success(`${res?.data?.name}registered successfully`);
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
         navigate(`/Board/`);
       })
       .catch((error) => {
-        message.success("Already you are a user");
+        message.success(`Hello ${error?.response?.data?.username}`);
         adminLogin(error?.response?.data?.email);
       })
   }

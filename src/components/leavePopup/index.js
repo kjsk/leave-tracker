@@ -10,7 +10,7 @@ import moment from "moment"
 import Leave from "./leave"
 import LeaveType from "./leave_type"
 
-const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
+const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader }) => {
 
   const { RangePicker } = DatePicker
 
@@ -39,6 +39,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
   }
 
   const createLeave = (leaveType, pushTime, reason) => {
+    setActiveLoader(true);
     axios({
       method: 'POST',
       url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
@@ -61,7 +62,8 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
       setPopup(false);
       setReason("");
       setPushTime(false);
-      message.error("Try again");
+      setActiveLoader(false);
+      message.error("Your leave request failed");
     })
   }
   return (
