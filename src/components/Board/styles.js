@@ -53,6 +53,10 @@ export const BoardContainer = styled.div`
     padding: 0 2.02898550724638vw;
   }
 
+  #BoardContainer #side_menu ul li:nth-child(3) {
+margin-bottom: 1.5vw;
+  }
+
   #BoardContainer #side_menu ul li img {
     width: 1.15942028985507vw;
     height: 1.15942028985507vw;

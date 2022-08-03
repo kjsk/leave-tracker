@@ -59,7 +59,7 @@ const Board = () => {
     const nameProf = (name) => {
         let text = name;
         const myArray = text?.split(" ");
-        return (myArray && myArray[0][0] + ' ' + myArray[1][0])
+        return (myArray && (myArray[0] ? myArray[0][0] : '') + ' ' + (myArray[1] ? myArray[1][0] : ''))
     }
 
 
@@ -106,7 +106,7 @@ const Board = () => {
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
                     <div id="header">
-                        <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Settings" : sideToggle === 3 ? "Calendar" : ""}</h2>
+                        <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? "Admin Portal" : sideToggle === 4 ? "Settings" : ""}</h2>
                         <div id="mini_block">
                             {sideToggle === 1 ? <button onClick={() => setPopup(true)}>Apply Leave</button> : ""}
                             <img src={search} alt="img" id="search" />
@@ -117,7 +117,7 @@ const Board = () => {
                             </Popover>
 
                             <div id="mini_block_name">
-                                <p id="profile-icon">{nameProf(userDataMain?.name)}</p>
+                                <p id="profile-icon">{userDataMain && nameProf(userDataMain?.name).toUpperCase()}</p>
                                 <p id="name_main">{userDataMain?.name}<span>{userDataMain?.role}</span></p>
                                 {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
                             </div>
