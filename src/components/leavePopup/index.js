@@ -20,11 +20,12 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
 
   const [pushTime, setPushTime] = useState(false);
 
-  const [leaveType, setLeaveType] = useState("gen");
+  const [leaveType, setLeaveType] = useState("");
 
   const [leavePer, setLeavePer] = useState("First Half");
 
   const [reason, setReason] = useState("");
+  const [LeaveDrop, setLeaveDrop] = useState(false);
 
 
   const onChange = date => {
@@ -75,38 +76,27 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
           <img src={cal} alt="img" />
           <p>
             <RangePicker onChange={onChange} />
-            {size ? (
-              <>
-                {size?.map((date, i) => (
-                  <span id="dateSpan">
-                    {date.format("MMM Do, YY")}{" "}
-                    <span id="toSpan">{i === 0 ? "TO" : ""}</span>
-                  </span>
-                ))}
-              </>
-            ) : (
-              <span>{moment().format("MMM Do, YY")}</span>
-            )}
-
-            <span id="span"></span>
+            {/* <span id="span"></span>
             <Popover
               placement="bottomRight"
               content={<Leave setLeavePer={setLeavePer} />}
               style={{ position: "relative" }}
             >
               {leavePer}
-            </Popover>
+            </Popover> */}
           </p>
         </div>
         <Dropdown
-          overlay={<LeaveType leaveFun={leaveFun} />}
+          overlay={<LeaveType leaveFun={leaveFun} setLeaveDrop={setLeaveDrop} />}
           placement="bottomLeft"
+          trigger={['click']}
+          visible={LeaveDrop}
         >
-          <div id="name_block">
+          <div id="name_block" onClick={() => setLeaveDrop(!LeaveDrop)}>
             <img src={leave_type} alt="img" />
             <input
               type="text"
-              value={leaveType === 'gen' ? 'Paid Leave' : 'Cassual Leave'}
+              value={leaveType === 'gen' ? 'Paid Leave' : leaveType === 'cos' ? 'Cassual Leave' : ''}
               id="input"
               placeholder="Select leave type"
             />
@@ -123,11 +113,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
         </div>
         <div id="buttons">
           <button
-            style={{
-              color: "#3751FF",
-              border: "1px solid #3751FF",
-              cursor: `pointer`,
-            }}
             onClick={() => setPopup(false)}
           >
             Cancel
@@ -136,7 +121,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
             style={{
               background: pushTime && reason.length > 5 ? '#3751FF' : 'gray',
               color: "white",
-              cursor: `pointer`,
             }}
             onClick={() => { createLeave(leaveType, pushTime, reason) }}
             disabled={pushTime && reason.length > 5 ? false : true}

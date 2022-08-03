@@ -1,7 +1,10 @@
 import styled from "styled-components"
 
 export const BoardContainer = styled.div`
-
+.ant-scroll-number-only-unit {
+  color: white;
+  fontSize:0.1vw;
+}
   #BoardContainer {
     display: flex;
     height: 100vh;
@@ -159,27 +162,23 @@ export const BoardContainer = styled.div`
   }
   #BoardContainer #main_menu #header #mini_block #mini_block_name span {
     font-weight: 600;
-    font-size: 0.9vw;
-    color: #14db51;
-    background: #f2fff6;
-    width: fit-content;
-    padding: 0.1vw 0.8vw;
-    border-radius: 1vw;
-    margin-top: 0.5vw;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: 0.2px;
+color: #A2A2A2;
   }
 
   #BoardContainer #main_menu #header #mini_block #mini_block_name #profile-icon {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.01vw;
-    color: #0c1eff;
-    width: 2.7vw;
-    height: 2.7vw;
+    color: #3751FF;
+    width: 3.5vw;
+    height: 3.5vw;
     display: flex;
     justify-content:center;
     align-items: center;
     border-radius: 2.17391304347826vw;
-    border: 0.144927536231884vw solid #c4c4c4;
-    background:#f2f3ff;
+    background: #F1F2FF;
     margin-right: 0.5vw;
   }
 
@@ -283,8 +282,6 @@ export const BoardContainer = styled.div`
   #BoardContainer #main_menu #message #message_blocks {
     width: 100%;
     height: 23vw;
-    overflow: scroll;
-    overflow-x: hidden;
     display: flex;
     justify-content: center;
     align-items: center;

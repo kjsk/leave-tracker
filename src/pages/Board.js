@@ -14,7 +14,7 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer } from 'antd';
+import { Empty, Popover, Drawer, Badge } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
@@ -85,10 +85,12 @@ const Board = () => {
                     <div id="header">
                         <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Settings" : sideToggle === 3 ? "Calendar" : ""}</h2>
                         <div id="mini_block">
-                            {sideToggle === 1 ? <button onClick={() => getLeaves()}>Apply Leave</button> : ""}
+                            {sideToggle === 1 ? <button onClick={() => setPopup(true)}>Apply Leave</button> : ""}
                             <img src={search} alt="img" id="search" />
                             <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
-                                <img src={notificaton} alt="img" id="notificaton" />
+                                <Badge count={userLeaveData?.leaves?.length}>
+                                    <img src={notificaton} alt="img" id="notificaton" />
+                                </Badge>
                             </Popover>
 
                             <div id="mini_block_name">

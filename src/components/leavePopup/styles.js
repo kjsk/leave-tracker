@@ -32,17 +32,26 @@ export const PopupContainer = styled.div`
     padding: 0 32px;
 }
 #popup #name_block p .ant-picker {
-    opacity: 0 !important;
-    position: absolute;
     cursor: pointer;
-    width: 90px !important;
+    width: 246px !important;
+    outline: none !important;
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
 }
 
+#popup #name_block p .ant-picker {
+    cursor: pointer;
+    width: 246px !important;
+    outline: none !important;
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
 #popup #name_block:nth-child(5) {
-    height: 134px;
+    height: 173px;
     padding: 31px 32px 0 31px;
 }
-
 #popup #name_block #span {
     height: 28px;
     margin: 0 20px;
@@ -87,12 +96,18 @@ export const PopupContainer = styled.div`
     height: 48px;
     border: none;
     outline: none;
-    box-shadow: 0px 4px 12px rgba(55, 81, 255, 0.24);
     border-radius: 8px;
     background: none;
+    cursor: pointer;
+}
+
+#popup #buttons button:nth-child(1) {
+color: #3751FF;
+    border: 1.9px solid #3751FF;
 }
 
 #popup #buttons button:nth-child(2) {
+    box-shadow: 0px 4px 12px rgba(55, 81, 255, 0.24);
     margin: 0 0 0 26px;
 }
 
