@@ -10,7 +10,7 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Modal, Popover, Drawer } from 'antd';
+import { Empty, Popover, Drawer } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
@@ -130,12 +130,12 @@ const Board = () => {
                                     <h3>Status</h3>
                                     <h3>Action</h3>
                                 </div>
-                                {userLeaveData?.length !== 0 ?
+                                {userLeaveData?.leaves?.length > 0 ?
                                     <div id="message_block2">
                                         {userLeaveData?.leaves?.map((item, i) =>
                                             <div id="task_container" key={i}>
                                                 <p>{i + 1}</p>
-                                                <p>{item?.type === "gen" ? 'Paid Leave' : 'Cassual Leave'}</p>
+                                                <p style={{ padding: `0` }}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
                                                 <p>{item?.startDate}</p>
                                                 <p>{item?.endDate}</p>
                                                 <p>{item?.reason}</p>
@@ -147,7 +147,17 @@ const Board = () => {
                                     </div>
                                     :
                                     <div id="message_blocks">
-                                        <p>No Leaves Applied</p>
+                                        <Empty
+                                            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                            imageStyle={{
+                                                height: 200,
+                                            }}
+                                            description={
+                                                <span>
+                                                    No Leaves Applied
+                                                </span>
+                                            }
+                                        />
                                     </div>
                                 }
                             </div>
@@ -276,7 +286,7 @@ const Board = () => {
             <Drawer
                 visible={popup}
                 onClose={() => setPopup(false)}
-                width="600"
+                width="fit-content"
             >
                 <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} adminLogin={adminLogin} />
             </Drawer>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"

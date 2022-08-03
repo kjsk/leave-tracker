@@ -140,7 +140,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, adminLogin }) =
               color: "white",
               cursor: `pointer`,
             }}
-            onClick={() => createLeave(leaveType, pushTime, reason)}
+            onClick={() => { createLeave(leaveType, pushTime, reason) }}
             disabled={pushTime && reason.length > 5 ? false : true}
           >
             Submit

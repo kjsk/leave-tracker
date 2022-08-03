@@ -2,11 +2,11 @@ import styled from "styled-components"
 
 export const PopupContainer = styled.div`
 #popup {
-    width: 524px;
-    height: 100vh;
+    width: fit-content;
+    height: fit-content;
     background: white;
     padding: 30px 0;
-    margin: 0 0 0 auto;
+    margin: 0;
 }
 
 #popup h1 {
@@ -79,7 +79,7 @@ export const PopupContainer = styled.div`
 
 #popup #buttons {
     width: fit-content;
-    margin: 60px auto auto auto;
+    margin: 3vw auto auto auto;
 }
 
 #popup #buttons button {
