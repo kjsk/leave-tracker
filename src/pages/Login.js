@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
@@ -16,6 +16,13 @@ const Login = () => {
   const headers = getHeaders(localToken?.tokens?.accessToken);
   const [btnDisable, setBtnDisable] = useState(false);
   console.log('headers', headers)
+
+  useEffect(() => {
+    if (localToken) {
+      typeof localStorage !== `undefined` && localStorage.removeItem('userData');
+      signInWithGoogle();
+    }
+  }, [])
 
   const signInWithGoogle = () => {
     setBtnDisable(true);
@@ -36,7 +43,6 @@ const Login = () => {
 
     signInWithPopup(auth, provider).then(result => {
       adminRegister(result?.user?.displayName, result?.user?.email);
-      console.log("result", result);
     }).catch((error) => {
       console.log("error", error);
     })
@@ -54,13 +60,13 @@ const Login = () => {
       }
     })
       .then((res) => {
-        message.success(res?.response?.data?.message);
+        message.success("User registered successfully");
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
         navigate(`/Board/`);
       })
       .catch((error) => {
-        message.warning(error?.response?.data?.message);
-        adminLogin(email);
+        message.success("Already you are a user");
+        adminLogin(error?.response?.data?.email);
       })
   }
 

@@ -10,7 +10,7 @@ import moment from "moment"
 import Leave from "./leave"
 import LeaveType from "./leave_type"
 
-const SideModal = ({ setPopup, headers, getLeaves, userDataMain, adminLogin }) => {
+const SideModal = ({ setPopup, headers, getLeaves, userDataMain }) => {
 
   const { RangePicker } = DatePicker
 
@@ -52,7 +52,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, adminLogin }) =
     }).then((_res) => {
       getLeaves();
       setPopup(false);
-      adminLogin(userDataMain?.email);
       setReason("");
       setPushTime(false);
       message.success("Your Leave Request submitted successfully");
@@ -61,7 +60,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, adminLogin }) =
       setPopup(false);
       setReason("");
       setPushTime(false);
-      adminLogin(userDataMain?.email);
       message.error("Try again");
     })
   }
@@ -108,7 +106,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, adminLogin }) =
             <img src={leave_type} alt="img" />
             <input
               type="text"
-              value={leaveType == 'gen' ? 'Paid Leave' : 'Cassual Leave'}
+              value={leaveType === 'gen' ? 'Paid Leave' : 'Cassual Leave'}
               id="input"
               placeholder="Select leave type"
             />

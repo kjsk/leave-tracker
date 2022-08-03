@@ -74,6 +74,24 @@ export const BoardContainer = styled.div`
     display: block;
   }
 
+  #BoardContainer #side_menu #logout{
+    margin-top: 10vw;
+    transition: 0.5s ease-in-out;
+    .imghover {
+      display: none;
+    }
+  }
+
+  #BoardContainer #side_menu #logout:hover li{
+    color:white;
+    .image {
+      display:none;
+    }
+    .imghover {
+      display: inherit;
+    }
+  }
+
   #BoardContainer #main_menu {
     width: 84%;
     height: 100%;

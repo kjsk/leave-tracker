@@ -220,11 +220,11 @@ background: aliceblue;
 export const LeaveContainers = styled.div`
 position: absolute;
 width: 95%;
-background: white;
-top: 10px;
+background: #ffff;
 left:10px;
 padding: 9px 0;
 border-radius: 10px;
+box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
 p {
 padding: 5px 0 5px 15px;
 transition: 0.5s ease-in-out;

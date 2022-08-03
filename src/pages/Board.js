@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import login_logo from '../data/assets/login_logo.svg';
 import overview from '../data/assets/overview.svg';
 import overview2 from '../data/assets/overview_hover.svg';
+import admin from '../data/assets/admin.svg';
+import admin2 from '../data/assets/admin_hover.svg';
 import Calendar from '../data/assets/Calendar.svg';
 import Calendar2 from '../data/assets/Calendar_hover.svg';
 import settings from '../data/assets/settings.svg';
 import settings2 from '../data/assets/settings_hover.svg';
+import logout from '../data/assets/logout.svg';
+import logout_hover from '../data/assets/logout_hover.svg';
 import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
@@ -16,6 +20,7 @@ import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
 import axios from 'axios';
 import { getHeaders } from "../utils/urls"
+import { navigate } from "gatsby"
 
 const Board = () => {
 
@@ -28,22 +33,6 @@ const Board = () => {
     let userDataMain = userData?.user;
 
     const headers = getHeaders(userData?.tokens?.accessToken);
-
-    // Admin Login
-    const adminLogin = (email) => {
-        axios({
-            method: 'POST',
-            url: `https://fidisyslt.herokuapp.com/api/v2/auth/login`,
-            data: {
-                email: email,
-            },
-            headers: headers
-        })
-            .then((res) => {
-                typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
-            })
-            .catch(error => { console.log(error) })
-    }
 
     const getLeaves = () => {
         axios({
@@ -59,7 +48,6 @@ const Board = () => {
 
     useEffect(() => {
         getLeaves();
-        adminLogin(userDataMain?.user?.email);
     }, []);
 
 
@@ -68,6 +56,12 @@ const Board = () => {
         const myArray = text?.split(" ");
         return (myArray && myArray[0][0] + ' ' + myArray[1][0])
     }
+
+
+    const logOut = () => {
+        typeof localStorage !== `undefined` && localStorage.removeItem('userData');
+        navigate(`/`);
+    }
     return (
         <BoardContainer>
             <div id="BoardContainer" >
@@ -75,17 +69,23 @@ const Board = () => {
                     <h1><img src={login_logo} alt="img" />Leave Tracker</h1>
                     <ul>
                         <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => setSideToggle(1)}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />Home</li>
-                        <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? Calendar2 : Calendar} alt="img" />Calendar</li>
+                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />Calendar</li>
+                        <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />Admin Portal</li>
                     </ul>
                     <ul>
-                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? settings2 : settings} alt="img" />Settings</li>
+                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => setSideToggle(4)}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />Settings</li>
+                    </ul>
+
+
+                    <ul id="logout">
+                        <li onClick={logOut} role="presentation"> <img src={logout_hover} alt="img" className="imghover" /><img src={logout} alt="img" className="image" />logout</li>
                     </ul>
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
                     <div id="header">
                         <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Settings" : sideToggle === 3 ? "Calendar" : ""}</h2>
                         <div id="mini_block">
-                            {sideToggle === 1 ? <button onClick={() => setPopup(true)}>Apply Leave</button> : ""}
+                            {sideToggle === 1 ? <button onClick={() => getLeaves()}>Apply Leave</button> : ""}
                             <img src={search} alt="img" id="search" />
                             <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
                                 <img src={notificaton} alt="img" id="notificaton" />
@@ -107,11 +107,11 @@ const Board = () => {
                                     <p>Available Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">08</h2>
+                                    <h2 id="score">00</h2>
                                     <p>Previous unused Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{userDataMain?.leaverequestcount?.pending}</h2>
+                                    <h2 id="score">0{userLeaveData?.leaves?.length}</h2>
                                     <p>Pending Leaves Requests</p>
                                 </div>
                                 <div id="score_card">
@@ -121,30 +121,32 @@ const Board = () => {
                             </div>
 
                             <div id="message">
-                                <div id="message_block1">
-                                    <h3>SNo</h3>
-                                    <h3>Type</h3>
-                                    <h3>From</h3>
-                                    <h3>To</h3>
-                                    <h3>Reason</h3>
-                                    <h3>Status</h3>
-                                    <h3>Action</h3>
-                                </div>
                                 {userLeaveData?.leaves?.length > 0 ?
-                                    <div id="message_block2">
-                                        {userLeaveData?.leaves?.map((item, i) =>
-                                            <div id="task_container" key={i}>
-                                                <p>{i + 1}</p>
-                                                <p style={{ padding: `0` }}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
-                                                <p>{item?.startDate}</p>
-                                                <p>{item?.endDate}</p>
-                                                <p>{item?.reason}</p>
-                                                <p style={{ color: '#CB5A08', fontWeight: '600' }}>{item?.status}</p>
-                                                <p><DeleteOutlined className='delete_icon' /></p>
-                                            </div>
-                                        )}
+                                    <>
+                                        <div id="message_block1">
+                                            <h3>SNo</h3>
+                                            <h3>Type</h3>
+                                            <h3>From</h3>
+                                            <h3>To</h3>
+                                            <h3>Reason</h3>
+                                            <h3>Status</h3>
+                                            <h3>Action</h3>
+                                        </div>
+                                        <div id="message_block2">
+                                            {userLeaveData?.leaves?.map((item, i) =>
+                                                <div id="task_container" key={i}>
+                                                    <p>{i + 1}</p>
+                                                    <p style={{ padding: `0` }}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
+                                                    <p>{item?.startDate}</p>
+                                                    <p>{item?.endDate}</p>
+                                                    <p>{item?.reason}</p>
+                                                    <p style={{ color: '#CB5A08', fontWeight: '600' }}>{item?.status}</p>
+                                                    <p><DeleteOutlined className='delete_icon' /></p>
+                                                </div>
+                                            )}
 
-                                    </div>
+                                        </div>
+                                    </>
                                     :
                                     <div id="message_blocks">
                                         <Empty
@@ -167,7 +169,7 @@ const Board = () => {
                     }
 
 
-                    {sideToggle === 2 ?
+                    {sideToggle === 3 ?
                         <div id="admin">
                             <div id="admin_block1">
                                 <h1>Leave Requests</h1>
@@ -288,9 +290,9 @@ const Board = () => {
                 onClose={() => setPopup(false)}
                 width="fit-content"
             >
-                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} adminLogin={adminLogin} />
+                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} />
             </Drawer>
-        </BoardContainer>
+        </BoardContainer >
     )
 }
 export default Board;
