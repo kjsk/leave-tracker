@@ -3,7 +3,7 @@ import styled from "styled-components"
 export const BoardContainer = styled.div`
 .ant-scroll-number-only-unit {
   color: white;
-  fontSize:0.1vw;
+  font-size: 0.8vw;
 }
   #BoardContainer {
     display: flex;
@@ -481,7 +481,7 @@ color: #A2A2A2;
 
   #BoardContainer #admin #message #message_block2 #task_container {
     display: grid;
-    grid-template-columns: 5vw 12vw 13.4vw 10vw 18vw 18vw;
+    grid-template-columns: 5vw 12vw 13.4vw 10vw 16vw 18vw;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     border-bottom: 0.07vw solid #ededee;
@@ -552,12 +552,15 @@ color: #A2A2A2;
     border: 0.144927536231884vw solid #c4c4c4;
   }
   #BoardContainer #admin #message #message_block2 #task_container #btns {
-    width: fit-content;
+    width: 100%;
     margin: 0 0 0 1.5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #BoardContainer #admin #message #message_block2 #task_container #btns button {
     width: 7.2vw;
-    height: 2.8vw;
+    height: 2.3vw;
     background: #3751ff;
     border-radius: 0.57vw;
     font-weight: 700;

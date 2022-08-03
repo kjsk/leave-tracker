@@ -14,7 +14,7 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer, Badge } from 'antd';
+import { Empty, Popover, Drawer, Badge, message } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
@@ -62,6 +62,21 @@ const Board = () => {
         typeof localStorage !== `undefined` && localStorage.removeItem('userData');
         navigate(`/`);
     }
+
+
+    const approveLeave = (type, leaveId) => {
+        axios({
+            method: 'PUT',
+            url: `https://fidisyslt.herokuapp.com/api/v2/leaves/${type}/${leaveId}`,
+            headers: headers
+        }).then((res) => {
+            getLeaves();
+            message.success(res?.data?.message);
+        }).catch((_err) => {
+            console.log('Error', _err);
+        })
+    }
+
     return (
         <BoardContainer>
             <div id="BoardContainer" >
@@ -142,7 +157,19 @@ const Board = () => {
                                                     <p>{item?.startDate}</p>
                                                     <p>{item?.endDate}</p>
                                                     <p>{item?.reason}</p>
-                                                    <p style={{ color: '#CB5A08', fontWeight: '600' }}>{item?.status}</p>
+                                                    <p style={{
+                                                        color: item?.status === 'pending' ? '#CB5A08' :
+                                                            item?.status === 'approved' ? '#00D241'
+                                                                :
+                                                                item?.status === 'rejected' ? '#FF0000' :
+                                                                    '', fontWeight: '600'
+                                                    }}>
+                                                        {item?.status === 'pending' ? 'Pending' :
+                                                            item?.status === 'approved' ? 'Approved'
+                                                                :
+                                                                item?.status === 'rejected' ? 'Rejected' :
+                                                                    ''}
+                                                    </p>
                                                     <p><DeleteOutlined className='delete_icon' /></p>
                                                 </div>
                                             )}
@@ -192,91 +219,31 @@ const Board = () => {
                                     <h3>Action</h3>
                                 </div>
                                 <div id="message_block2">
-                                    <div id="task_container">
-                                        <p>1</p>
-                                        <div id="profile_box">
-                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                            <div id="profile_text">
-                                                <h2>Vignesh</h2>
-                                                <p>FCHN017</p>
+                                    {userLeaveData?.leaves?.map((item, i) =>
+                                        <div id="task_container">
+                                            <p>1</p>
+                                            <div id="profile_box">
+                                                <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                <div id="profile_text">
+                                                    <h2>Vignesh</h2>
+                                                    <p>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
+                                                </div>
+                                            </div>
+                                            <p>{item?.startDate} to {item?.endDate}</p>
+                                            <p>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
+                                            <p>{item?.reason}</p>
+                                            <div id="btns">
+                                                {item.status === 'approved' ? <p style={{
+                                                    color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
+                                                }}>Approved</p> :
+                                                    <>
+                                                        <button onClick={() => approveLeave('approve', item?.id)}>Approve</button>
+                                                        <button onClick={() => approveLeave('reject', item?.id)}>Reject</button>
+                                                    </>
+                                                }
                                             </div>
                                         </div>
-                                        <p>25 Feb to 26 Feb, 2022</p>
-                                        <p>CL</p>
-                                        <p>Friend’s wedding celebration</p>
-                                        <div id="btns">
-                                            <button>Approve</button>
-                                            <button>Reject</button>
-                                        </div>
-                                    </div>
-                                    <div id="task_container">
-                                        <p>1</p>
-                                        <div id="profile_box">
-                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                            <div id="profile_text">
-                                                <h2>Vignesh</h2>
-                                                <p>FCHN017</p>
-                                            </div>
-                                        </div>
-                                        <p>25 Feb to 26 Feb, 2022</p>
-                                        <p>CL</p>
-                                        <p>Friend’s wedding celebration</p>
-                                        <div id="btns">
-                                            <button>Approve</button>
-                                            <button>Reject</button>
-                                        </div>
-                                    </div>
-                                    <div id="task_container">
-                                        <p>1</p>
-                                        <div id="profile_box">
-                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                            <div id="profile_text">
-                                                <h2>Vignesh</h2>
-                                                <p>FCHN017</p>
-                                            </div>
-                                        </div>
-                                        <p>25 Feb to 26 Feb, 2022</p>
-                                        <p>CL</p>
-                                        <p>Friend’s wedding celebration</p>
-                                        <div id="btns">
-                                            <button>Approve</button>
-                                            <button>Reject</button>
-                                        </div>
-                                    </div>
-                                    <div id="task_container">
-                                        <p>1</p>
-                                        <div id="profile_box">
-                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                            <div id="profile_text">
-                                                <h2>Vignesh</h2>
-                                                <p>FCHN017</p>
-                                            </div>
-                                        </div>
-                                        <p>25 Feb to 26 Feb, 2022</p>
-                                        <p>CL</p>
-                                        <p>Friend’s wedding celebration</p>
-                                        <div id="btns">
-                                            <button>Approve</button>
-                                            <button>Reject</button>
-                                        </div>
-                                    </div>
-                                    <div id="task_container">
-                                        <p>1</p>
-                                        <div id="profile_box">
-                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                            <div id="profile_text">
-                                                <h2>Vignesh</h2>
-                                                <p>FCHN017</p>
-                                            </div>
-                                        </div>
-                                        <p>25 Feb to 26 Feb, 2022</p>
-                                        <p>CL</p>
-                                        <p>Friend’s wedding celebration</p>
-                                        <div id="btns">
-                                            <button>Approve</button>
-                                            <button>Reject</button>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
