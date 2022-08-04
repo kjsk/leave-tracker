@@ -14,7 +14,7 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined, SettingOutlined, CalendarOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer, Badge, message, Result } from 'antd';
+import { Empty, Popover, Drawer, Badge, message, Result, Modal } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
@@ -24,6 +24,7 @@ import { getHeaders } from "../utils/urls"
 import { navigate } from "gatsby"
 import Loader from "../components/loader";
 import NotificationSound from "../utils/notification.mp3"
+import PopUpPage from "../components/leavePopup/conformation";
 
 const Board = () => {
 
@@ -32,6 +33,7 @@ const Board = () => {
     const [userLeaveData, setUserLeaveData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
     const [adminToggle, setAdminToggle] = useState('pending');
+    const [visible, setVisible] = useState(false);
 
     let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -78,7 +80,15 @@ const Board = () => {
     }
 
 
+    // Approve Reject popup function
+    const [descType, setDescType] = useState('');
+    const desecision = (type) => {
+        setDescType(type);
+        setVisible(true);
+    }
+
     const approveLeave = (type, leaveId) => {
+        alert(1)
         setActiveLoader(true);
         axios({
             method: 'PUT',
@@ -94,6 +104,8 @@ const Board = () => {
         })
     }
 
+
+    // notification conformation sound function
     const audioPlayer = useRef(null);
 
     function playAudio() {
@@ -102,7 +114,10 @@ const Board = () => {
 
 
     const leaveMap = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
-    console.log('leaveMap', leaveMap)
+
+    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status == 'rejected')
+    const leavePending = userLeaveData?.leaves?.filter((item) => item.status == 'pending')
+    console.log('leaveMap', leavePending)
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
@@ -158,11 +173,11 @@ const Board = () => {
                                     <p>Previous unused Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{userLeaveData?.leaves?.length}</h2>
+                                    <h2 id="score">0{leavePending?.length}</h2>
                                     <p>Pending Leaves Requests</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">01</h2>
+                                    <h2 id="score">0{leaveRejected?.length}</h2>
                                     <p>Rejected Leaves</p>
                                 </div>
                             </div>
@@ -281,13 +296,25 @@ const Board = () => {
                                                                     color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
                                                                 }}>Rejected</p> :
                                                                 <>
-                                                                    <button onClick={() => approveLeave('approve', item?.id)}>Approve</button>
-                                                                    <button onClick={() => approveLeave('reject', item?.id)}>Reject</button>
+                                                                    <button onClick={() => desecision('approve')}>Approve</button>
+                                                                    <button onClick={() => desecision('reject')}>Reject</button>
                                                                 </>
                                                             }
                                                         </div>
                                                     </div>
                                                 }
+                                                <Modal
+                                                    title="Confirmation"
+                                                    centered
+                                                    visible={visible}
+                                                    onOk={() => { approveLeave('approve', item?.id); setVisible(false) }}
+                                                    onCancel={() => { setVisible(false) }}
+                                                    width={1000}
+                                                    okText={descType === 'approve' ? 'Approve' : 'Reject'}
+                                                    cancelText='Back'
+                                                >
+                                                    <p style={{ fontSize: `24px`, color: `#333333`, fontWeight: `600`, margin: `51px 0` }}>Are you sure you want to {descType === 'approve' ? 'Approve' : 'Reject'}?</p>
+                                                </Modal>
                                             </div>
                                         )}
                                     </div>

@@ -29,7 +29,7 @@ function SEO({ description, lang, meta, title, keywords }) {
 
   let allKeywords;
 
-  if(keywords.length > 0) {
+  if (keywords.length > 0) {
     allKeywords = keywords;
   } else {
     allKeywords = site.siteMetadata.keywords;

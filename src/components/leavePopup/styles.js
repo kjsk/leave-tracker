@@ -249,3 +249,9 @@ p :hover{
 background: aliceblue;
 }
 `
+
+export const ConformContainer = styled.div`
+.ant-modal-header {
+    border-bottom: none !important;
+}
+` 

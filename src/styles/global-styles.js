@@ -147,7 +147,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   .ant-modal-mask {
-    background-color: rgba(0, 0, 0, 0.70) !important;
+    background-color: #0000002e !important;
   }
   .ant-modal-mask, .ant-modal-wrap {
     left: 65px !important;
@@ -159,7 +159,11 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0 !important;
   }
   .ant-modal-content {
-    border-radius: 0px !important;
+    width: 550px;
+    margin: auto;
+    padding: 40px;
+    top: 35% !important;
+    border-radius: 12px !important;
   }
   .ant-modal-body {
     padding: 0px !important;
@@ -239,35 +243,21 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
   .ant-modal-footer {
-    padding: 16px 24px !important;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 !important;
     border: initial !important;
   }
   .ant-btn {
-    border-radius: 8px;
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 22px;
-    color: ${palette.PRIMARY_TXT_COLOR};
-    padding: 12px 24px;
-    height: 46px;
-    border: 1px solid ${palette.COLOR_DENIM};
-    &.active, &:hover, &:focus {
-      color: ${palette.PRIMARY_TXT_COLOR} !important;
-      border-color: ${palette.COLOR_DENIM} !important;
-    }
-    &:hover {
-      background-color: ${palette.BUTTON_HOVER} !important;
-      border-color: ${palette.BUTTON_HOVER} !important;
-      color: ${palette.WHITE_COLOR} !important;
-      box-shadow: 0px 0px 0px 5px rgba(24,144,255, 0.1) !important
-    }
+    border: 1px solid #9FA2B4;
+border-radius: 6px;
+width: 223px;
+height: 48px;
   }
   .ant-btn-primary {
     font-weight: 600;
     font-size: 14px;
     line-height: 21px;
-    height: 38px;
-    padding: 8px 28px;
     background-color: ${palette.BUTTON_PRIMARY} !important;
     border-color: ${palette.BUTTON_PRIMARY} !important;
     color: ${palette.WHITE_COLOR} !important;
@@ -308,13 +298,15 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0 !important;
   }
   .ant-modal-title {
-    font-weight: 600;
-    font-size: 28px;
+    display: flex;
+    font-weight: 700;
+    font-size: 32px;
     line-height: 42px;
+    justify-content: space-between;
     color: ${palette.PRIMARY_TXT_COLOR};
   }
   .ant-modal-content {
-    background: ${palette.PRIMARY_SECTION_BACKGROUND};
+    background: #FFFFFF;
   }
   .ant-modal-close {
     top: 10px;
@@ -325,7 +317,7 @@ export const GlobalStyle = createGlobalStyle`
   }
   .ant-modal-header {
     text-align: center;
-    padding: 20px 24px;
+    padding: 0;
   }
 
   .ant-checkbox-wrapper:hover .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner, .ant-checkbox-input:focus + .ant-checkbox-inner {
