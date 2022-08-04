@@ -562,8 +562,8 @@ color: #A2A2A2;
     #task_container
     #profile_box
     img {
-    width: 3.18840579710145vw;
-    height: 3.18840579710145vw;
+    width: 2.8vw;
+    height: 2.8vw;
     margin: 0 0.57vw 0 0;
     border-radius: 2.17391304347826vw;
     border: 0.144927536231884vw solid #c4c4c4;
