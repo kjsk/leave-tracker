@@ -145,7 +145,6 @@ margin-bottom: 1.5vw;
   }
 
   #BoardContainer #main_menu #header #mini_block button {
-    width: 10.2898550724638vw;
     height: 3.47826086956522vw;
     font-size: 1.01449275362319vw;
     color: white;
@@ -157,6 +156,7 @@ margin-bottom: 1.5vw;
       rgba(55, 81, 255, 0.24);
     border-radius: 0.579710144927536vw;
     margin: 0 3.47826086956522vw 0 0;
+    padding: 0 1.5vw;
   }
 
   #BoardContainer #main_menu #header #mini_block #mini_block_name {
@@ -598,5 +598,52 @@ color: #A2A2A2;
     color: #ff0000;
     border: none;
     outline: none;
+  }
+`
+
+export const EmployeeFormStyle = styled.div`
+#employee_wrap {
+  padding: 50px 0 0 0;
+}
+  #input_wrap {
+        display: flex;
+        flex-direction: column;
+      }
+      #input_wrap label {
+        font-weight: 500;
+font-size: 14px;
+line-height: 18px;
+color: #555555;
+margin-bottom: 6px;
+  }
+  #input_wrap input {
+    height: 48px;
+border-radius: 6px;
+font-weight: 400;
+font-size: 16px;
+line-height: 18px;
+color: #121212;
+padding: 12px;
+background: #F3F3F4;
+border: none;
+outline-color: #1874D2;
+  }
+  #input_wrap:nth-child(2){
+    margin-top: 32px;
+  }
+  #add_employee_main button {
+    height: 48px;
+background: #3751FF;
+border-radius: 6px;
+font-weight: 600;
+font-size: 16px;
+line-height: 22px;
+letter-spacing: 0.1px;
+color: #FFFFFF;
+border: none;
+outline: none;
+width: 100%;
+margin-top: 50px;
+cursor: pointer;
   }
 `

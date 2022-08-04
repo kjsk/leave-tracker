@@ -162,7 +162,7 @@ export const GlobalStyle = createGlobalStyle`
     width: 550px;
     margin: auto;
     padding: 40px;
-    top: 35% !important;
+    top: 25% !important;
     border-radius: 12px !important;
   }
   .ant-modal-body {

@@ -24,7 +24,7 @@ import { getHeaders } from "../utils/urls"
 import { navigate } from "gatsby"
 import Loader from "../components/loader";
 import NotificationSound from "../utils/notification.mp3"
-import PopUpPage from "../components/leavePopup/conformation";
+import AddEmployee from "../components/Forms/AddEmployee";
 
 const Board = () => {
 
@@ -34,6 +34,7 @@ const Board = () => {
     const [activeLoader, setActiveLoader] = useState(false);
     const [adminToggle, setAdminToggle] = useState('pending');
     const [visible, setVisible] = useState(false);
+    const [addEmp, setAddEmp] = useState(false);
 
     let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -82,13 +83,14 @@ const Board = () => {
 
     // Approve Reject popup function
     const [descType, setDescType] = useState('');
-    const desecision = (type) => {
+    const [descId, setDescId] = useState('');
+    const desecision = (type, id) => {
         setDescType(type);
+        setDescId(id);
         setVisible(true);
     }
 
     const approveLeave = (type, leaveId) => {
-        alert(1)
         setActiveLoader(true);
         axios({
             method: 'PUT',
@@ -103,8 +105,57 @@ const Board = () => {
             console.log('Error', _err);
         })
     }
+    const [name, setName] = useState('');
+    const [Email, setEMail] = useState('');
+
+    const addUser = (name, Email) => {
+        setActiveLoader(true);
+        axios({
+            method: 'POST',
+            url: `https://fidisyslt.herokuapp.com/api/v2/users`,
+            data: {
+                name: name,
+                email: Email
+            },
+            headers: headers
+        }).then((res) => {
+            message.success(`${res?.data?.user?.name} added successfully`);
+            setName("");
+            setEMail("");
+            setAddEmp(false);
+            setActiveLoader(false);
+            playAudio();
+        }).catch((_err) => {
+            setActiveLoader(false);
+            message.error(`User exists aready`);
+            setName("");
+            setEMail("");
+        })
+    }
 
 
+    const [error, setError] = useState('')
+    const validation = (name, mail) => {
+        let x;
+        if (!name) {
+            x = 'red'
+        } else {
+            x = ''
+        }
+        if (!mail) {
+            x = 'red'
+        } else {
+            x = ''
+        }
+
+        return x;
+    }
+
+    function checkValidation() {
+        setError(validation())
+        message.success(`Field should not be empty`);
+    }
+    // setError((validation()))
     // notification conformation sound function
     const audioPlayer = useRef(null);
 
@@ -115,8 +166,8 @@ const Board = () => {
 
     const leaveMap = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
 
-    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status == 'rejected')
-    const leavePending = userLeaveData?.leaves?.filter((item) => item.status == 'pending')
+    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
+    const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
     console.log('leaveMap', leavePending)
     return (
         <BoardContainer>
@@ -145,7 +196,8 @@ const Board = () => {
                     <div id="header">
                         <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? "Admin Portal" : sideToggle === 4 ? "Settings" : ""}</h2>
                         <div id="mini_block">
-                            {sideToggle === 1 ? <button onClick={() => setPopup(true)}>Apply Leave</button> : ""}
+                            {sideToggle === 1 && <button onClick={() => setPopup(true)}>Apply Leave</button>}
+                            {sideToggle === 3 && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
                             <img src={search} alt="img" id="search" />
                             <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
                                 <Badge count={userLeaveData?.leaves?.length}>
@@ -301,25 +353,13 @@ const Board = () => {
                                                                     color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
                                                                 }}>Rejected</p> :
                                                                 <>
-                                                                    <button onClick={() => desecision('approve')}>Approve</button>
-                                                                    <button onClick={() => desecision('reject')}>Reject</button>
+                                                                    <button onClick={() => desecision('approve', item?.id)}>Approve</button>
+                                                                    <button onClick={() => desecision('reject', item?.id)}>Reject</button>
                                                                 </>
                                                             }
                                                         </div>
                                                     </div>
                                                 }
-                                                <Modal
-                                                    title="Confirmation"
-                                                    centered
-                                                    visible={visible}
-                                                    onOk={() => { approveLeave('approve', item?.id); setVisible(false) }}
-                                                    onCancel={() => { setVisible(false) }}
-                                                    width={1000}
-                                                    okText={descType === 'approve' ? 'Approve' : 'Reject'}
-                                                    cancelText='Back'
-                                                >
-                                                    <p style={{ fontSize: `24px`, color: `#333333`, fontWeight: `600`, margin: `51px 0` }}>Are you sure you want to {descType === 'approve' ? 'Approve' : 'Reject'}?</p>
-                                                </Modal>
                                             </div>
                                         )}
                                     </div>
@@ -361,6 +401,30 @@ const Board = () => {
             >
                 <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} />
             </Drawer>
+
+            <Modal
+                title="Add Employee"
+                centered
+                visible={addEmp}
+                onCancel={() => { setAddEmp(false) }}
+                okButtonProps={{ style: { display: 'none' } }}
+                cancelButtonProps={{ style: { display: 'none' } }}
+                okText='Continue'
+            >
+                <AddEmployee name={name} Email={Email} setName={setName} setEMail={setEMail} addUser={addUser} error={error} checkValidation={checkValidation} />
+            </Modal>
+            <Modal
+                title="Confirmation"
+                centered
+                visible={visible}
+                onOk={() => { approveLeave(descType === 'approve' ? 'approve' : 'reject', descId); setVisible(false) }}
+                onCancel={() => { setVisible(false) }}
+                width={1000}
+                okText={descType === 'approve' ? 'Approve' : 'Reject'}
+                cancelText='Back'
+            >
+                <p style={{ fontSize: `24px`, color: `#333333`, fontWeight: `600`, margin: `51px 0` }}>Are you sure you want to {descType === 'approve' ? 'Approve' : 'Reject'}?</p>
+            </Modal>
         </BoardContainer >
     )
 }
