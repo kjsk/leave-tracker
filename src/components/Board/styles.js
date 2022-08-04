@@ -1,6 +1,16 @@
 import styled from "styled-components"
 
 export const BoardContainer = styled.div`
+.anticon-setting{
+  animation-name: example;
+  animation-duration: 4s;
+  animation: example 10s infinite;
+}
+@keyframes example {
+  1% {transform: rotate(0);}
+  50% {transform: rotate(180deg);}
+  100% {transform: rotate(360deg);}
+}
 .ant-scroll-number-only-unit {
   color: white;
   font-size: 0.8vw;
@@ -560,14 +570,14 @@ color: #A2A2A2;
   }
   #BoardContainer #admin #message #message_block2 #task_container #btns {
     width: 100%;
-    margin: 0 0 0 1.5vw;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   #BoardContainer #admin #message #message_block2 #task_container #btns button {
     width: 7.2vw;
-    height: 2.3vw;
+    height: 3vw;
     background: #3751ff;
     border-radius: 0.57vw;
     font-weight: 700;

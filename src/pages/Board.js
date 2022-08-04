@@ -287,7 +287,12 @@ const Board = () => {
                                                         </div>
                                                         <p>{item?.startDate} to {item?.endDate}</p>
                                                         <p>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
-                                                        <p>{item?.reason}</p>
+                                                        <p style={{
+                                                            whiteSpace: 'nowrap',
+                                                            width: '16vw',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                        }}>{item?.reason}</p>
                                                         <div id="btns">
                                                             {item.status === 'approved' ? <p style={{
                                                                 color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
