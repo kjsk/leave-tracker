@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
@@ -10,6 +10,7 @@ import { getHeaders } from "../utils/urls"
 import { Button, Modal, message, notification } from "antd";
 import Loader from "../components/loader";
 import UserNote from "../components/userNote/UserNote"
+import NotificationSound from "../utils/WaterDrop.mp3"
 
 
 const Login = () => {
@@ -48,9 +49,11 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider).then(result => {
+      playAudio();
       openNotificationWithIcon(`success`, `verfied User`)
       adminRegister(result?.user?.displayName, result?.user?.email);
     }).catch((error) => {
+      playAudio();
       openNotificationWithIcon(`error`, `You should be an fidisys employee`)
       setActiveLoader(false);
       console.log("error", error);
@@ -69,12 +72,13 @@ const Login = () => {
       }
     })
       .then((res) => {
+        playAudio();
         openNotificationWithIcon(`success`, `${res?.data?.user?.name} registered successfully`)
-        message.success();
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
         navigate(`/Board/`);
       })
       .catch((error) => {
+        playAudio();
         openNotificationWithIcon(`success`, `Hello ${error?.response?.data?.username}`)
         adminLogin(error?.response?.data?.email);
       })
@@ -104,8 +108,20 @@ const Login = () => {
       placement: 'top'
     });
   };
+
+
+  // setError((validation()))
+  // notification conformation sound function
+  const audioPlayer = useRef(null);
+
+  function playAudio() {
+    audioPlayer.current.play();
+  }
   return (
     <LoginContainer>
+      <audio ref={audioPlayer} src={NotificationSound}>
+        <track src="captions_es.vtt" kind="captions" srclang="es" label="spanish_captions" />
+      </audio>
       {activeLoader && <Loader />}
       <div id="LoginContainer">
         <img src={login_logo} alt="login_logo" />
