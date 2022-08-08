@@ -3,12 +3,14 @@ import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
 import { initializeApp } from "firebase/app"
-import { LoginContainer } from "../components/Login/styles"
+import { LoginContainer, userNote } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
 import { getHeaders } from "../utils/urls"
-import { message } from "antd";
+import { Button, Modal, message, notification } from "antd";
 import Loader from "../components/loader";
+import UserNote from "../components/userNote/UserNote"
+
 
 const Login = () => {
 
@@ -46,10 +48,10 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider).then(result => {
-      message.success(`verfied User`);
+      openNotificationWithIcon(`success`, `verfied User`)
       adminRegister(result?.user?.displayName, result?.user?.email);
     }).catch((error) => {
-      message.error(`You should be an fidisys employee`);
+      openNotificationWithIcon(`error`, `You should be an fidisys employee`)
       setActiveLoader(false);
       console.log("error", error);
     })
@@ -67,12 +69,13 @@ const Login = () => {
       }
     })
       .then((res) => {
-        message.success(`${res?.data?.user?.name} registered successfully`);
+        openNotificationWithIcon(`success`, `${res?.data?.user?.name} registered successfully`)
+        message.success();
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
         navigate(`/Board/`);
       })
       .catch((error) => {
-        message.success(`Hello ${error?.response?.data?.username}`);
+        openNotificationWithIcon(`success`, `Hello ${error?.response?.data?.username}`)
         adminLogin(error?.response?.data?.email);
       })
   }
@@ -94,6 +97,13 @@ const Login = () => {
       })
       .catch(error => { console.log(error); setBtnDisable(false); setActiveLoader(false); })
   }
+
+  const openNotificationWithIcon = (type, data) => {
+    notification[type]({
+      message: data,
+      placement: 'top'
+    });
+  };
   return (
     <LoginContainer>
       {activeLoader && <Loader />}
@@ -106,6 +116,41 @@ const Login = () => {
           Sign in with Google
         </button>
       </div>
+
+      {/* <div id="AdminContainer">
+        <h2>You will be Admin for Your Organization</h2>
+        <div className="input_main">
+          <div id="input_fields">
+            <label>ORGANIZATION NAME</label>
+            <input type="text" />
+          </div>
+          <div id="input_fields">
+            <label>ORGANIZATION INFORMATION</label>
+            <textarea type="text" />
+          </div>
+          <div id="input_fields">
+            <label>NO.OF PEOPLE IN ORGANIZATION</label>
+            <input type="text" />
+          </div>
+          <div className="buttons_main">
+            <Button block>Cancel</Button>
+            <Button type="primary" block>
+              Submit
+            </Button>
+          </div>
+        </div>
+      </div> */}
+
+      {/* <div id="userNote">
+        <Modal
+          visible={false}
+          okButtonProps={{ style: { display: 'none' } }}
+          cancelButtonProps={{ style: { display: 'none' } }}
+        >
+          <UserNote />
+        </Modal>
+      </div> */}
+
     </LoginContainer>
   )
 }

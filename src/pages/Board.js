@@ -14,7 +14,7 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined, SettingOutlined, CalendarOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer, Badge, message, Result, Modal } from 'antd';
+import { Empty, Popover, Drawer, Badge, message, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
@@ -77,7 +77,7 @@ const Board = () => {
     const logOut = () => {
         typeof localStorage !== `undefined` && localStorage.removeItem('userData');
         navigate(`/`);
-        message.success('Logout Successfully');
+        openNotificationWithIcon(`success`, 'Logout Successfully');
     }
 
 
@@ -98,7 +98,7 @@ const Board = () => {
             headers: headers
         }).then((res) => {
             getLeaves();
-            message.success(res?.data?.message);
+            openNotificationWithIcon('success', res?.data?.message);
             playAudio();
         }).catch((_err) => {
             setActiveLoader(false);
@@ -127,7 +127,7 @@ const Board = () => {
             playAudio();
         }).catch((_err) => {
             setActiveLoader(false);
-            message.error(`User exists aready`);
+            openNotificationWithIcon('error', `User exists aready`);
             setName("");
             setEMail("");
         })
@@ -153,7 +153,7 @@ const Board = () => {
 
     function checkValidation() {
         setError(validation())
-        message.error(`Field should not be empty`);
+        openNotificationWithIcon(`error`, `Field should not be empty`);
     }
     // setError((validation()))
     // notification conformation sound function
@@ -166,9 +166,26 @@ const Board = () => {
 
     const leaveMap = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
 
+    const leaveApproved = userLeaveData?.leaves?.filter((item) => item.status === 'approved')
     const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
     const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
     console.log('leaveMap', leavePending)
+
+
+
+    const deleteLeave = (index) => {
+        console.log(userLeaveData)
+        userLeaveData.leaves.splice(index, 1)
+    }
+
+
+    const openNotificationWithIcon = (type, data) => {
+        notification[type]({
+            message: data,
+            placement: 'top'
+        });
+    };
+
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
@@ -221,15 +238,15 @@ const Board = () => {
                                     <p>Available Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">02</h2>
-                                    <p>Previous unused Leaves</p>
+                                    <h2 id="score">{leaveApproved?.length < 10 ? `0${leaveApproved?.length}` : leaveApproved?.length}</h2>
+                                    <p>Approved Leaves</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{leavePending?.length}</h2>
+                                    <h2 id="score">{leavePending?.length < 10 ? `0${leavePending?.length}` : leavePending?.length}</h2>
                                     <p>Pending Leaves Requests</p>
                                 </div>
                                 <div id="score_card">
-                                    <h2 id="score">0{leaveRejected?.length}</h2>
+                                    <h2 id="score">{leaveRejected?.length < 10 ? `0${leaveRejected?.length}` : leaveRejected?.length}</h2>
                                     <p>Rejected Leaves</p>
                                 </div>
                             </div>
@@ -267,7 +284,7 @@ const Board = () => {
                                                                 item?.status === 'rejected' ? 'Rejected' :
                                                                     ''}
                                                     </p>
-                                                    <p><DeleteOutlined className='delete_icon' /></p>
+                                                    <p onClick={() => deleteLeave(i)}><DeleteOutlined className='delete_icon' /></p>
                                                 </div>
                                             )}
 
@@ -399,7 +416,7 @@ const Board = () => {
                 onClose={() => setPopup(false)}
                 width="fit-content"
             >
-                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} />
+                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} openNotificationWithIcon={openNotificationWithIcon} />
             </Drawer>
 
             <Modal

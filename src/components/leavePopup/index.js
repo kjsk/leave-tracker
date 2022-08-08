@@ -8,7 +8,7 @@ import Edit from "../../data/assets/Edit.svg"
 import { DatePicker, Dropdown, message } from "antd"
 import LeaveType from "./leave_type"
 
-const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio }) => {
+const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
   const { RangePicker } = DatePicker
 
@@ -55,14 +55,14 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       setReason("");
       setPushTime(false);
       playAudio();
-      message.success("Your Leave Request submitted successfully");
+      openNotificationWithIcon(`success`, `Your Leave Request submitted successfully`);
     }).catch((_err) => {
       getLeaves();
       setPopup(false);
       setReason("");
       setPushTime(false);
       setActiveLoader(false);
-      message.error("Your leave request failed");
+      openNotificationWithIcon(`error`, `Your leave request failed`);
     })
   }
   return (

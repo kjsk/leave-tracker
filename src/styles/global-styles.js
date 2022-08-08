@@ -327,5 +327,4 @@ height: 48px;
     background-color: ${palette.BUTTON_PRIMARY};
     border-color: ${palette.BUTTON_PRIMARY};
   }
-
 `;
