@@ -21,10 +21,11 @@ export const BoardContainer = styled.div`
   }
 
   #BoardContainer #side_menu {
-    width: 16vw;
+    width: 19vw;
     height: 100%;
     background: #363740;
     padding: 3.33vw 0 0 0;
+    transition: 0.5s ease-in-out;
   }
 
   #BoardContainer #side_menu h1 {
@@ -39,6 +40,7 @@ export const BoardContainer = styled.div`
   #BoardContainer #side_menu h1 img {
     width: 2.2463768115942vw;
     height: 2.2463768115942vw;
+    cursor: pointer;
     margin: 0 0.869565217391304vw 0 0;
   }
 
@@ -111,7 +113,7 @@ margin-bottom: 1.5vw;
   }
 
   #BoardContainer #main_menu {
-    width: 84%;
+    width: -webkit-fill-available;
     height: 100%;
     overflow: hidden;
     padding: 2.17391304347826vw 2.39130434782609vw;
@@ -269,7 +271,7 @@ color: #A2A2A2;
 
   #BoardContainer #main_menu #message #message_block1 {
     display: grid;
-    grid-template-columns: 5vw 8vw 14.5vw 14.5vw 18vw 9.2vw 6vw;
+    grid-template-columns: 6% 15% 10% 11% 25% 17% auto;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     margin: 2.17vw 0 0 0;
@@ -330,7 +332,7 @@ color: #A2A2A2;
 
   #BoardContainer #main_menu #message #message_block2 #task_container {
     display: grid;
-    grid-template-columns: 5vw 8vw 14.5vw 14.5vw 19vw 8vw 5vw;
+    grid-template-columns: 6% 15% 10% 11% 25% 17% auto;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     border-bottom: 0.07vw solid #ededee;
@@ -446,7 +448,7 @@ color: #A2A2A2;
   }
   #BoardContainer #admin #message #message_block1 {
     display: grid;
-    grid-template-columns: 5vw 12vw 13.4vw 10vw 17vw 17vw;
+    grid-template-columns: 5% 17% 18% 11% 22% auto;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     margin: 2.17vw 0 0 0;
@@ -498,7 +500,7 @@ color: #A2A2A2;
 
   #BoardContainer #admin #message #message_block2 #task_container {
     display: grid;
-    grid-template-columns: 5vw 12vw 13.4vw 10vw 16vw 18vw;
+    grid-template-columns: 5% 17% 18% 11% 19% auto;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     border-bottom: 0.07vw solid #ededee;

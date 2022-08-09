@@ -35,6 +35,7 @@ const Board = () => {
     const [adminToggle, setAdminToggle] = useState('pending');
     const [visible, setVisible] = useState(false);
     const [addEmp, setAddEmp] = useState(false);
+    const [barOpen, setbarOpen] = useState(false);
 
     let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -165,12 +166,12 @@ const Board = () => {
 
 
     const leaveMap = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
-
     const leaveApproved = userLeaveData?.leaves?.filter((item) => item.status === 'approved')
     const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
     const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
-    console.log('leaveMap', leavePending)
 
+
+    const userRealData = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
 
 
     const deleteLeave = (index) => {
@@ -193,20 +194,22 @@ const Board = () => {
                 <track src="captions_es.vtt" kind="captions" srclang="es" label="spanish_captions" />
             </audio>
             <div id="BoardContainer" >
-                <div id="side_menu">
-                    <h1><img src={login_logo} alt="img" />Leave Tracker</h1>
+                <div id="side_menu" style={{ width: !barOpen && '6vw', transition: `0.5s ease-in-out` }}>
+                    <Popover placement="right" content={barOpen ? 'Tap To Expand' : 'Tap To Minimize'}>
+                        <h1 onClick={() => setbarOpen(!barOpen)}><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
+                    </Popover>
                     <ul>
-                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => setSideToggle(1)}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />Home</li>
-                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />Calendar</li>
-                        {userDataMain?.role === 'admin' && <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />Admin Portal</li>}
+                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => setSideToggle(1)}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
+                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
+                        {userDataMain?.role === 'admin' && <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'}</li>}
                     </ul>
                     <ul>
-                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => setSideToggle(4)}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />Settings</li>
+                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => setSideToggle(4)}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
                     </ul>
 
 
                     <ul id="logout">
-                        <li onClick={logOut} role="presentation"> <img src={logout_hover} alt="img" className="imghover" /><img src={logout} alt="img" className="image" />logout</li>
+                        <li onClick={logOut} role="presentation"> <img src={logout_hover} alt="img" className="imghover" /><img src={logout} alt="img" className="image" />{barOpen && 'logout'}</li>
                     </ul>
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
@@ -264,9 +267,9 @@ const Board = () => {
                                             <h3>Action</h3>
                                         </div>
                                         <div id="message_block2">
-                                            {userLeaveData?.leaves?.map((item, i) =>
+                                            {userLeaveData?.leaves?.reverse().map((item, i) =>
                                                 <div id="task_container" key={i}>
-                                                    <p>{i + 1}</p>
+                                                    <p>{userLeaveData?.leaves?.length - i}</p>
                                                     <p style={{ padding: `0` }}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
                                                     <p>{item?.startDate}</p>
                                                     <p>{item?.endDate}</p>
@@ -342,11 +345,11 @@ const Board = () => {
                                         <h3>Action</h3>
                                     </div>
                                     <div id="message_block2">
-                                        {userLeaveData?.leaves?.map((item, i) =>
+                                        {userRealData?.map((item, i) =>
                                             <div>
                                                 {item.status === adminToggle &&
                                                     <div id="task_container">
-                                                        <p>1</p>
+                                                        <p>{i + 1}</p>
                                                         <div id="profile_box">
                                                             <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
                                                             <div id="profile_text">

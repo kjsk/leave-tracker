@@ -114,7 +114,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
         </div>
         <div id="buttons">
           <button
-            onClick={() => setPopup(false)}
+            onClick={() => { setPopup(false); setLeaveDrop(false); }}
           >
             Cancel
           </button>
@@ -123,7 +123,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
               background: pushTime && reason.length > 5 ? '#3751FF' : 'gray',
               color: "white",
             }}
-            onClick={() => { createLeave(leaveType, pushTime, reason) }}
+            onClick={() => { createLeave(leaveType, pushTime, reason); setLeaveDrop(false); }}
             disabled={pushTime && reason.length > 5 ? false : true}
           >
             Submit
