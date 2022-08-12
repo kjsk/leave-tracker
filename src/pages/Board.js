@@ -12,8 +12,9 @@ import logout from '../data/assets/logout.svg';
 import logout_hover from '../data/assets/logout_hover.svg';
 import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
+import Edit_user from '../data/assets/Edit_user.svg';
 import { BoardContainer } from '../components/Board/styles';
-import { DeleteOutlined, SettingOutlined, CalendarOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 import { Empty, Popover, Drawer, Badge, message, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
@@ -25,12 +26,15 @@ import { navigate } from "gatsby"
 import Loader from "../components/loader";
 import NotificationSound from "../utils/notification.mp3"
 import AddEmployee from "../components/Forms/AddEmployee";
+import EditUser from "../components/Forms/EditUser";
 import LeaveDetails from "../components/Forms/LeaveDetails";
 
 const Board = () => {
 
     const [popup, setPopup] = useState(false);
     const [sideToggle, setSideToggle] = useState(1);
+    const [sideSubOpen, setSideSubOpen] = useState(false);
+    const [sideToggleSub, setSideToggleSub] = useState({ name: '', value: '' });
     const [userLeaveData, setUserLeaveData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
     const [adminToggle, setAdminToggle] = useState('pending');
@@ -68,6 +72,7 @@ const Board = () => {
     useEffect(() => {
         if (userData) {
             getLeaves();
+            getUsers();
         } else {
             logOut();
         }
@@ -126,12 +131,13 @@ const Board = () => {
             },
             headers: headers
         }).then((res) => {
-            message.success(`${res?.data?.user?.name} added successfully`);
+            openNotificationWithIcon(`success`, `${res?.data?.user?.name} added successfully`);
             setName("");
             setEMail("");
             setAddEmp(false);
             setActiveLoader(false);
             playAudio();
+            getUsers();
         }).catch((_err) => {
             setActiveLoader(false);
             openNotificationWithIcon('error', `User exists aready`);
@@ -198,6 +204,63 @@ const Board = () => {
         setLeaveDetail(true);
         setLeaveDetailContent({ item, desType });
     }
+
+
+    const [usersData, setUsersData] = useState([]);
+    const getUsers = () => {
+        axios({
+            method: 'GET',
+            url: `https://fidisyslt.herokuapp.com/api/v2/users?page=0&limit=0`,
+            headers: headers
+        }).then((res) => {
+            setUsersData(res?.data?.users);
+            console.log(usersData)
+        }).catch((_err) => {
+            console.log('Error', _err);
+        })
+    }
+
+
+    const [editUserPop, setEditUserPop] = useState(false);
+    const [editUserPopDetails, setEditUserPopDetails] = useState(false);
+    const [empName, setEmpName] = useState('');
+    const [empDesignation, setEmpDesignation] = useState('');
+    const [empUsed, setEmpUsed] = useState('');
+    const [empLeft, setEmpLeft] = useState('');
+    const editUserFun = (item) => {
+        setEditUserPop(true);
+        setEditUserPopDetails(item);
+        setEmpName(item.name);
+        setEmpDesignation(item.role);
+        setEmpUsed(item.allowance?.cos?.used + item.allowance?.gen?.used);
+        setEmpLeft(item.allowance?.cos?.remaining + item.allowance?.gen?.remaining);
+    }
+    const editUserFunOk = () => {
+        setActiveLoader(true);
+        const data = {
+            name: empName,
+            role: empDesignation
+        }
+        if (empName || empName || empDesignation || empUsed || empLeft) {
+            axios({
+                method: 'PATCH',
+                url: `https://fidisyslt.herokuapp.com/api/v2/users/${editUserPopDetails?.id}`,
+                data: data,
+                headers: headers
+            }).then((resp) => {
+                openNotificationWithIcon(`success`, 'Changes updatred successfully');
+                console.log(resp);
+                setEditUserPop(false);
+                getUsers();
+                setActiveLoader(false);
+            }).catch(() => {
+                setActiveLoader(false);
+                openNotificationWithIcon(`error`, 'User update failed');
+            })
+        } else {
+            openNotificationWithIcon(`error`, 'No changes to update');
+        }
+    }
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
@@ -210,12 +273,17 @@ const Board = () => {
                         <h1 onClick={() => setbarOpen(!barOpen)}><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
                     </Popover>
                     <ul>
-                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => setSideToggle(1)}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
-                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => setSideToggle(2)}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
-                        {userDataMain?.role === 'admin' && <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => setSideToggle(3)}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'}</li>}
+                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
+                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
+                        {userDataMain?.role === 'admin' && <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideSubOpen(!sideSubOpen) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'}<span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span></li>}
+                        {sideSubOpen &&
+                            <div id="menu_dropdown">
+                                <span id={sideToggleSub.value === 1 && "active"} onClick={() => setSideToggleSub({ name: 'Employee List', value: 1 })}>Employee List</span>
+                            </div>
+                        }
                     </ul>
                     <ul>
-                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => setSideToggle(4)}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
+                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(4) }}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
                     </ul>
 
 
@@ -225,7 +293,7 @@ const Board = () => {
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
                     <div id="header">
-                        <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? "Admin Portal" : sideToggle === 4 ? "Settings" : ""}</h2>
+                        <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? "Admin Portal" : sideToggle === 4 ? "Settings" : ""} {sideToggleSub.name && sideToggle === 3 && `(${sideToggleSub.name})`}</h2>
                         <div id="mini_block">
                             {sideToggle === 1 && <button onClick={() => setPopup(true)}>Apply Leave</button>}
                             {sideToggle === 3 && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
@@ -244,7 +312,7 @@ const Board = () => {
                         </div>
                     </div>
 
-                    {sideToggle === 1 ?
+                    {sideToggle === 1 && sideToggleSub.value === '' &&
                         <>
                             <div id="score">
                                 <div id="score_card">
@@ -321,12 +389,11 @@ const Board = () => {
                                 }
                             </div>
                         </>
-                        :
-                        ""
+
                     }
 
 
-                    {sideToggle === 2 &&
+                    {sideToggle === 2 && sideToggleSub.value === '' &&
                         <Result
                             icon={<CalendarOutlined />}
                             title="Hello, Calender comming soon!"
@@ -334,7 +401,7 @@ const Board = () => {
 
                     }
 
-                    {sideToggle === 3 &&
+                    {sideToggle === 3 && sideToggleSub.value === '' &&
                         <div id="admin">
                             <div id="admin_block1">
                                 <h1>Leave Requests</h1>
@@ -422,6 +489,69 @@ const Board = () => {
 
                     }
 
+
+
+                    {sideToggle === 3 && sideToggleSub.value === 1 &&
+                        <div id="admin_home">
+                            <div id="admin" className='admin'>
+                                {usersData?.length !== 0 ?
+                                    <div id="message">
+                                        <div id="message_block1">
+                                            <h3>SNo</h3>
+                                            <h3>Emp. Name & ID</h3>
+                                            <h3>Designation</h3>
+                                            <h3>No.of Leave Used</h3>
+                                            <h3>No.of Leave Left</h3>
+                                            <h3>Action</h3>
+                                        </div>
+                                        <div id="message_block2">
+                                            {usersData?.map((item, i) =>
+                                                <div>
+                                                    <div id="task_container">
+                                                        <p>{i + 1}</p>
+                                                        <div id="profile_box">
+                                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                            <div id="profile_text">
+                                                                <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
+                                                                <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
+                                                            </div>
+                                                        </div>
+                                                        <p>{item?.role}</p>
+                                                        <p>4</p>
+                                                        <p style={{
+                                                            whiteSpace: 'nowrap',
+                                                            width: '16vw',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                        }}>12</p>
+                                                        <div id="btns">
+                                                            <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
+                                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    :
+                                    <Empty
+                                        image={emptyFile}
+                                        imageStyle={{
+                                            height: 250,
+                                            width: 200,
+                                            margin: '7vw auto auto auto',
+                                        }}
+                                        description={
+                                            <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
+                                                No {adminToggle} leaves!
+                                            </span>
+                                        }
+                                    />
+                                }
+                            </div>
+                        </div>
+                    }
+
                 </div>
 
             </div>
@@ -443,6 +573,19 @@ const Board = () => {
                 okText='Continue'
             >
                 <AddEmployee name={name} Email={Email} setName={setName} setEMail={setEMail} addUser={addUser} error={error} checkValidation={checkValidation} />
+            </Modal>
+
+            {/* Edit User Modal */}
+            <Modal
+                title="Edit user"
+                centered
+                visible={editUserPop}
+                onCancel={() => { setEditUserPop(false); getUsers(); openNotificationWithIcon(`warning`, 'Changes reverted') }}
+                okText='Save Edit'
+                cancelText='Revert Changes'
+                onOk={() => editUserFunOk()}
+            >
+                <EditUser editUserPopDetails={editUserPopDetails} empName={empName} empDesignation={empDesignation} setEmpName={setEmpName} setEmpDesignation={setEmpDesignation} setEmpUsed={setEmpUsed} setEmpLeft={setEmpLeft} />
             </Modal>
 
             <Modal

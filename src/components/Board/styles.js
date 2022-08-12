@@ -112,6 +112,52 @@ margin-bottom: 1.5vw;
     }
   }
 
+
+  #BoardContainer #side_menu #menu_dropdown {
+    display: flex;
+flex-direction: column;
+width: -webkit-fill-available;
+margin-left: 40px;
+height: 80px;
+overflow: scroll;
+direction: rtl;
+overflow-x: hidden;
+transition: 0.5s ease-in-out;
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #B4B4B4; 
+  opacity: 0.1;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #DDE2FF; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+  }
+  #BoardContainer #side_menu #menu_dropdown span {
+    font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+letter-spacing: 0.2px;
+color: #DDE2FF;
+padding: 5px 32px;
+cursor: pointer;
+direction:ltr;
+  }
+  #BoardContainer #side_menu #menu_dropdown #active {
+font-weight: bold;
+  }
+
   #BoardContainer #main_menu {
     width: -webkit-fill-available;
     height: 100%;
@@ -340,7 +386,6 @@ color: #A2A2A2;
     cursor: pointer;
     transition: 0.5s ease-in-out;
   }
-
   #BoardContainer #main_menu #message #message_block2 #task_container:hover {
     border-bottom: 0.144vw solid #ededee;
   }
@@ -601,6 +646,23 @@ color: #A2A2A2;
     border: none;
     outline: none;
   }
+
+
+
+
+
+
+  ${'' /* Admin home */}
+  #BoardContainer #admin_home #admin #message #message_block1 {
+    grid-template-columns: 6% 20% 20% 20% 20% 10%;
+  }
+  #BoardContainer #admin_home #admin #message #message_block2 #btns img{ 
+    width: 26px;
+    height: 26px;
+  }
+  #BoardContainer #admin_home #admin #message_block2 #task_container {
+    grid-template-columns: 6% 20% 20% 20% 20% 10%;
+  }
 `
 
 export const EmployeeFormStyle = styled.div`
@@ -758,4 +820,58 @@ border-radius: 0.4rem;
   border: none;
   background: #3751FF;
  }
+`
+
+
+
+
+export const EditUserFormStyle = styled.div`
+#add_employee_main {
+  margin-bottom: 30px;
+}
+#employee_wrap {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 1.3rem 0 0 0;
+}
+  #input_wrap {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+      }
+      #input_wrap label {
+        font-weight: 500;
+font-size: 14px;
+line-height: 18px;
+color: #555555;
+margin-bottom: 6px;
+  }
+  #input_wrap input {
+    height: 48px;
+border-radius: 6px;
+font-weight: 400;
+font-size: 16px;
+line-height: 18px;
+color: #121212;
+padding: 12px;
+background: #F3F3F4;
+border: none;
+outline-color: #1874D2;
+  }
+  #add_employee_main button {
+    height: 48px;
+background: #3751FF;
+border-radius: 6px;
+font-weight: 600;
+font-size: 16px;
+line-height: 22px;
+letter-spacing: 0.1px;
+color: #FFFFFF;
+border: none;
+outline: none;
+width: 100%;
+margin-top: 50px;
+cursor: pointer;
+  }
 `
