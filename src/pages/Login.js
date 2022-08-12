@@ -7,10 +7,10 @@ import { LoginContainer, userNote } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
 import { getHeaders } from "../utils/urls"
-import { Button, Modal, message, notification } from "antd";
+import { notification, Button, Modal } from "antd";
 import Loader from "../components/loader";
-import UserNote from "../components/userNote/UserNote"
 import NotificationSound from "../utils/WaterDrop.mp3"
+import UserNote from "../components/userNote/UserNote"
 
 
 const Login = () => {
@@ -160,7 +160,7 @@ const Login = () => {
 
       {/* <div id="userNote">
         <Modal
-          visible={false}
+          visible={true}
           okButtonProps={{ style: { display: 'none' } }}
           cancelButtonProps={{ style: { display: 'none' } }}
         >

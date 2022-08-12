@@ -25,6 +25,7 @@ import { navigate } from "gatsby"
 import Loader from "../components/loader";
 import NotificationSound from "../utils/notification.mp3"
 import AddEmployee from "../components/Forms/AddEmployee";
+import LeaveDetails from "../components/Forms/LeaveDetails";
 
 const Board = () => {
 
@@ -36,6 +37,12 @@ const Board = () => {
     const [visible, setVisible] = useState(false);
     const [addEmp, setAddEmp] = useState(false);
     const [barOpen, setbarOpen] = useState(false);
+    const [leaveDetail, setLeaveDetail] = useState(false);
+    const [leaveDetailContent, setLeaveDetailContent] = useState('');
+    const [descType, setDescType] = useState('');
+    const [descId, setDescId] = useState('');
+    const [name, setName] = useState('');
+    const [Email, setEMail] = useState('');
 
     let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -83,12 +90,11 @@ const Board = () => {
 
 
     // Approve Reject popup function
-    const [descType, setDescType] = useState('');
-    const [descId, setDescId] = useState('');
     const desecision = (type, id) => {
         setDescType(type);
         setDescId(id);
         setVisible(true);
+        setLeaveDetail(false);
     }
 
     const approveLeave = (type, leaveId) => {
@@ -99,15 +105,15 @@ const Board = () => {
             headers: headers
         }).then((res) => {
             getLeaves();
+            setLeaveDetail(false);
             openNotificationWithIcon('success', res?.data?.message);
             playAudio();
         }).catch((_err) => {
             setActiveLoader(false);
+            setLeaveDetail(false);
             console.log('Error', _err);
         })
     }
-    const [name, setName] = useState('');
-    const [Email, setEMail] = useState('');
 
     const addUser = (name, Email) => {
         setActiveLoader(true);
@@ -187,6 +193,11 @@ const Board = () => {
         });
     };
 
+
+    const openLeaveDetailsFun = (item, desType) => {
+        setLeaveDetail(true);
+        setLeaveDetailContent({ item, desType });
+    }
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
@@ -352,19 +363,19 @@ const Board = () => {
                                                         <p>{i + 1}</p>
                                                         <div id="profile_box">
                                                             <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                                            <div id="profile_text">
+                                                            <div id="profile_text" onClick={() => openLeaveDetailsFun(item, 'pending')}>
                                                                 <h2 style={{ fontSize: `0.9vw` }}>{item?.username}</h2>
                                                                 <p style={{ fontSize: `0.9vw` }}>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
                                                             </div>
                                                         </div>
-                                                        <p>{item?.startDate} to {item?.endDate}</p>
-                                                        <p>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
+                                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')}>{item?.startDate} to {item?.endDate}</p>
+                                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')}>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
                                                         <p style={{
                                                             whiteSpace: 'nowrap',
                                                             width: '16vw',
                                                             overflow: 'hidden',
                                                             textOverflow: 'ellipsis',
-                                                        }}>{item?.reason}</p>
+                                                        }} onClick={() => openLeaveDetailsFun(item, 'pending')}>{item?.reason}</p>
                                                         <div id="btns">
                                                             {item.status === 'approved' ? <p style={{
                                                                 color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
@@ -373,8 +384,8 @@ const Board = () => {
                                                                     color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
                                                                 }}>Rejected</p> :
                                                                 <>
-                                                                    <button onClick={() => desecision('approve', item?.id)}>Approve</button>
-                                                                    <button onClick={() => desecision('reject', item?.id)}>Reject</button>
+                                                                    <button onClick={() => { desecision('approve', item?.id) }}>Approve</button>
+                                                                    <button onClick={() => { desecision('reject', item?.id) }}>Reject</button>
                                                                 </>
                                                             }
                                                         </div>
@@ -433,6 +444,18 @@ const Board = () => {
             >
                 <AddEmployee name={name} Email={Email} setName={setName} setEMail={setEMail} addUser={addUser} error={error} checkValidation={checkValidation} />
             </Modal>
+
+            <Modal
+                centered
+                visible={leaveDetail}
+                onCancel={() => { setLeaveDetail(false) }}
+                okButtonProps={{ style: { display: 'none' } }}
+                cancelButtonProps={{ style: { display: 'none' } }}
+                okText='Continue'
+            >
+                <LeaveDetails leaveDetailContent={leaveDetailContent} desecision={desecision} />
+            </Modal>
+
             <Modal
                 title="Confirmation"
                 centered

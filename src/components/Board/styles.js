@@ -649,3 +649,113 @@ margin-top: 50px;
 cursor: pointer;
   }
 `
+
+
+
+export const LeaveDetailstyle = styled.div`
+#employee_wrap {
+  padding: 50px 0 0 0;
+}
+#add_employee_main #pop_headder {
+  display: flex;
+  justify-content: space-between;
+}
+#add_employee_main #profile_box {
+    display: flex;
+    align-items: center;
+    padding: 0 5rem 1rem 0;
+    border-bottom: 2px solid #EEEEEE;
+  }
+#add_employee_main
+    #profile_box
+    #profile_text {
+    display: flex;
+    flex-direction: column;
+  }
+#add_employee_main
+    #profile_box
+    #profile_text
+    h2 {
+    font-weight: 600;
+    font-size: 16px;
+    color: #252733;
+    line-height: 14px;
+  }
+#add_employee_main
+    #profile_box
+    #profile_text
+    p {
+    font-weight: 600;
+    font-size: 12px;
+    color: #252733;
+    opacity: 0.5;
+    padding: 0;
+  }
+#add_employee_main
+    #profile_box
+    img {
+    width: 48px;
+    height: 48px;
+    margin: 0 0.57vw 0 0;
+    border-radius: 50px;
+  }
+ #add_employee_main #leave_details {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+ }
+ #add_employee_main #pop_body {
+  display: flex;
+  flex-direction: column;
+ }
+ #add_employee_main #pop_body span {
+  font-weight: 600;
+font-size: 14px;
+line-height: 18px;
+letter-spacing: 0.2px;
+color: #252733;
+margin-top: 12px;
+ }
+ #add_employee_main #pop_body span:nth-child(2) {
+  font-weight: 400;
+font-size: 14px;
+opacity: 0.5;
+ }
+ #add_employee_main #pop_body textarea {
+  border: none;
+  outline: none;
+  background: #F3F4F6;
+border-radius: 8px;
+margin: 0.8rem 0 2rem 0;
+padding: 14px;
+font-size: 1rem;
+line-height: 1.6rem;
+letter-spacing: 0.2px;
+height: 113px;
+resize: none;
+ }
+ #add_employee_main #pop_body #pop_btns {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+ }
+ #add_employee_main #pop_body #pop_btns button {
+  width: 100%;
+height: 3rem;
+font-size: 1rem;
+line-height: 1.2rem;
+font-style: normal;
+font-weight: 700;
+color: #FF0000;
+background: none;
+outline: none;
+cursor: pointer;
+border: 1px solid #FF0000;
+border-radius: 0.4rem;
+ }
+ #add_employee_main #pop_body #pop_btns button:nth-child(2) {
+  color:white;
+  border: none;
+  background: #3751FF;
+ }
+`
