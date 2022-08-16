@@ -63,7 +63,7 @@ export const BoardContainer = styled.div`
   }
 
   #BoardContainer #side_menu ul {
-    width: -webkit-fill-available;
+    width: 100%;
     margin: 4.49275362318841vw 0 0 0;
   }
 
@@ -135,7 +135,7 @@ margin-bottom: 1.5vw;
   #BoardContainer #side_menu #menu_dropdown {
     display: flex;
 flex-direction: column;
-width: -webkit-fill-available;
+width: 100%;
 margin-left: 40px;
 height: 80px;
 overflow: scroll;
@@ -178,7 +178,7 @@ font-weight: bold;
   }
 
   #BoardContainer #main_menu {
-    width: -webkit-fill-available;
+    width: 100%;
     height: 100%;
     overflow: hidden;
     padding: 2.17391304347826vw 2.39130434782609vw;
@@ -673,7 +673,7 @@ color: #A2A2A2;
 
   ${'' /* Admin home */}
   #BoardContainer #admin_home {
-    height: -webkit-fill-available;
+    height: 100%;
   }
   #BoardContainer #admin_home #admin #message #message_block1 {
     grid-template-columns: 6% 20% 20% 20% 20% 10%;
