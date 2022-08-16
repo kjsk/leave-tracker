@@ -225,7 +225,7 @@ const Board = () => {
             url: `${urlGlobal}/api/v2/users?page=0&limit=0`,
             headers: headers
         }).then((res) => {
-            setUsersData(res?.data?.users);
+            setUsersData(res?.data?.users.filter(item => item?.role !== 'admin'));
             console.log(usersData)
         }).catch((_err) => {
             console.log('Error', _err);
@@ -551,30 +551,28 @@ const Board = () => {
                                         <div id="message_block2">
                                             {usersData?.map((item, i) =>
                                                 <div>
-                                                    {item?.role !== 'admin' &&
-                                                        <div id="task_container">
-                                                            <p>{i + 1}</p>
-                                                            <div id="profile_box">
-                                                                <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                                                <div id="profile_text">
-                                                                    <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
-                                                                    <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
-                                                                </div>
-                                                            </div>
-                                                            <p>{item?.role}</p>
-                                                            <p>4</p>
-                                                            <p style={{
-                                                                whiteSpace: 'nowrap',
-                                                                width: '16vw',
-                                                                overflow: 'hidden',
-                                                                textOverflow: 'ellipsis',
-                                                            }}>12</p>
-                                                            <div id="btns">
-                                                                <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
-                                                                <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
+                                                    <div id="task_container">
+                                                        <p>{i + 1}</p>
+                                                        <div id="profile_box">
+                                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                            <div id="profile_text">
+                                                                <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
+                                                                <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
                                                             </div>
                                                         </div>
-                                                    }
+                                                        <p>{item?.role}</p>
+                                                        <p>4</p>
+                                                        <p style={{
+                                                            whiteSpace: 'nowrap',
+                                                            width: '16vw',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                        }}>12</p>
+                                                        <div id="btns">
+                                                            <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
+                                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
