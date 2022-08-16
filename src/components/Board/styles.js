@@ -29,6 +29,7 @@ export const BoardContainer = styled.div`
   }
 
   #BoardContainer #side_menu h1 {
+    width: 16vw;
     font-size: 1.4vw;
     color: #a4a6b3;
     opacity: 0.7;
@@ -45,6 +46,7 @@ export const BoardContainer = styled.div`
   }
 
   #BoardContainer #side_menu ul {
+    width: 16vw;
     margin: 4.49275362318841vw 0 0 0;
   }
 
@@ -653,6 +655,9 @@ color: #A2A2A2;
 
 
   ${'' /* Admin home */}
+  #BoardContainer #admin_home {
+    height: -webkit-fill-available;
+  }
   #BoardContainer #admin_home #admin #message #message_block1 {
     grid-template-columns: 6% 20% 20% 20% 20% 10%;
   }

@@ -32,11 +32,13 @@ const LeaveDetails = ({ leaveDetailContent, desecision }) => {
                         }}>Approved</p> : data?.item?.status === 'rejected' ?
                             <p style={{
                                 color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
-                            }}>Rejected</p> :
-                            <>
-                                <button onClick={() => { desecision('reject', data?.item?.id) }}>Reject</button>
-                                <button onClick={() => { desecision('approve', data?.item?.id) }}>Approve</button>
-                            </>
+                            }}>Rejected</p> : data?.desType === 'home' ? <p style={{
+                                color: `#CB5A08`, fontSize: `1.2vw`, fontWeight: `700`
+                            }}>Pending</p> :
+                                <>
+                                    <button onClick={() => { desecision('reject', data?.item?.id) }}>Reject</button>
+                                    <button onClick={() => { desecision('approve', data?.item?.id) }}>Approve</button>
+                                </>
                         }
                     </div>
                 </div>

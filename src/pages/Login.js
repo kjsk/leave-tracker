@@ -10,7 +10,7 @@ import { getHeaders } from "../utils/urls"
 import { notification, Button, Modal } from "antd";
 import Loader from "../components/loader";
 import NotificationSound from "../utils/WaterDrop.mp3"
-import UserNote from "../components/userNote/UserNote"
+// import UserNote from "../components/userNote/UserNote"
 
 
 const Login = () => {
@@ -24,13 +24,13 @@ const Login = () => {
 
   useEffect(() => {
     if (localToken) {
-      typeof localStorage !== `undefined` && localStorage.removeItem('userData');
       signInWithGoogle();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const signInWithGoogle = () => {
+    typeof localStorage !== `undefined` && localStorage.removeItem('userData');
     setActiveLoader(true);
     setBtnDisable(true);
     const firebaseConfig = {
@@ -79,8 +79,8 @@ const Login = () => {
       })
       .catch((error) => {
         playAudio();
-        openNotificationWithIcon(`success`, `Hello ${error?.response?.data?.username}`)
-        adminLogin(error?.response?.data?.email);
+        openNotificationWithIcon(`success`, `Hello ${error?.response?.data?.username === 'undefined' ? error?.response?.data?.username : 'User'}`)
+        adminLogin(error?.response?.data?.adminEmail);
       })
   }
 

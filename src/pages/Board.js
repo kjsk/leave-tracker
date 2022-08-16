@@ -54,6 +54,18 @@ const Board = () => {
 
     const headers = getHeaders(userData?.tokens?.accessToken);
 
+    useEffect(() => {
+        if (userData) {
+            getLeaves();
+            getUsers();
+        } else {
+            logOut();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+
+    // Call to fetch the number of leaves by user
     const getLeaves = () => {
         setActiveLoader(true);
         axios({
@@ -69,17 +81,9 @@ const Board = () => {
         })
     }
 
-    useEffect(() => {
-        if (userData) {
-            getLeaves();
-            getUsers();
-        } else {
-            logOut();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
 
+    // Function to split letters in user name to use as DP
     const nameProf = (name) => {
         let text = name;
         const myArray = text?.split(" ");
@@ -87,6 +91,7 @@ const Board = () => {
     }
 
 
+    // Call for logout and cleanup the localstorage
     const logOut = () => {
         typeof localStorage !== `undefined` && localStorage.removeItem('userData');
         navigate(`/`);
@@ -102,11 +107,13 @@ const Board = () => {
         setLeaveDetail(false);
     }
 
+
+    // call to action on leave (APPROVE, REJECT, DELETE)
     const approveLeave = (type, leaveId) => {
         setActiveLoader(true);
         axios({
-            method: 'PUT',
-            url: `https://fidisyslt.herokuapp.com/api/v2/leaves/${type}/${leaveId}`,
+            method: type === 'delete' ? 'Delete' : 'PUT',
+            url: `https://fidisyslt.herokuapp.com/api/v2/leaves${type !== 'delete' ? '/' + type : ''}/${leaveId}`,
             headers: headers
         }).then((res) => {
             getLeaves();
@@ -120,33 +127,48 @@ const Board = () => {
         })
     }
 
-    const addUser = (name, Email) => {
+
+    // Call to add employee
+    const addUser = (name, Email, id) => {
         setActiveLoader(true);
-        axios({
-            method: 'POST',
-            url: `https://fidisyslt.herokuapp.com/api/v2/users`,
-            data: {
-                name: name,
-                email: Email
-            },
-            headers: headers
-        }).then((res) => {
-            openNotificationWithIcon(`success`, `${res?.data?.user?.name} added successfully`);
-            setName("");
-            setEMail("");
+        let conditionAPI;
+        if (id) {
+            conditionAPI = axios({
+                method: 'DELETE',
+                url: `https://fidisyslt.herokuapp.com/api/v2/users/${id}`,
+                headers: headers
+            })
+        } else {
+            conditionAPI = axios({
+                method: 'POST',
+                url: `https://fidisyslt.herokuapp.com/api/v2/users`,
+                data: {
+                    name: name,
+                    email: Email
+                },
+                headers: headers
+            })
+        }
+        conditionAPI.then((res) => {
+            openNotificationWithIcon(`success`, id ? `${res?.data?.user?.name} removed` : `${res?.data?.user?.name} added successfully`);
             setAddEmp(false);
             setActiveLoader(false);
             playAudio();
             getUsers();
+            setName("");
+            setEMail("");
         }).catch((_err) => {
             setActiveLoader(false);
             openNotificationWithIcon('error', `User exists aready`);
+            getUsers();
             setName("");
             setEMail("");
         })
     }
 
 
+
+    // Function for validation
     const [error, setError] = useState('')
     const validation = (name, mail) => {
         let x;
@@ -169,6 +191,8 @@ const Board = () => {
         openNotificationWithIcon(`error`, `Field should not be empty`);
     }
     // setError((validation()))
+
+
     // notification conformation sound function
     const audioPlayer = useRef(null);
 
@@ -176,21 +200,7 @@ const Board = () => {
         audioPlayer.current.play();
     }
 
-
     const leaveMap = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
-    const leaveApproved = userLeaveData?.leaves?.filter((item) => item.status === 'approved')
-    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
-    const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
-
-
-    const userRealData = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
-
-
-    const deleteLeave = (index) => {
-        console.log(userLeaveData)
-        userLeaveData.leaves.splice(index, 1)
-    }
-
 
     const openNotificationWithIcon = (type, data) => {
         notification[type]({
@@ -206,6 +216,7 @@ const Board = () => {
     }
 
 
+    // Call to get users
     const [usersData, setUsersData] = useState([]);
     const getUsers = () => {
         axios({
@@ -235,6 +246,8 @@ const Board = () => {
         setEmpUsed(item.allowance?.cos?.used + item.allowance?.gen?.used);
         setEmpLeft(item.allowance?.cos?.remaining + item.allowance?.gen?.remaining);
     }
+
+    // Call to edit, delete user form DB
     const editUserFunOk = () => {
         setActiveLoader(true);
         const data = {
@@ -261,6 +274,14 @@ const Board = () => {
             openNotificationWithIcon(`error`, 'No changes to update');
         }
     }
+
+
+
+    // Setting variables manually for leave count in User dash board
+    const leaveApproved = userLeaveData?.leaves?.filter((item) => item.status === 'approved')
+    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
+    const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
+    const userRealData = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
@@ -275,8 +296,12 @@ const Board = () => {
                     <ul>
                         <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
                         <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
-                        {userDataMain?.role === 'admin' && <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideSubOpen(!sideSubOpen) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'}<span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span></li>}
-                        {sideSubOpen &&
+                        {userDataMain?.role === 'admin' ?
+                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideSubOpen(!sideSubOpen) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'} {barOpen && <span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span>}</li>
+                            :
+                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideSubOpen(!sideSubOpen) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />User Portal</li>
+                        }
+                        {sideSubOpen && barOpen &&
                             <div id="menu_dropdown">
                                 <span id={sideToggleSub.value === 1 && "active"} onClick={() => setSideToggleSub({ name: 'Employee List', value: 1 })}>Employee List</span>
                             </div>
@@ -293,10 +318,10 @@ const Board = () => {
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
                     <div id="header">
-                        <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? "Admin Portal" : sideToggle === 4 ? "Settings" : ""} {sideToggleSub.name && sideToggle === 3 && `(${sideToggleSub.name})`}</h2>
+                        <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? (userDataMain?.role === 'admin' ? "Admin Portal" : "User Portal") : sideToggle === 4 ? "Settings" : ""} {sideToggleSub.name && sideToggle === 3 && `(${sideToggleSub.name})`}</h2>
                         <div id="mini_block">
                             {sideToggle === 1 && <button onClick={() => setPopup(true)}>Apply Leave</button>}
-                            {sideToggle === 3 && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
+                            {sideToggle === 3 && userDataMain?.role === 'admin' && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
                             <img src={search} alt="img" id="search" />
                             <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
                                 <Badge count={userLeaveData?.leaves?.length}>
@@ -348,25 +373,25 @@ const Board = () => {
                                         <div id="message_block2">
                                             {userLeaveData?.leaves?.reverse().map((item, i) =>
                                                 <div id="task_container" key={i}>
-                                                    <p>{userLeaveData?.leaves?.length - i}</p>
-                                                    <p style={{ padding: `0` }}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
-                                                    <p>{item?.startDate}</p>
-                                                    <p>{item?.endDate}</p>
-                                                    <p>{item?.reason}</p>
+                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{userLeaveData?.leaves?.length - i}</p>
+                                                    <p style={{ padding: `0` }} onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
+                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.startDate}</p>
+                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.endDate}</p>
+                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.reason}</p>
                                                     <p style={{
                                                         color: item?.status === 'pending' ? '#CB5A08' :
                                                             item?.status === 'approved' ? '#00D241'
                                                                 :
                                                                 item?.status === 'rejected' ? '#FF0000' :
                                                                     '', fontWeight: '600'
-                                                    }}>
+                                                    }} onClick={() => openLeaveDetailsFun(item, 'home')}>
                                                         {item?.status === 'pending' ? 'Pending' :
                                                             item?.status === 'approved' ? 'Approved'
                                                                 :
                                                                 item?.status === 'rejected' ? 'Rejected' :
                                                                     ''}
                                                     </p>
-                                                    <p onClick={() => deleteLeave(i)}><DeleteOutlined className='delete_icon' /></p>
+                                                    <p onClick={() => desecision('delete', item?.id)}><DeleteOutlined className='delete_icon' /></p>
                                                 </div>
                                             )}
 
@@ -408,7 +433,7 @@ const Board = () => {
                                 <p id="share"><img src={share} alt="share" />Share</p>
                             </div>
                             <div id="admin_tab">
-                                <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>
+                                {userDataMain?.role === 'admin' && <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>}
                                 <h2 role='presentation' onClick={() => setAdminToggle('approved')} className={adminToggle === 'approved' && "active"}>Approved</h2>
                                 <h2 role='presentation' onClick={() => setAdminToggle('rejected')} className={adminToggle === 'rejected' && "active"}>Rejected</h2>
                             </div>
@@ -526,7 +551,7 @@ const Board = () => {
                                                         }}>12</p>
                                                         <div id="btns">
                                                             <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
-                                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} />
+                                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -543,7 +568,7 @@ const Board = () => {
                                         }}
                                         description={
                                             <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
-                                                No {adminToggle} leaves!
+                                                No Users!
                                             </span>
                                         }
                                     />
@@ -580,7 +605,7 @@ const Board = () => {
                 title="Edit user"
                 centered
                 visible={editUserPop}
-                onCancel={() => { setEditUserPop(false); getUsers(); openNotificationWithIcon(`warning`, 'Changes reverted') }}
+                onCancel={() => { setEditUserPop(false); getUsers() }}
                 okText='Save Edit'
                 cancelText='Revert Changes'
                 onOk={() => editUserFunOk()}
@@ -603,13 +628,13 @@ const Board = () => {
                 title="Confirmation"
                 centered
                 visible={visible}
-                onOk={() => { approveLeave(descType === 'approve' ? 'approve' : 'reject', descId); setVisible(false) }}
+                onOk={() => { approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false) }}
                 onCancel={() => { setVisible(false) }}
                 width={1000}
-                okText={descType === 'approve' ? 'Approve' : 'Reject'}
+                okText={descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete'}
                 cancelText='Back'
             >
-                <p style={{ fontSize: `24px`, color: `#333333`, fontWeight: `600`, margin: `51px 0` }}>Are you sure you want to {descType === 'approve' ? 'Approve' : 'Reject'}?</p>
+                <p style={{ fontSize: `24px`, color: `#333333`, fontWeight: `600`, margin: `51px 0` }}>Are you sure you want to {descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete'}?</p>
             </Modal>
         </BoardContainer >
     )
