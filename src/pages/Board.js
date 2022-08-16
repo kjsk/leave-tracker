@@ -14,14 +14,14 @@ import search from '../data/assets/search.svg';
 import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from '../data/assets/Edit_user.svg';
 import { BoardContainer } from '../components/Board/styles';
-import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
 import { Empty, Popover, Drawer, Badge, message, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
 import emptyFile from '../data/assets/empty-file.gif';
 import axios from 'axios';
-import { getHeaders } from "../utils/urls"
+import { getHeaders, baseURL } from "../utils/urls"
 import { navigate } from "gatsby"
 import Loader from "../components/loader";
 import NotificationSound from "../utils/notification.mp3"
@@ -31,13 +31,18 @@ import LeaveDetails from "../components/Forms/LeaveDetails";
 
 const Board = () => {
 
+    const urlGlobal = baseURL;
+
+    let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
+
+    let userDataMain = userData?.user;
     const [popup, setPopup] = useState(false);
-    const [sideToggle, setSideToggle] = useState(1);
+    const [sideToggle, setSideToggle] = useState(userDataMain?.role === 'admin' ? 3 : 1);
     const [sideSubOpen, setSideSubOpen] = useState(false);
     const [sideToggleSub, setSideToggleSub] = useState({ name: '', value: '' });
     const [userLeaveData, setUserLeaveData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
-    const [adminToggle, setAdminToggle] = useState('pending');
+    const [adminToggle, setAdminToggle] = useState(userDataMain?.role === 'admin' ? 'pending' : 'approved');
     const [visible, setVisible] = useState(false);
     const [addEmp, setAddEmp] = useState(false);
     const [barOpen, setbarOpen] = useState(false);
@@ -47,10 +52,6 @@ const Board = () => {
     const [descId, setDescId] = useState('');
     const [name, setName] = useState('');
     const [Email, setEMail] = useState('');
-
-    let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
-
-    let userDataMain = userData?.user;
 
     const headers = getHeaders(userData?.tokens?.accessToken);
 
@@ -70,7 +71,7 @@ const Board = () => {
         setActiveLoader(true);
         axios({
             method: 'GET',
-            url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
+            url: `${urlGlobal}/api/v2/leaves`,
             headers: headers
         }).then((res) => {
             setActiveLoader(false);
@@ -113,7 +114,7 @@ const Board = () => {
         setActiveLoader(true);
         axios({
             method: type === 'delete' ? 'Delete' : 'PUT',
-            url: `https://fidisyslt.herokuapp.com/api/v2/leaves${type !== 'delete' ? '/' + type : ''}/${leaveId}`,
+            url: `${urlGlobal}/api/v2/leaves${type !== 'delete' ? '/' + type : ''}/${leaveId}`,
             headers: headers
         }).then((res) => {
             getLeaves();
@@ -135,13 +136,13 @@ const Board = () => {
         if (id) {
             conditionAPI = axios({
                 method: 'DELETE',
-                url: `https://fidisyslt.herokuapp.com/api/v2/users/${id}`,
+                url: `${urlGlobal}/api/v2/users/${id}`,
                 headers: headers
             })
         } else {
             conditionAPI = axios({
                 method: 'POST',
-                url: `https://fidisyslt.herokuapp.com/api/v2/users`,
+                url: `${urlGlobal}/api/v2/users`,
                 data: {
                     name: name,
                     email: Email
@@ -221,7 +222,7 @@ const Board = () => {
     const getUsers = () => {
         axios({
             method: 'GET',
-            url: `https://fidisyslt.herokuapp.com/api/v2/users?page=0&limit=0`,
+            url: `${urlGlobal}/api/v2/users?page=0&limit=0`,
             headers: headers
         }).then((res) => {
             setUsersData(res?.data?.users);
@@ -242,7 +243,7 @@ const Board = () => {
         setEditUserPop(true);
         setEditUserPopDetails(item);
         setEmpName(item.name);
-        setEmpDesignation(item.role);
+        setEmpDesignation(item.jobRole ? item.jobRole : 'Employee');
         setEmpUsed(item.allowance?.cos?.used + item.allowance?.gen?.used);
         setEmpLeft(item.allowance?.cos?.remaining + item.allowance?.gen?.remaining);
     }
@@ -252,16 +253,16 @@ const Board = () => {
         setActiveLoader(true);
         const data = {
             name: empName,
-            role: empDesignation
+            jobRole: empDesignation
         }
         if (empName || empName || empDesignation || empUsed || empLeft) {
             axios({
                 method: 'PATCH',
-                url: `https://fidisyslt.herokuapp.com/api/v2/users/${editUserPopDetails?.id}`,
+                url: `${urlGlobal}/api/v2/users/${editUserPopDetails?.id}`,
                 data: data,
                 headers: headers
             }).then((resp) => {
-                openNotificationWithIcon(`success`, 'Changes updatred successfully');
+                openNotificationWithIcon(`success`, 'Changes updated');
                 console.log(resp);
                 setEditUserPop(false);
                 getUsers();
@@ -282,6 +283,12 @@ const Board = () => {
     const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
     const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
     const userRealData = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
+    useEffect(() => {
+        if (sideSubOpen === false) {
+            setSideToggleSub({ name: '', value: '' })
+        }
+    }, [sideSubOpen])
+
     return (
         <BoardContainer>
             {activeLoader && <Loader />}
@@ -290,16 +297,28 @@ const Board = () => {
             </audio>
             <div id="BoardContainer" >
                 <div id="side_menu" style={{ width: !barOpen && '6vw', transition: `0.5s ease-in-out` }}>
-                    <Popover placement="right" content={barOpen ? 'Tap To Expand' : 'Tap To Minimize'}>
-                        <h1 onClick={() => setbarOpen(!barOpen)}><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
-                    </Popover>
+                    <span id='drag_button' onClick={() => setbarOpen(!barOpen)}>
+                        <Popover placement="right" content={barOpen ? 'Tap To Minimize' : 'Tap To Expand'}>
+                            {barOpen ?
+                                <RightOutlined />
+                                :
+                                <LeftOutlined />
+                            }
+                        </Popover>
+                    </span>
+
+                    <h1><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
                     <ul>
-                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
+                        {userDataMain?.role === 'user' &&
+                            <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>}
                         <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
                         {userDataMain?.role === 'admin' ?
-                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideSubOpen(!sideSubOpen) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'} {barOpen && <span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span>}</li>
+                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => {
+                                setSideToggle(3);
+                                setSideSubOpen(!sideSubOpen);
+                            }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'} {barOpen && <span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span>}</li>
                             :
-                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideSubOpen(!sideSubOpen) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />User Portal</li>
+                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
                         }
                         {sideSubOpen && barOpen &&
                             <div id="menu_dropdown">
@@ -532,28 +551,30 @@ const Board = () => {
                                         <div id="message_block2">
                                             {usersData?.map((item, i) =>
                                                 <div>
-                                                    <div id="task_container">
-                                                        <p>{i + 1}</p>
-                                                        <div id="profile_box">
-                                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
-                                                            <div id="profile_text">
-                                                                <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
-                                                                <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
+                                                    {item?.role !== 'admin' &&
+                                                        <div id="task_container">
+                                                            <p>{i + 1}</p>
+                                                            <div id="profile_box">
+                                                                <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                                <div id="profile_text">
+                                                                    <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
+                                                                    <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
+                                                                </div>
+                                                            </div>
+                                                            <p>{item?.role}</p>
+                                                            <p>4</p>
+                                                            <p style={{
+                                                                whiteSpace: 'nowrap',
+                                                                width: '16vw',
+                                                                overflow: 'hidden',
+                                                                textOverflow: 'ellipsis',
+                                                            }}>12</p>
+                                                            <div id="btns">
+                                                                <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
+                                                                <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
                                                             </div>
                                                         </div>
-                                                        <p>{item?.role}</p>
-                                                        <p>4</p>
-                                                        <p style={{
-                                                            whiteSpace: 'nowrap',
-                                                            width: '16vw',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                        }}>12</p>
-                                                        <div id="btns">
-                                                            <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
-                                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
-                                                        </div>
-                                                    </div>
+                                                    }
                                                 </div>
                                             )}
                                         </div>

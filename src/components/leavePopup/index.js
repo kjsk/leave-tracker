@@ -7,6 +7,7 @@ import cal from "../../data/assets/pop_Calendar.svg"
 import Edit from "../../data/assets/Edit.svg"
 import { DatePicker, Dropdown, message } from "antd"
 import LeaveType from "./leave_type"
+import { getHeaders, baseURL } from "../../utils/urls"
 
 const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
@@ -41,10 +42,12 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
     setActiveLoader(true);
     axios({
       method: 'POST',
-      url: `https://fidisyslt.herokuapp.com/api/v2/leaves`,
+      url: `${baseURL}/api/v2/leaves`,
       data: {
         startDate: pushTime[0].format("MM-DD-YYYY"),
         endDate: pushTime[1].format("MM-DD-YYYY"),
+        startStamp: pushTime[0]?._d,
+        endStamp: pushTime[1]?._d,
         reason: reason,
         type: leaveType,
         days: 2

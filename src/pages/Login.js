@@ -3,34 +3,46 @@ import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
 import { initializeApp } from "firebase/app"
-import { LoginContainer, userNote } from "../components/Login/styles"
+import { LoginContainer } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
-import { getHeaders } from "../utils/urls"
+import { getHeaders, baseURL } from "../utils/urls"
 import { notification, Button, Modal } from "antd";
 import Loader from "../components/loader";
 import NotificationSound from "../utils/WaterDrop.mp3"
-// import UserNote from "../components/userNote/UserNote"
+import UserNote from "../components/userNote/UserNote"
 
 
 const Login = () => {
 
 
+  const urlGlobal = baseURL;
+
+
+  console.log(`${urlGlobal}/api/v2/auth/register`)
+
   let localToken = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
-  const headers = getHeaders(localToken?.tokens?.accessToken);
+
   const [btnDisable, setBtnDisable] = useState(false);
   const [activeLoader, setActiveLoader] = useState(false);
-  console.log('headers', headers)
+  const [modalDisplay, setModalDisplay] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [modalMail, setModalMail] = useState('');
+
+  const [orgName, setOrgName] = useState('');
+  const [orgInfo, setOrgInfo] = useState('');
+  const [orgCount, setOrgCount] = useState();
+  const headers = getHeaders(localToken?.tokens?.accessToken);
 
   useEffect(() => {
     if (localToken) {
+      typeof localStorage !== `undefined` && localStorage.removeItem('userData');
       signInWithGoogle();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const signInWithGoogle = () => {
-    typeof localStorage !== `undefined` && localStorage.removeItem('userData');
     setActiveLoader(true);
     setBtnDisable(true);
     const firebaseConfig = {
@@ -50,7 +62,6 @@ const Login = () => {
 
     signInWithPopup(auth, provider).then(result => {
       playAudio();
-      openNotificationWithIcon(`success`, `verfied User`)
       adminRegister(result?.user?.displayName, result?.user?.email);
     }).catch((error) => {
       playAudio();
@@ -65,7 +76,7 @@ const Login = () => {
   const adminRegister = (name, email) => {
     axios({
       method: 'POST',
-      url: `https://fidisyslt.herokuapp.com/api/v2/auth/register`,
+      url: `${urlGlobal}/api/v2/auth/register`,
       data: {
         email: email,
         name: name
@@ -75,20 +86,32 @@ const Login = () => {
         playAudio();
         openNotificationWithIcon(`success`, `${res?.data?.user?.name} registered successfully`)
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
-        navigate(`/Board/`);
+        if (res?.data?.orgUpdate) {
+          setModalDisplay(true);
+          setActiveLoader(false);
+        } else {
+          setModalDisplay(false);
+        }
       })
       .catch((error) => {
         playAudio();
-        openNotificationWithIcon(`success`, `Hello ${error?.response?.data?.username === 'undefined' ? error?.response?.data?.username : 'User'}`)
-        adminLogin(error?.response?.data?.adminEmail);
+        if (error?.response?.data?.message === 'Org already exists please contact your admin') {
+          setVisible(true);
+          setActiveLoader(false);
+          setModalMail(error?.response?.data?.adminEmail);
+        } else {
+          adminLogin(error?.response?.data?.email);
+          openNotificationWithIcon(`success`, `Hello ${error?.response?.data?.username}`)
+        }
       })
   }
+
 
   // Admin Login
   const adminLogin = (email) => {
     axios({
       method: 'POST',
-      url: `https://fidisyslt.herokuapp.com/api/v2/auth/login`,
+      url: `${urlGlobal}/api/v2/auth/login`,
       data: {
         email: email,
       },
@@ -96,11 +119,59 @@ const Login = () => {
     })
       .then((res) => {
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
-        setBtnDisable(false);
-        navigate(`/Board/`);
+        if (localStorage) {
+          checkOrg(res?.data?.user?.orgId, res?.data?.tokens?.accessToken);
+          setBtnDisable(false);
+        }
       })
       .catch(error => { console.log(error); setBtnDisable(false); setActiveLoader(false); })
   }
+
+
+
+  // API call and condition check for organization
+  const checkOrg = (id, accessToken) => {
+    axios({
+      method: 'GET',
+      url: `${urlGlobal}/api/v2/orgs/${id}`,
+      headers: getHeaders(accessToken)
+    }).then((res) => {
+      if (res?.data?.org?.orgName === 'Default' && localToken?.user?.role === 'admin') {
+        setModalDisplay(true);
+        setActiveLoader(false);
+      } else {
+        navigate(`/Board/`);
+        setActiveLoader(false);
+      }
+    })
+  }
+
+
+
+  // Call to update & add org under ADMIN
+  const updateOrg = () => {
+    const neworgCount = orgCount && JSON.parse(orgCount);
+    const sampleData = {
+      orgName: orgName,
+      orgDescription: orgInfo,
+      employeeCount: neworgCount
+    }
+    axios({
+      method: 'PATCH',
+      url: `${urlGlobal}/api/v2/orgs`,
+      data: sampleData,
+      headers: headers
+    }).then((res) => {
+      if (res?.data?.org?.orgName === 'Default' && localToken?.user?.role === 'admin') {
+        setModalDisplay(true);
+        setActiveLoader(false);
+      } else {
+        navigate(`/Board/`);
+        setActiveLoader(false);
+      }
+    })
+  }
+
 
   const openNotificationWithIcon = (type, data) => {
     notification[type]({
@@ -124,51 +195,57 @@ const Login = () => {
         <track src="captions_es.vtt" kind="captions" srclang="es" label="spanish_captions" />
       </audio>
       {activeLoader && <Loader />}
-      <div id="LoginContainer">
-        <img src={login_logo} alt="login_logo" />
-        <h2>Log In to Leave Tracker</h2>
-        <h4>Connect with Google Account</h4>
-        <button onClick={signInWithGoogle} disabled={btnDisable} style={{ background: btnDisable ? 'gray' : '#FCFDFE' }}>
-          <img src={google} alt="img" />
-          Sign in with Google
-        </button>
-      </div>
 
-      {/* <div id="AdminContainer">
-        <h2>You will be Admin for Your Organization</h2>
-        <div className="input_main">
-          <div id="input_fields">
-            <label>ORGANIZATION NAME</label>
-            <input type="text" />
-          </div>
-          <div id="input_fields">
-            <label>ORGANIZATION INFORMATION</label>
-            <textarea type="text" />
-          </div>
-          <div id="input_fields">
-            <label>NO.OF PEOPLE IN ORGANIZATION</label>
-            <input type="text" />
-          </div>
-          <div className="buttons_main">
-            <Button block>Cancel</Button>
-            <Button type="primary" block>
-              Submit
-            </Button>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <div id="userNote">
+      {visible ? <div id="userNote">
         <Modal
-          visible={true}
+          visible={visible}
           okButtonProps={{ style: { display: 'none' } }}
           cancelButtonProps={{ style: { display: 'none' } }}
+          onCancel={() => { navigate(`/Board/`) }}
         >
-          <UserNote />
+          <UserNote modalMail={modalMail} />
         </Modal>
-      </div> */}
-
-    </LoginContainer>
+      </div>
+        :
+        <>
+          {modalDisplay ?
+            <div id="AdminContainer">
+              <h2>You will be Admin for Your Organization</h2>
+              <div className="input_main">
+                <div id="input_fields">
+                  <label style={{ color: orgName.length < 2 && `red` }}>ORGANIZATION NAME</label>
+                  <input type="text" onChange={(e) => setOrgName(e.target.value)} />
+                </div>
+                <div id="input_fields">
+                  <label style={{ color: orgInfo.length < 5 && `red` }}>ORGANIZATION INFORMATION</label>
+                  <textarea type="text" onChange={(e) => setOrgInfo(e.target.value)} />
+                </div>
+                <div id="input_fields">
+                  <label style={{ color: orgCount !== '' && `red` }}>NO.OF PEOPLE IN ORGANIZATION</label>
+                  <input type="number" onChange={(e) => setOrgCount(e.target.value)} />
+                </div>
+                <div className="buttons_main">
+                  <Button block onClick={() => { setModalDisplay(false) }}>Cancel</Button>
+                  <Button type="primary" block onClick={updateOrg}>
+                    Submit
+                  </Button>
+                </div>
+              </div>
+            </div>
+            :
+            <div id="LoginContainer">
+              <img src={login_logo} alt="login_logo" />
+              <h2>Log In to Leave Tracker</h2>
+              <h4>Connect with Google Account</h4>
+              <button onClick={signInWithGoogle} disabled={btnDisable} style={{ background: btnDisable ? 'gray' : '#FCFDFE' }}>
+                <img src={google} alt="img" />
+                Sign in with Google
+              </button>
+            </div>
+          }
+        </>
+      }
+    </LoginContainer >
   )
 }
 export default Login

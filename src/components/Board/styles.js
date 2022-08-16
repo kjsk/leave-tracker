@@ -25,7 +25,24 @@ export const BoardContainer = styled.div`
     height: 100%;
     background: #363740;
     padding: 3.33vw 0 0 0;
+    position: relative;
     transition: 0.5s ease-in-out;
+  }
+
+  #BoardContainer #side_menu #drag_button {
+    position: absolute;
+    top: 56px;
+    right: -0.9vw;
+    color: white;
+    width: 30px;
+    height: 30px;
+    background: #363740;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 500;
   }
 
   #BoardContainer #side_menu h1 {
@@ -46,14 +63,14 @@ export const BoardContainer = styled.div`
   }
 
   #BoardContainer #side_menu ul {
-    width: 16vw;
+    width: -webkit-fill-available;
     margin: 4.49275362318841vw 0 0 0;
   }
 
   #BoardContainer #side_menu ul:nth-child(3) {
     margin: 0;
     padding: 1.08695652173913vw 0 0 0;
-    border-top: 0.072463768115942vw solid #dfe0eb38;
+    border-bottom: 0.072463768115942vw solid #dfe0eb38;
   }
 
   #BoardContainer #side_menu ul li {
