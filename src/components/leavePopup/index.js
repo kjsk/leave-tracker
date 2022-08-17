@@ -5,9 +5,9 @@ import user from "../../data/assets/user.svg"
 import leave_type from "../../data/assets/leave_type.svg"
 import cal from "../../data/assets/pop_Calendar.svg"
 import Edit from "../../data/assets/Edit.svg"
-import { DatePicker, Dropdown, message } from "antd"
+import { DatePicker, Dropdown } from "antd"
 import LeaveType from "./leave_type"
-import { getHeaders, baseURL } from "../../utils/urls"
+import { baseURL } from "../../utils/urls"
 
 const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
@@ -46,8 +46,8 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       data: {
         startDate: pushTime[0].format("MM-DD-YYYY"),
         endDate: pushTime[1].format("MM-DD-YYYY"),
-        startStamp: pushTime[0]?._d,
-        endStamp: pushTime[1]?._d,
+        startStamp: pushTime[0],
+        endStamp: pushTime[1],
         reason: reason,
         type: leaveType,
         days: 2
@@ -57,8 +57,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       getLeaves();
       setReason("");
       setLeaveType("");
-      onChange(0);
-      setPushTime([{}, {}]);
       playAudio();
       openNotificationWithIcon(`success`, `Your Leave Request submitted successfully`);
     }).catch((_err) => {
@@ -66,8 +64,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       setPopup(false);
       setReason("");
       setLeaveType("");
-      onChange(0);
-      setPushTime([{}, {}]);
       setActiveLoader(false);
       openNotificationWithIcon(`error`, `Your leave request failed`);
     })
@@ -84,14 +80,6 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
           <img src={cal} alt="img" />
           <p>
             <RangePicker onChange={onChange} />
-            {/* <span id="span"></span>
-            <Popover
-              placement="bottomRight"
-              content={<Leave setLeavePer={setLeavePer} />}
-              style={{ position: "relative" }}
-            >
-              {leavePer}
-            </Popover> */}
           </p>
         </div>
         <Dropdown

@@ -31,18 +31,19 @@ export const BoardContainer = styled.div`
 
   #BoardContainer #side_menu #drag_button {
     position: absolute;
-    top: 56px;
+    top: 3.5vw;
     right: -0.9vw;
     color: white;
-    width: 30px;
-    height: 30px;
+    width: 1.9vw;
+    height: 1.9vw;
     background: #363740;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50px;
+    border-radius: 5vw;
     cursor: pointer;
     z-index: 500;
+    font-size: 1vw;
   }
 
   #BoardContainer #side_menu h1 {
@@ -164,14 +165,15 @@ transition: 0.5s ease-in-out;
   }
   #BoardContainer #side_menu #menu_dropdown span {
     font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 20px;
-letter-spacing: 0.2px;
-color: #DDE2FF;
-padding: 5px 32px;
-cursor: pointer;
-direction:ltr;
+    font-weight: 400;
+    font-size: 1;
+    line-height: 1.2vw;
+    letter-spacing: 0.2px;
+    color: #DDE2FF;
+    padding: 0.5vw 2vw;
+    cursor: pointer;
+    direction: ltr;
+    font-size: 1vw;
   }
   #BoardContainer #side_menu #menu_dropdown #active {
 font-weight: bold;
@@ -336,7 +338,7 @@ color: #A2A2A2;
 
   #BoardContainer #main_menu #message #message_block1 {
     display: grid;
-    grid-template-columns: 6% 15% 10% 11% 25% 17% auto;
+    grid-template-columns: 6% 12% 18% 18% 25% 11% auto;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     margin: 2.17vw 0 0 0;
@@ -359,14 +361,6 @@ color: #A2A2A2;
     height: 23vw;
     overflow: scroll;
     overflow-x: hidden;
-  }
-
-  #BoardContainer #main_menu #message #message_blocks {
-    width: 100%;
-    height: 23vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 
   #BoardContainer #main_menu #message #message_block2::-webkit-scrollbar {
@@ -397,7 +391,7 @@ color: #A2A2A2;
 
   #BoardContainer #main_menu #message #message_block2 #task_container {
     display: grid;
-    grid-template-columns: 6% 15% 10% 11% 25% 17% auto;
+    grid-template-columns: 6% 12% 18% 18% 25% 11% auto;
     grid-template-rows: 2.89vw;
     grid-gap: 0.57vw;
     border-bottom: 0.07vw solid #ededee;
@@ -422,7 +416,7 @@ color: #A2A2A2;
     display: flex;
     align-items: center;
     font-weight: 600;
-    font-size: 1.15vw;
+    font-size: 1vw;
     color: #252733;
     overflow: hidden;
   }
@@ -578,7 +572,7 @@ color: #A2A2A2;
     border-bottom: 0.144vw solid #ededee;
   }
   #BoardContainer #admin #message #message_block2 #task_container p {
-    font-size: 1.1vw;
+    font-size: 1vw;
   }
   #BoardContainer #admin #message #message_block2 #task_container #profile_box {
     display: flex;
@@ -835,6 +829,7 @@ export const LeaveDetailstyle = styled.div`
   display: flex;
   flex-direction: column;
   width: fit-content;
+  opacity: 0.5;
  }
  #add_employee_main #pop_body {
   display: flex;

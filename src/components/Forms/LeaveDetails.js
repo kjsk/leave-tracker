@@ -1,7 +1,8 @@
 import React from "react";
 // import { Button, Dropdown, Menu } from 'antd';
-import { LeaveDetailstyle } from "../Board/styles"
+import moment from 'moment';
 import Avatar from "../Avatar/index";
+import { LeaveDetailstyle } from "../Board/styles";
 
 const LeaveDetails = ({ leaveDetailContent, desecision, nameProf, userDataMain }) => {
 
@@ -21,7 +22,7 @@ const LeaveDetails = ({ leaveDetailContent, desecision, nameProf, userDataMain }
                     </div>
                     <div id="leave_details">
                         <span>{data?.item?.type === 'cos' ? 'Casual Leave' : 'Paid Leave'}</span>
-                        <span>{data?.item?.startDate} to {data?.item?.endDate}</span>
+                        <span>{moment(data?.item?.startDate).format("Do MMM")} to {moment(data?.item?.endDate).format("Do MMM, YYYY")}</span>
                     </div>
                 </div>
                 <div id="pop_body">

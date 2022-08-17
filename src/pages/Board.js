@@ -15,13 +15,13 @@ import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from '../data/assets/Edit_user.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer, Badge, message, Result, Modal, notification } from 'antd';
+import { Empty, Popover, Drawer, Badge, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
 import emptyFile from '../data/assets/empty-file.gif';
 import axios from 'axios';
-import { getHeaders, baseURL } from "../utils/urls"
+import { getHeaders, baseURL, leavesAPI, userEditAPI, getUsersAPI, addUserAPI } from "../utils/urls"
 import { navigate } from "gatsby"
 import Loader from "../components/loader";
 import NotificationSound from "../utils/notification.mp3"
@@ -29,14 +29,17 @@ import AddEmployee from "../components/Forms/AddEmployee";
 import EditUser from "../components/Forms/EditUser";
 import LeaveDetails from "../components/Forms/LeaveDetails";
 import Avatar from "../components/Avatar/index";
+import Home from "../components/Board/home";
+import AdminPortal from "../components/Board/AdminPortal";
+import UsersList from "../components/Board/UsersList";
 
 const Board = () => {
 
-    const urlGlobal = baseURL;
+    const urlGlobal = baseURL;  // ADDING GLOBAL BASE URL
 
-    let userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
+    const userData = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData')) // FETCHING USER STORED DATA
+    const userDataMain = userData?.user;
 
-    let userDataMain = userData?.user;
     const [popup, setPopup] = useState(false);
     const [sideToggle, setSideToggle] = useState(userDataMain?.role === 'admin' ? 3 : 1);
     const [sideSubOpen, setSideSubOpen] = useState(false);
@@ -54,8 +57,10 @@ const Board = () => {
     const [name, setName] = useState('');
     const [Email, setEMail] = useState('');
 
+    // common headers
     const headers = getHeaders(userData?.tokens?.accessToken);
 
+    // FETCHING LEAVE ON PAGELOAD
     useEffect(() => {
         if (userData) {
             getLeaves();
@@ -72,7 +77,7 @@ const Board = () => {
         setActiveLoader(true);
         axios({
             method: 'GET',
-            url: `${urlGlobal}/api/v2/leaves`,
+            url: leavesAPI(),
             headers: headers
         }).then((res) => {
             setActiveLoader(false);
@@ -137,13 +142,13 @@ const Board = () => {
         if (id) {
             conditionAPI = axios({
                 method: 'DELETE',
-                url: `${urlGlobal}/api/v2/users/${id}`,
+                url: userEditAPI(id),
                 headers: headers
             })
         } else {
             conditionAPI = axios({
                 method: 'POST',
-                url: `${urlGlobal}/api/v2/users`,
+                url: addUserAPI(),
                 data: {
                     name: name,
                     email: Email
@@ -151,6 +156,7 @@ const Board = () => {
                 headers: headers
             })
         }
+
         conditionAPI.then((res) => {
             openNotificationWithIcon(`success`, id ? `${res?.data?.user?.name} removed` : `${res?.data?.user?.name} added successfully`);
             setAddEmp(false);
@@ -223,7 +229,7 @@ const Board = () => {
     const getUsers = () => {
         axios({
             method: 'GET',
-            url: `${urlGlobal}/api/v2/users?page=0&limit=0`,
+            url: getUsersAPI(),
             headers: headers
         }).then((res) => {
             setUsersData(res?.data?.users.filter(item => item?.role !== 'admin'));
@@ -240,6 +246,8 @@ const Board = () => {
     const [empDesignation, setEmpDesignation] = useState('');
     const [empUsed, setEmpUsed] = useState('');
     const [empLeft, setEmpLeft] = useState('');
+
+    // SETTING USER DETAILS TO STATE FOR EDIT
     const editUserFun = (item) => {
         setEditUserPop(true);
         setEditUserPopDetails(item);
@@ -259,7 +267,7 @@ const Board = () => {
         if (empName || empName || empDesignation || empUsed || empLeft) {
             axios({
                 method: 'PATCH',
-                url: `${urlGlobal}/api/v2/users/${editUserPopDetails?.id}`,
+                url: userEditAPI(editUserPopDetails?.id),
                 data: data,
                 headers: headers
             }).then((resp) => {
@@ -280,15 +288,39 @@ const Board = () => {
 
 
     // Setting variables manually for leave count in User dash board
-    const leaveApproved = userLeaveData?.leaves?.filter((item) => item.status === 'approved')
-    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected')
-    const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending')
-    const userRealData = userLeaveData?.leaves?.filter((item) => item.status === adminToggle)
+    const leaveApproved = userLeaveData?.leaves?.filter((item) => item.status === 'approved');
+    const leaveRejected = userLeaveData?.leaves?.filter((item) => item.status === 'rejected');
+    const leavePending = userLeaveData?.leaves?.filter((item) => item.status === 'pending');
+    const userRealData = userLeaveData?.leaves?.filter((item) => item.status === adminToggle);
     useEffect(() => {
         if (sideSubOpen === false) {
             setSideToggleSub({ name: '', value: '' })
         }
     }, [sideSubOpen])
+
+    // SETTING COMMON PROPS FOR ALL THE COMPONENTS
+    const commonProps = {
+        leaveApproved,
+        leavePending,
+        leaveRejected,
+        userLeaveData,
+        usersData,
+        Edit_user,
+        editUserFun,
+        DeleteOutlined,
+        addUser,
+        share,
+        adminToggle,
+        setAdminToggle,
+        leaveMap,
+        userRealData,
+        Avatar,
+        nameProf,
+        openLeaveDetailsFun,
+        userDataMain,
+        desecision,
+        openNotificationWithIcon
+    }
 
     return (
         <BoardContainer>
@@ -298,7 +330,7 @@ const Board = () => {
             </audio>
             <div id="BoardContainer" >
                 <div id="side_menu" style={{ width: !barOpen && '6vw', transition: `0.5s ease-in-out` }}>
-                    <span id='drag_button' onClick={() => setbarOpen(!barOpen)}>
+                    <span id='drag_button' onClick={() => setbarOpen(!barOpen)} role="presentation">
                         <Popover placement="right" content={barOpen ? 'Tap To Minimize' : 'Tap To Expand'}>
                             {barOpen ?
                                 <RightOutlined />
@@ -311,24 +343,24 @@ const Board = () => {
                     <h1><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
                     <ul>
                         {userDataMain?.role === 'user' &&
-                            <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>}
-                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
+                            <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>}
+                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
                         {userDataMain?.role === 'admin' ?
                             <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => {
                                 setSideToggle(3);
                                 setSideSubOpen(!sideSubOpen);
                             }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'} {barOpen && <span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span>}</li>
                             :
-                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
+                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
                         }
                         {sideSubOpen && barOpen &&
                             <div id="menu_dropdown">
-                                <span id={sideToggleSub.value === 1 && "active"} onClick={() => setSideToggleSub({ name: 'Employee List', value: 1 })}>Employee List</span>
+                                <span id={sideToggleSub.value === 1 && "active"} onClick={() => setSideToggleSub({ name: 'Employee List', value: 1 })} role="presentation">Employee List</span>
                             </div>
                         }
                     </ul>
                     <ul>
-                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(4) }}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
+                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(4); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
                     </ul>
 
 
@@ -356,87 +388,12 @@ const Board = () => {
                         </div>
                     </div>
 
+                    {/* HOME */}
                     {sideToggle === 1 && sideToggleSub.value === '' &&
-                        <>
-                            <div id="score">
-                                <div id="score_card">
-                                    <h2 id="score">02</h2>
-                                    <p>Available Leaves</p>
-                                </div>
-                                <div id="score_card">
-                                    <h2 id="score">{leaveApproved?.length < 10 ? `0${leaveApproved?.length}` : leaveApproved?.length}</h2>
-                                    <p>Approved Leaves</p>
-                                </div>
-                                <div id="score_card">
-                                    <h2 id="score">{leavePending?.length < 10 ? `0${leavePending?.length}` : leavePending?.length}</h2>
-                                    <p>Pending Leaves Requests</p>
-                                </div>
-                                <div id="score_card">
-                                    <h2 id="score">{leaveRejected?.length < 10 ? `0${leaveRejected?.length}` : leaveRejected?.length}</h2>
-                                    <p>Rejected Leaves</p>
-                                </div>
-                            </div>
-
-                            <div id="message">
-                                {userLeaveData?.leaves?.length > 0 ?
-                                    <>
-                                        <div id="message_block1">
-                                            <h3>SNo</h3>
-                                            <h3>Type</h3>
-                                            <h3>From</h3>
-                                            <h3>To</h3>
-                                            <h3>Reason</h3>
-                                            <h3>Status</h3>
-                                            <h3>Action</h3>
-                                        </div>
-                                        <div id="message_block2">
-                                            {userLeaveData?.leaves?.reverse().map((item, i) =>
-                                                <div id="task_container" key={i}>
-                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{userLeaveData?.leaves?.length - i}</p>
-                                                    <p style={{ padding: `0` }} onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
-                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.startDate}</p>
-                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.endDate}</p>
-                                                    <p onClick={() => openLeaveDetailsFun(item, 'home')}>{item?.reason}</p>
-                                                    <p style={{
-                                                        color: item?.status === 'pending' ? '#CB5A08' :
-                                                            item?.status === 'approved' ? '#00D241'
-                                                                :
-                                                                item?.status === 'rejected' ? '#FF0000' :
-                                                                    '', fontWeight: '600'
-                                                    }} onClick={() => openLeaveDetailsFun(item, 'home')}>
-                                                        {item?.status === 'pending' ? 'Pending' :
-                                                            item?.status === 'approved' ? 'Approved'
-                                                                :
-                                                                item?.status === 'rejected' ? 'Rejected' :
-                                                                    ''}
-                                                    </p>
-                                                    <p onClick={() => desecision('delete', item?.id)}><DeleteOutlined className='delete_icon' /></p>
-                                                </div>
-                                            )}
-
-                                        </div>
-                                    </>
-                                    :
-                                    <div id="message_blocks">
-                                        <Empty
-                                            image={emptyFile}
-                                            imageStyle={{
-                                                height: 200,
-                                            }}
-                                            description={
-                                                <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
-                                                    No Leaves Applied
-                                                </span>
-                                            }
-                                        />
-                                    </div>
-                                }
-                            </div>
-                        </>
-
+                        <Home {...commonProps} />
                     }
 
-
+                    {/* CALENDAR */}
                     {sideToggle === 2 && sideToggleSub.value === '' &&
                         <Result
                             icon={<CalendarOutlined />}
@@ -445,170 +402,28 @@ const Board = () => {
 
                     }
 
+                    {/* ADMIN & USER PORTAL */}
                     {sideToggle === 3 && sideToggleSub.value === '' &&
-                        <div id="admin">
-                            <div id="admin_block1">
-                                <h1>Leave Requests</h1>
-                                <p id="share"><img src={share} alt="share" />Share</p>
-                            </div>
-                            <div id="admin_tab">
-                                <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>
-                                <h2 role='presentation' onClick={() => setAdminToggle('approved')} className={adminToggle === 'approved' && "active"}>Approved</h2>
-                                <h2 role='presentation' onClick={() => setAdminToggle('rejected')} className={adminToggle === 'rejected' && "active"}>Rejected</h2>
-                            </div>
-                            {leaveMap?.length !== 0 ?
-                                <div id="message">
-                                    <div id="message_block1">
-                                        <h3>SNo</h3>
-                                        <h3>Name & ID</h3>
-                                        <h3>Date</h3>
-                                        <h3>Leave Type</h3>
-                                        <h3>Reason</h3>
-                                        <h3>Action</h3>
-                                    </div>
-                                    <div id="message_block2">
-                                        {userRealData?.map((item, i) =>
-                                            <div>
-                                                {item.status === adminToggle &&
-                                                    <div id="task_container">
-                                                        <p>{i + 1}</p>
-                                                        <div id="profile_box">
-                                                            <Avatar name={item?.username} nameProf={nameProf} />
-                                                            {/* <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" /> */}
-                                                            <div id="profile_text" onClick={() => openLeaveDetailsFun(item, 'pending')}>
-                                                                <h2 style={{ fontSize: `0.9vw` }}>{item?.username}</h2>
-                                                                <p style={{ fontSize: `0.9vw` }}>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
-                                                            </div>
-                                                        </div>
-                                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')}>{item?.startDate} to {item?.endDate}</p>
-                                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')}>{item?.type === 'cos' ? 'CL' : 'PL'}</p>
-                                                        <p style={{
-                                                            whiteSpace: 'nowrap',
-                                                            width: '16vw',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                        }} onClick={() => openLeaveDetailsFun(item, 'pending')}>{item?.reason}</p>
-                                                        <div id="btns">
-                                                            {item.status === 'approved' ? <p style={{
-                                                                color: `#00D241`, fontSize: `1.2vw`, fontWeight: `700`
-                                                            }}>Approved</p> : item.status === 'rejected' ?
-                                                                <p style={{
-                                                                    color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
-                                                                }}>Rejected</p> :
-                                                                <>
-                                                                    {userDataMain?.role === 'admin' ?
-                                                                        <>
-                                                                            <button onClick={() => { desecision('approve', item?.id) }}>Approve</button>
-                                                                            <button onClick={() => { desecision('reject', item?.id) }}>Reject</button>
-                                                                        </>
-                                                                        :
-                                                                        <p style={{
-                                                                            color: `#CB5A08`, fontSize: `1.2vw`, fontWeight: `700`
-                                                                        }}>Pending</p>
-                                                                    }
-                                                                </>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                }
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                :
-                                <Empty
-                                    image={emptyFile}
-                                    imageStyle={{
-                                        height: 250,
-                                        width: 200,
-                                        margin: '7vw auto auto auto',
-                                    }}
-                                    description={
-                                        <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
-                                            No {adminToggle} leaves!
-                                        </span>
-                                    }
-                                />
-                            }
-                        </div>
+                        <AdminPortal {...commonProps} />
                     }
 
+                    {/* USERLIST */}
+                    {sideToggle === 3 && sideToggleSub.value === 1 &&
+                        <UsersList {...commonProps} />
+                    }
 
+                    {/* SETTINGS */}
                     {sideToggle === 4 &&
                         <Result
                             icon={<SettingOutlined />}
-                            title="Hello, Calender comming soon!"
+                            title="Hello, Settings comming soon!"
                         />
 
                     }
-
-
-
-                    {sideToggle === 3 && sideToggleSub.value === 1 &&
-                        <div id="admin_home">
-                            <div id="admin" className='admin'>
-                                {usersData?.length !== 0 ?
-                                    <div id="message">
-                                        <div id="message_block1">
-                                            <h3>SNo</h3>
-                                            <h3>Emp. Name & ID</h3>
-                                            <h3>Designation</h3>
-                                            <h3>No.of Leave Used</h3>
-                                            <h3>No.of Leave Left</h3>
-                                            <h3>Action</h3>
-                                        </div>
-                                        <div id="message_block2">
-                                            {usersData?.map((item, i) =>
-                                                <div>
-                                                    <div id="task_container">
-                                                        <p>{i + 1}</p>
-                                                        <div id="profile_box">
-                                                            <Avatar name={item?.name} nameProf={nameProf} />
-                                                            {/* <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" /> */}
-                                                            <div id="profile_text">
-                                                                <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
-                                                                <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
-                                                            </div>
-                                                        </div>
-                                                        <p>{item?.role}</p>
-                                                        <p>4</p>
-                                                        <p style={{
-                                                            whiteSpace: 'nowrap',
-                                                            width: '16vw',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                        }}>12</p>
-                                                        <div id="btns">
-                                                            <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} />
-                                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    :
-                                    <Empty
-                                        image={emptyFile}
-                                        imageStyle={{
-                                            height: 250,
-                                            width: 200,
-                                            margin: '7vw auto auto auto',
-                                        }}
-                                        description={
-                                            <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
-                                                No Users!
-                                            </span>
-                                        }
-                                    />
-                                }
-                            </div>
-                        </div>
-                    }
-
                 </div>
-
             </div>
+
+            {/* SIDE MODAL DRAWER TO APPLY LEAVE */}
             <Drawer
                 visible={popup}
                 onClose={() => setPopup(false)}
@@ -617,6 +432,7 @@ const Board = () => {
                 <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} openNotificationWithIcon={openNotificationWithIcon} />
             </Drawer>
 
+            {/* ADD EMPLOYEE POPUP */}
             <Modal
                 title="Add Employee"
                 centered
@@ -642,6 +458,7 @@ const Board = () => {
                 <EditUser editUserPopDetails={editUserPopDetails} empName={empName} empDesignation={empDesignation} setEmpName={setEmpName} setEmpDesignation={setEmpDesignation} setEmpUsed={setEmpUsed} setEmpLeft={setEmpLeft} />
             </Modal>
 
+            {/* LEAVE DETAILS POPUP */}
             <Modal
                 centered
                 visible={leaveDetail}
@@ -653,6 +470,7 @@ const Board = () => {
                 <LeaveDetails leaveDetailContent={leaveDetailContent} desecision={desecision} nameProf={nameProf} userDataMain={userDataMain} />
             </Modal>
 
+            {/* LEAVE ACTION TAKEN POPUP (APPROVE, REJECT, DELETE) */}
             <Modal
                 title="Confirmation"
                 centered

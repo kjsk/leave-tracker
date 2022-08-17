@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app"
 import { LoginContainer } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
-import { getHeaders, baseURL } from "../utils/urls"
+import { getHeaders, baseURL, adminLoginAPI, adminRegisterAPI, checkOrgAPI, updateOrgAPI } from "../utils/urls"
 import { notification, Button, Modal } from "antd";
 import Loader from "../components/loader";
 // import NotificationSound from "../utils/WaterDrop.mp3"
@@ -17,9 +17,6 @@ const Login = () => {
 
 
   const urlGlobal = baseURL;
-
-
-  console.log(`${urlGlobal}/api/v2/auth/register`)
 
   let localToken = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -77,7 +74,7 @@ const Login = () => {
   const adminRegister = (name, email) => {
     axios({
       method: 'POST',
-      url: `${urlGlobal}/api/v2/auth/register`,
+      url: adminRegisterAPI(),
       data: {
         email: email,
         name: name
@@ -112,9 +109,9 @@ const Login = () => {
   const adminLogin = (email) => {
     axios({
       method: 'POST',
-      url: `${urlGlobal}/api/v2/auth/login`,
+      url: adminLoginAPI(),
       data: {
-        email: email,
+        email: email
       },
       headers: headers
     })
@@ -134,14 +131,14 @@ const Login = () => {
   const checkOrg = (id, accessToken) => {
     axios({
       method: 'GET',
-      url: `${urlGlobal}/api/v2/orgs/${id}`,
+      url: checkOrgAPI(id),
       headers: getHeaders(accessToken)
     }).then((res) => {
       if (res?.data?.org?.orgName === 'Default' && localToken?.user?.role === 'admin') {
         setModalDisplay(true);
         setActiveLoader(false);
       } else {
-        navigate(`/Board/`);
+        navigate(`/Board`);
         setActiveLoader(false);
       }
     })
@@ -160,7 +157,7 @@ const Login = () => {
     }
     axios({
       method: 'PATCH',
-      url: `${urlGlobal}/api/v2/orgs`,
+      url: updateOrgAPI(),
       data: sampleData,
       headers: headers
     }).then((res) => {
@@ -215,15 +212,15 @@ const Login = () => {
               <h2>You will be Admin for Your Organization</h2>
               <div className="input_main">
                 <div id="input_fields">
-                  <label style={{ color: validBtn && orgName.length < 2 ? `red` : '' }} >ORGANIZATION NAME</label>
+                  <label style={{ color: validBtn && orgName.length < 2 ? `red` : '' }} htmlFor="input">ORGANIZATION NAME</label>
                   <input type="text" onChange={(e) => setOrgName(e.target.value)} />
                 </div>
                 <div id="input_fields">
-                  <label style={{ color: validBtn && orgInfo.length < 5 ? `red` : '' }}>ORGANIZATION INFORMATION</label>
+                  <label style={{ color: validBtn && orgInfo.length < 5 ? `red` : '' }} htmlFor="input">ORGANIZATION INFORMATION</label>
                   <textarea type="text" onChange={(e) => setOrgInfo(e.target.value)} />
                 </div>
                 <div id="input_fields">
-                  <label style={{ color: validBtn && !orgCount ? `red` : '' }}>NO.OF PEOPLE IN ORGANIZATION</label>
+                  <label style={{ color: validBtn && !orgCount ? `red` : '' }} htmlFor="input">NO.OF PEOPLE IN ORGANIZATION</label>
                   <input type="number" onChange={(e) => setOrgCount(e.target.value)} />
                 </div>
                 <div className="buttons_main">
