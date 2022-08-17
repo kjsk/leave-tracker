@@ -96,7 +96,7 @@ const Board = () => {
     // Call for logout and cleanup the localstorage
     const logOut = () => {
         typeof localStorage !== `undefined` && localStorage.removeItem('userData');
-        navigate(`/`);
+        navigate(`/Login`);
         openNotificationWithIcon(`success`, 'Logout Successfully');
     }
 

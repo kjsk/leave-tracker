@@ -1,9 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react"
-import Login from './Login'
 import SEO from "../components/seo"
+import { navigate } from "gatsby";
 import logo1 from "../images/intro-logo.svg";
 import logo2 from "../images/intro-text.svg";
-import { navigate } from "gatsby";
 
 
 const IndexPage = () => {
@@ -20,7 +19,6 @@ const IndexPage = () => {
   return (
     <Fragment>
       <SEO title="Login" description="Gatsby is a React-based open source framework with performance, scalability and security built-in." keywords={['gatsby', 'react']} />
-      {/* <Login /> */}
       {
         loading &&
         <div id="loader">

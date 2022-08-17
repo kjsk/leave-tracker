@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState } from "react"
 import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
@@ -9,7 +9,7 @@ import axios from "axios"
 import { getHeaders, baseURL } from "../utils/urls"
 import { notification, Button, Modal } from "antd";
 import Loader from "../components/loader";
-import NotificationSound from "../utils/WaterDrop.mp3"
+// import NotificationSound from "../utils/WaterDrop.mp3"
 import UserNote from "../components/userNote/UserNote"
 
 
@@ -28,6 +28,7 @@ const Login = () => {
   const [modalDisplay, setModalDisplay] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalMail, setModalMail] = useState('');
+  const [validBtn, setvalidBtn] = useState(false);
 
   const [orgName, setOrgName] = useState('');
   const [orgInfo, setOrgInfo] = useState('');
@@ -150,6 +151,7 @@ const Login = () => {
 
   // Call to update & add org under ADMIN
   const updateOrg = () => {
+    setActiveLoader(true);
     const neworgCount = orgCount && JSON.parse(orgCount);
     const sampleData = {
       orgName: orgName,
@@ -213,22 +215,28 @@ const Login = () => {
               <h2>You will be Admin for Your Organization</h2>
               <div className="input_main">
                 <div id="input_fields">
-                  <label style={{ color: orgName.length < 2 && `red` }}>ORGANIZATION NAME</label>
+                  <label style={{ color: validBtn && orgName.length < 2 ? `red` : '' }} >ORGANIZATION NAME</label>
                   <input type="text" onChange={(e) => setOrgName(e.target.value)} />
                 </div>
                 <div id="input_fields">
-                  <label style={{ color: orgInfo.length < 5 && `red` }}>ORGANIZATION INFORMATION</label>
+                  <label style={{ color: validBtn && orgInfo.length < 5 ? `red` : '' }}>ORGANIZATION INFORMATION</label>
                   <textarea type="text" onChange={(e) => setOrgInfo(e.target.value)} />
                 </div>
                 <div id="input_fields">
-                  <label style={{ color: orgCount !== '' && `red` }}>NO.OF PEOPLE IN ORGANIZATION</label>
+                  <label style={{ color: validBtn && !orgCount ? `red` : '' }}>NO.OF PEOPLE IN ORGANIZATION</label>
                   <input type="number" onChange={(e) => setOrgCount(e.target.value)} />
                 </div>
                 <div className="buttons_main">
                   <Button block onClick={() => { setModalDisplay(false) }}>Cancel</Button>
-                  <Button type="primary" block onClick={updateOrg}>
-                    Submit
-                  </Button>
+                  {validBtn && orgName.length > 2 && orgInfo.length > 5 && orgCount ?
+                    <Button type="primary" block onClick={updateOrg}>
+                      Submit
+                    </Button>
+                    :
+                    <Button type="primary" danger onClick={() => setvalidBtn(true)}>
+                      Submit
+                    </Button>
+                  }
                 </div>
               </div>
             </div>
