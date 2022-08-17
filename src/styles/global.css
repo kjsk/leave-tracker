@@ -1,1 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,400;0,600;0,800;1,200;1,300;1,500;1,600;1,800&display=swap');
+
+
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #363740;
+    z-index: 11;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#loader #image_container {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+#loader #image_container #img1_cont {
+    background: #363740;
+    z-index: 1;
+}
+#loader #image_container #image {
+    width: 70px;
+    animation-name: example2;
+    animation-duration: 4s;
+    transition: 0.5s ease-in-out;
+}
+#loader #image_container #image2 {
+    width: 150px;
+    margin: 0 0 0 15px;
+    animation-name: example;
+    animation-duration: 4s;
+    transition: 0.5s ease-in-out;
+}
+@keyframes example {
+    0%   {margin: 0 0 0 -100px;}
+    100% {margin: 0 0 0 15px;}
+  }
