@@ -28,6 +28,7 @@ import NotificationSound from "../utils/notification.mp3"
 import AddEmployee from "../components/Forms/AddEmployee";
 import EditUser from "../components/Forms/EditUser";
 import LeaveDetails from "../components/Forms/LeaveDetails";
+import Avatar from "../components/Avatar/index";
 
 const Board = () => {
 
@@ -42,7 +43,7 @@ const Board = () => {
     const [sideToggleSub, setSideToggleSub] = useState({ name: '', value: '' });
     const [userLeaveData, setUserLeaveData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
-    const [adminToggle, setAdminToggle] = useState(userDataMain?.role === 'admin' ? 'pending' : 'approved');
+    const [adminToggle, setAdminToggle] = useState('pending');
     const [visible, setVisible] = useState(false);
     const [addEmp, setAddEmp] = useState(false);
     const [barOpen, setbarOpen] = useState(false);
@@ -347,9 +348,8 @@ const Board = () => {
                                     <img src={notificaton} alt="img" id="notificaton" />
                                 </Badge>
                             </Popover>
-
                             <div id="mini_block_name">
-                                <p id="profile-icon">{userDataMain && nameProf(userDataMain?.name).toUpperCase()}</p>
+                                <Avatar name={userDataMain?.name} nameProf={nameProf} />
                                 <p id="name_main">{userDataMain?.name}<span>{userDataMain?.role}</span></p>
                                 {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
                             </div>
@@ -452,7 +452,7 @@ const Board = () => {
                                 <p id="share"><img src={share} alt="share" />Share</p>
                             </div>
                             <div id="admin_tab">
-                                {userDataMain?.role === 'admin' && <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>}
+                                <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>
                                 <h2 role='presentation' onClick={() => setAdminToggle('approved')} className={adminToggle === 'approved' && "active"}>Approved</h2>
                                 <h2 role='presentation' onClick={() => setAdminToggle('rejected')} className={adminToggle === 'rejected' && "active"}>Rejected</h2>
                             </div>
@@ -473,7 +473,8 @@ const Board = () => {
                                                     <div id="task_container">
                                                         <p>{i + 1}</p>
                                                         <div id="profile_box">
-                                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                            <Avatar name={item?.username} nameProf={nameProf} />
+                                                            {/* <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" /> */}
                                                             <div id="profile_text" onClick={() => openLeaveDetailsFun(item, 'pending')}>
                                                                 <h2 style={{ fontSize: `0.9vw` }}>{item?.username}</h2>
                                                                 <p style={{ fontSize: `0.9vw` }}>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
@@ -495,8 +496,16 @@ const Board = () => {
                                                                     color: `#FF0000`, fontSize: `1.2vw`, fontWeight: `700`
                                                                 }}>Rejected</p> :
                                                                 <>
-                                                                    <button onClick={() => { desecision('approve', item?.id) }}>Approve</button>
-                                                                    <button onClick={() => { desecision('reject', item?.id) }}>Reject</button>
+                                                                    {userDataMain?.role === 'admin' ?
+                                                                        <>
+                                                                            <button onClick={() => { desecision('approve', item?.id) }}>Approve</button>
+                                                                            <button onClick={() => { desecision('reject', item?.id) }}>Reject</button>
+                                                                        </>
+                                                                        :
+                                                                        <p style={{
+                                                                            color: `#CB5A08`, fontSize: `1.2vw`, fontWeight: `700`
+                                                                        }}>Pending</p>
+                                                                    }
                                                                 </>
                                                             }
                                                         </div>
@@ -554,7 +563,8 @@ const Board = () => {
                                                     <div id="task_container">
                                                         <p>{i + 1}</p>
                                                         <div id="profile_box">
-                                                            <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" />
+                                                            <Avatar name={item?.name} nameProf={nameProf} />
+                                                            {/* <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" /> */}
                                                             <div id="profile_text">
                                                                 <h2 style={{ fontSize: `0.9vw` }}>{item?.name}</h2>
                                                                 <p style={{ fontSize: `0.9vw` }}>FJl7h1</p>
@@ -640,7 +650,7 @@ const Board = () => {
                 cancelButtonProps={{ style: { display: 'none' } }}
                 okText='Continue'
             >
-                <LeaveDetails leaveDetailContent={leaveDetailContent} desecision={desecision} />
+                <LeaveDetails leaveDetailContent={leaveDetailContent} desecision={desecision} nameProf={nameProf} userDataMain={userDataMain} />
             </Modal>
 
             <Modal

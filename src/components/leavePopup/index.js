@@ -56,14 +56,18 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
     }).then((_res) => {
       getLeaves();
       setReason("");
-      setPushTime(false);
+      setLeaveType("");
+      onChange(0);
+      setPushTime([{}, {}]);
       playAudio();
       openNotificationWithIcon(`success`, `Your Leave Request submitted successfully`);
     }).catch((_err) => {
       getLeaves();
       setPopup(false);
       setReason("");
-      setPushTime(false);
+      setLeaveType("");
+      onChange(0);
+      setPushTime([{}, {}]);
       setActiveLoader(false);
       openNotificationWithIcon(`error`, `Your leave request failed`);
     })

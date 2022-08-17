@@ -61,10 +61,10 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider).then(result => {
-      playAudio();
+      // playAudio();
       adminRegister(result?.user?.displayName, result?.user?.email);
     }).catch((error) => {
-      playAudio();
+      // playAudio();
       openNotificationWithIcon(`error`, `You should be an fidisys employee`)
       setActiveLoader(false);
       console.log("error", error);
@@ -83,7 +83,7 @@ const Login = () => {
       }
     })
       .then((res) => {
-        playAudio();
+        // playAudio();
         openNotificationWithIcon(`success`, `${res?.data?.user?.name} registered successfully`)
         typeof localStorage !== `undefined` && localStorage.setItem('userData', JSON.stringify(res.data));
         if (res?.data?.orgUpdate) {
@@ -94,7 +94,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
-        playAudio();
+        // playAudio();
         if (error?.response?.data?.message === 'Org already exists please contact your admin') {
           setVisible(true);
           setActiveLoader(false);
@@ -181,19 +181,19 @@ const Login = () => {
   };
 
 
-  // setError((validation()))
-  // notification conformation sound function
-  const audioPlayer = useRef(null);
+  // // setError((validation()))
+  // // notification conformation sound function
+  // const audioPlayer = useRef(null);
 
-  function playAudio() {
-    audioPlayer.current.play();
-  }
+  // function playAudio() {
+  //   audioPlayer.current.play();
+  // }
 
   return (
     <LoginContainer>
-      <audio ref={audioPlayer} src={NotificationSound}>
+      {/* <audio ref={audioPlayer} src={NotificationSound}>
         <track src="captions_es.vtt" kind="captions" srclang="es" label="spanish_captions" />
-      </audio>
+      </audio> */}
       {activeLoader && <Loader />}
 
       {visible ? <div id="userNote">

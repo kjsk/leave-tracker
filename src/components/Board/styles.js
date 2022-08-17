@@ -69,7 +69,7 @@ export const BoardContainer = styled.div`
 
   #BoardContainer #side_menu ul:nth-child(3) {
     margin: 0;
-    padding: 1.08695652173913vw 0 0 0;
+    padding: 1vw 0 1vw 0;
     border-bottom: 0.072463768115942vw solid #dfe0eb38;
   }
 
@@ -599,6 +599,27 @@ color: #A2A2A2;
     #message_block2
     #task_container
     #profile_box
+    #profile-icon {
+    font-weight: 700;
+    font-size: 1.01vw;
+    color: #3751FF;
+    width: 3.5vw;
+    height: 3.5vw;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    border-radius: 2.17391304347826vw;
+    background: #F1F2FF;
+    margin-right: 0.5vw;
+    padding: 0;
+  }
+
+  #BoardContainer
+    #admin
+    #message
+    #message_block2
+    #task_container
+    #profile_box
     #profile_text
     h2 {
     font-weight: 600;
@@ -685,6 +706,19 @@ color: #A2A2A2;
   #BoardContainer #admin_home #admin #message_block2 #task_container {
     grid-template-columns: 6% 20% 20% 20% 20% 10%;
   }
+  #BoardContainer #admin_home #admin #message_block2 #task_container #profile-icon {
+    font-weight: 700;
+    font-size: 1.01vw;
+    color: #3751FF;
+    width: 3.5vw;
+    height: 3.5vw;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    border-radius: 2.17391304347826vw;
+    background: #F1F2FF;
+    margin-right: 0.5vw;
+  }
 `
 
 export const EmployeeFormStyle = styled.div`
@@ -749,6 +783,20 @@ export const LeaveDetailstyle = styled.div`
     align-items: center;
     padding: 0 5rem 1rem 0;
     border-bottom: 2px solid #EEEEEE;
+  }
+  #add_employee_main #profile_box #profile-icon {
+    font-weight: 700;
+    font-size: 1.01vw;
+    color: #3751FF;
+    width: 3.5vw;
+    height: 3.5vw;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    border-radius: 2.17391304347826vw;
+    background: #F1F2FF;
+    margin-right: 0.5vw;
+    padding: 0;
   }
 #add_employee_main
     #profile_box
