@@ -24,6 +24,7 @@ export const BoardContainer = styled.div`
   #BoardContainer {
     display: flex;
     height: 100vh;
+    overflow: hidden;
   }
 
   #BoardContainer #side_menu {
