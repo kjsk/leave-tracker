@@ -15,11 +15,10 @@ import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from '../data/assets/Edit_user.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { Empty, Popover, Drawer, Badge, Result, Modal, notification } from 'antd';
+import { Popover, Drawer, Badge, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
 import Notification from "../components/leavePopup/notification";
 import share from '../data/assets/share.svg';
-import emptyFile from '../data/assets/empty-file.gif';
 import axios from 'axios';
 import { getHeaders, baseURL, leavesAPI, userEditAPI, getUsersAPI, addUserAPI } from "../utils/urls"
 import { navigate } from "gatsby"
@@ -41,7 +40,7 @@ const Board = () => {
     const userDataMain = userData?.user;
 
     const [popup, setPopup] = useState(false);
-    const [sideToggle, setSideToggle] = useState(userDataMain?.role === 'admin' ? 3 : 1);
+    const [sideToggle, setSideToggle] = useState(1);
     const [sideSubOpen, setSideSubOpen] = useState(false);
     const [sideToggleSub, setSideToggleSub] = useState({ name: '', value: '' });
     const [userLeaveData, setUserLeaveData] = useState([]);
@@ -342,8 +341,7 @@ const Board = () => {
 
                     <h1><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
                     <ul>
-                        {userDataMain?.role === 'user' &&
-                            <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>}
+                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
                         <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
                         {userDataMain?.role === 'admin' ?
                             <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => {

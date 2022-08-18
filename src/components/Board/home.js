@@ -10,15 +10,23 @@ const Home = ({
     openLeaveDetailsFun,
     desecision,
     DeleteOutlined,
+    userDataMain,
     openNotificationWithIcon
 }) => {
     return (
         <>
             <div id="score">
-                <div id="score_card">
-                    <h2 id="score">02</h2>
-                    <p>Available Leaves</p>
-                </div>
+                {userDataMain?.role === 'admin' ?
+                    <div id="score_card">
+                        <h2 id="score">{userLeaveData?.leaves?.length < 10 ? `0${userLeaveData?.leaves?.length}` : userLeaveData?.leaves?.length}</h2>
+                        <p>Action Needed</p>
+                    </div>
+                    :
+                    <div id="score_card">
+                        <h2 id="score">02</h2>
+                        <p>Available Leaves</p>
+                    </div>
+                }
                 <div id="score_card">
                     <h2 id="score">{leaveApproved?.length < 10 ? `0${leaveApproved?.length}` : leaveApproved?.length}</h2>
                     <p>Approved Leaves</p>
@@ -58,7 +66,7 @@ const Home = ({
                                             item?.status === 'approved' ? '#00D241'
                                                 :
                                                 item?.status === 'rejected' ? '#FF0000' :
-                                                    '', fontWeight: '600'
+                                                    '', fontWeight: `bold`
                                     }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">
                                         {item?.status === 'pending' ? 'Pending' :
                                             item?.status === 'approved' ? 'Approved'

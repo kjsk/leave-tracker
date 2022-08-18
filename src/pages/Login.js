@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app"
 import { LoginContainer } from "../components/Login/styles"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
-import { getHeaders, baseURL, adminLoginAPI, adminRegisterAPI, checkOrgAPI, updateOrgAPI } from "../utils/urls"
+import { getHeaders, adminLoginAPI, adminRegisterAPI, checkOrgAPI, updateOrgAPI } from "../utils/urls"
 import { notification, Button, Modal } from "antd";
 import Loader from "../components/loader";
 // import NotificationSound from "../utils/WaterDrop.mp3"
@@ -14,9 +14,6 @@ import UserNote from "../components/userNote/UserNote"
 
 
 const Login = () => {
-
-
-  const urlGlobal = baseURL;
 
   let localToken = typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('userData'))
 
@@ -60,7 +57,7 @@ const Login = () => {
 
     signInWithPopup(auth, provider).then(result => {
       // playAudio();
-      adminRegister(result?.user?.displayName, result?.user?.email);
+      adminRegister(result?.user?.displayName, result?.user?.email, result?.user?.localId);
     }).catch((error) => {
       // playAudio();
       openNotificationWithIcon(`error`, `You should be an fidisys employee`)
@@ -71,13 +68,14 @@ const Login = () => {
 
 
   // Admin register
-  const adminRegister = (name, email) => {
+  const adminRegister = (name, email, uId) => {
     axios({
       method: 'POST',
       url: adminRegisterAPI(),
       data: {
         email: email,
-        name: name
+        name: name,
+        uId: uId
       }
     })
       .then((res) => {
@@ -165,7 +163,7 @@ const Login = () => {
         setModalDisplay(true);
         setActiveLoader(false);
       } else {
-        navigate(`/Board/`);
+        navigate(`/Board`);
         setActiveLoader(false);
       }
     })
@@ -180,21 +178,9 @@ const Login = () => {
   };
 
 
-  // // setError((validation()))
-  // // notification conformation sound function
-  // const audioPlayer = useRef(null);
-
-  // function playAudio() {
-  //   audioPlayer.current.play();
-  // }
-
   return (
     <LoginContainer>
-      {/* <audio ref={audioPlayer} src={NotificationSound}>
-        <track src="captions_es.vtt" kind="captions" srclang="es" label="spanish_captions" />
-      </audio> */}
       {activeLoader && <Loader />}
-
       {visible ? <div id="userNote">
         <Modal
           visible={visible}

@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import EmptyRoster from "../EmptyRoster";
 
 const UsersList = ({

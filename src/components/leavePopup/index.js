@@ -5,17 +5,13 @@ import user from "../../data/assets/user.svg"
 import leave_type from "../../data/assets/leave_type.svg"
 import cal from "../../data/assets/pop_Calendar.svg"
 import Edit from "../../data/assets/Edit.svg"
-import { DatePicker, Dropdown } from "antd"
+import { DatePicker, Dropdown, Badge } from "antd"
 import LeaveType from "./leave_type"
 import { baseURL } from "../../utils/urls"
 
 const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
   const { RangePicker } = DatePicker
-
-  const [size, setSize] = useState("")
-
-  console.log(size)
 
   const [pushTime, setPushTime] = useState(false);
 
@@ -28,13 +24,18 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
 
 
   const onChange = date => {
-    setSize(date);
     setPushTime(date);
   }
 
   const leaveFun = e => {
     setLeaveType(e)
-    console.log('leaveFun', e)
+  }
+
+  const daysCalc = () => {
+    let Difference_In_Time = new Date(pushTime[1]).getTime() - new Date(pushTime[0]).getTime();
+    const newvAR = Difference_In_Time / (1000 * 3600 * 24);
+    const newDays = newvAR ? newvAR : (newvAR + 1)
+    return newDays;
   }
 
   const createLeave = (leaveType, pushTime, reason) => {
@@ -50,7 +51,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
         endStamp: pushTime[1],
         reason: reason,
         type: leaveType,
-        days: 2
+        days: daysCalc()
       },
       headers: headers
     }).then((_res) => {
@@ -76,12 +77,14 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
           <img src={user} alt="img" />
           <p>{userDataMain?.name}</p>
         </div>
-        <div id="name_block">
-          <img src={cal} alt="img" />
-          <p>
-            <RangePicker onChange={onChange} />
-          </p>
-        </div>
+        <Badge.Ribbon text={`${daysCalc() ? 'Days: ' + daysCalc() : ''}`}>
+          <div id="name_block">
+            <img src={cal} alt="img" />
+            <p>
+              <RangePicker onChange={onChange} />
+            </p>
+          </div>
+        </Badge.Ribbon>
         <Dropdown
           overlay={<LeaveType leaveFun={leaveFun} setLeaveDrop={setLeaveDrop} />}
           placement="bottomLeft"
@@ -98,13 +101,13 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
             />
           </div>
         </Dropdown>
-        <div id="name_block">
+        <div id="name_block" onClick={() => setLeaveDrop(false)} role="presentation">
           <img src={Edit} alt="img" />
           <textarea
             id="textarea"
             value={reason}
             placeholder="Add reason for leave (optional)"
-            onChange={e => setReason(e.target.value)}
+            onChange={e => { setReason(e.target.value) }}
           />
         </div>
         <div id="buttons">
@@ -125,7 +128,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
           </button>
         </div>
       </div>
-    </PopupContainer>
+    </PopupContainer >
   )
 }
-export default SideModal
+export default SideModal;

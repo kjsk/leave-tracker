@@ -1,5 +1,4 @@
 import React from "react";
-// import { Button, Dropdown, Menu } from 'antd';
 import moment from 'moment';
 import Avatar from "../Avatar/index";
 import { LeaveDetailstyle } from "../Board/styles";
