@@ -8,6 +8,7 @@ import Edit from "../../data/assets/Edit.svg"
 import { DatePicker, Dropdown, Badge } from "antd"
 import LeaveType from "./leave_type"
 import { baseURL } from "../../utils/urls"
+import moment from 'moment';
 
 const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
@@ -24,11 +25,16 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
   const [reason, setReason] = useState("");
   const [LeaveDrop, setLeaveDrop] = useState(false);
 
-
   const onChange = date => {
     setPushTime(date);
   }
 
+  // Date disable function
+  const disabledDate = e => {
+    const newVar = new Date();
+    const modDate = moment(newVar).subtract(1, 'days')
+    return modDate > e.valueOf()
+  }
   const leaveFun = (e, label) => {
     setLeaveType({
       label: label,
@@ -39,7 +45,7 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
   const daysCalc = () => {
     let Difference_In_Time = new Date(pushTime[1]).getTime() - new Date(pushTime[0]).getTime();
     const newvAR = Difference_In_Time / (1000 * 3600 * 24);
-    const newDays = newvAR ? newvAR : (newvAR + 1)
+    const newDays = (newvAR + 1) === newvAR ? newvAR : (newvAR + 1);
     return newDays;
   }
 
@@ -71,7 +77,6 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
       setReason("");
       setLeaveType("");
       setActiveLoader(false);
-      console.log(err)
       openNotificationWithIcon(`error`, err?.response?.data?.message);
     })
   }
@@ -87,7 +92,9 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
           <div id="name_block">
             <img src={cal} alt="img" />
             <p>
-              <RangePicker onChange={onChange} />
+              <RangePicker
+                onChange={onChange}
+                disabledDate={(e) => disabledDate(e)} />
             </p>
           </div>
         </Badge.Ribbon>
