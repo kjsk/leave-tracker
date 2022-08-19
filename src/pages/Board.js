@@ -370,7 +370,6 @@ const Board = () => {
                     <div id="header">
                         <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? (userDataMain?.role === 'admin' ? "Admin Portal" : "User Portal") : sideToggle === 4 ? "Settings" : ""} {sideToggleSub.name && sideToggle === 3 && `(${sideToggleSub.name})`}</h2>
                         <div id="mini_block">
-                            <button onClick={() => setPopup(true)}>Apply Leave</button>
                             {sideToggle === 1 && userDataMain?.role !== 'admin' && <button onClick={() => setPopup(true)}>Apply Leave</button>}
                             {sideToggle === 3 && userDataMain?.role === 'admin' && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
                             <img src={search} alt="img" id="search" />
