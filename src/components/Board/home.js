@@ -13,17 +13,18 @@ const Home = ({
     userDataMain,
     openNotificationWithIcon
 }) => {
+    const calcLeaves = (24 - leaveApproved?.length);
     return (
         <>
             <div id="score">
                 {userDataMain?.role === 'admin' ?
                     <div id="score_card">
-                        <h2 id="score">{userLeaveData?.leaves?.length < 10 ? `0${userLeaveData?.leaves?.length}` : userLeaveData?.leaves?.length}</h2>
+                        <h2 id="score">{leavePending?.length < 10 ? `0${leavePending?.length}` : leavePending?.length}</h2>
                         <p>Action Needed</p>
                     </div>
                     :
                     <div id="score_card">
-                        <h2 id="score">02</h2>
+                        <h2 id="score">{calcLeaves < 10 ? `0${calcLeaves}` : calcLeaves}</h2>
                         <p>Available Leaves</p>
                     </div>
                 }
@@ -58,8 +59,8 @@ const Home = ({
                                 <div id="task_container" key={i}>
                                     <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{userLeaveData?.leaves?.length - i}</p>
                                     <p style={{ padding: `0` }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{moment(item?.startDate).format("Do MMM YYYY - LT")}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{moment(item?.endDate).format("Do MMM YYYY - LT")}</p>
+                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{moment(item?.startDate, "Do MMM YYYY - LT").format("Do MMM YYYY - LT")}</p>
+                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{moment(item?.endDate, "Do MMM YYYY - LT").format("Do MMM YYYY - LT")}</p>
                                     <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.reason}</p>
                                     <p style={{
                                         color: item?.status === 'pending' ? '#CB5A08' :

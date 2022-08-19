@@ -12,13 +12,17 @@ const AdminPortal = ({
     nameProf,
     openLeaveDetailsFun,
     userDataMain,
-    desecision
+    desecision,
+    setActiveLoader
 }) => {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
+        setActiveLoader(true);
         setTimeout(() => {
             setLoading(true);
+            setActiveLoader(false);
         }, 1500)
+        // eslint-disable-next-line
     }, [])
     return (
         <div id="admin">
@@ -55,7 +59,7 @@ const AdminPortal = ({
                                                 <p style={{ fontSize: `0.9vw` }}>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
                                             </div>
                                         </div>
-                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')} role="presentation">{moment(item?.startDate).format("Do MMM")} to {moment(item?.endDate).format("Do MMM, YYYY")}</p>
+                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')} role="presentation">{moment(item?.startDate, "Do MMM").format("Do MMM")} to {moment(item?.endDate, "Do MMM, YYYY").format("Do MMM, YYYY")}</p>
                                         <p onClick={() => openLeaveDetailsFun(item, 'pending')} role="presentation">{item?.type === 'cos' ? 'CL' : 'PL'}</p>
                                         <p style={{
                                             whiteSpace: 'nowrap',

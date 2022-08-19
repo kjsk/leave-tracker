@@ -16,9 +16,9 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
   console.log('usersData', userDataMain?.allowance?.leaveTypes)
   const { RangePicker } = DatePicker
 
-  const [pushTime, setPushTime] = useState(false);
+  const [pushTime, setPushTime] = useState([]);
 
-  const [leaveType, setLeaveType] = useState({});
+  const [leaveType, setLeaveType] = useState({ label: '' });
 
   // const [leavePer, setLeavePer] = useState("First Half");
 
@@ -30,10 +30,10 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
   }
 
   // Date disable function
-  const disabledDate = e => {
+  const disabledDate = current => {
     const newVar = new Date();
     const modDate = moment(newVar).subtract(1, 'days')
-    return modDate > e.valueOf()
+    return modDate > current.valueOf() || current.day() === 0 || current.day() === 6;
   }
   const leaveFun = (e, label) => {
     setLeaveType({
@@ -43,7 +43,7 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
   }
 
   const daysCalc = () => {
-    let Difference_In_Time = new Date(pushTime[1]).getTime() - new Date(pushTime[0]).getTime();
+    let Difference_In_Time = pushTime ? new Date(pushTime[1]).getTime() - new Date(pushTime[0]).getTime() : '';
     const newvAR = Difference_In_Time / (1000 * 3600 * 24);
     const newDays = (newvAR + 1) === newvAR ? newvAR : (newvAR + 1);
     return newDays;
@@ -56,8 +56,8 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
       method: 'POST',
       url: `${baseURL}/api/v2/leaves`,
       data: {
-        startDate: pushTime[0].format("MM-DD-YYYY"),
-        endDate: pushTime[1].format("MM-DD-YYYY"),
+        startDate: pushTime[0]?.format("MM-DD-YYYY"),
+        endDate: pushTime[1]?.format("MM-DD-YYYY"),
         startStamp: pushTime[0],
         endStamp: pushTime[1],
         reason: reason,
@@ -94,7 +94,7 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
             <p>
               <RangePicker
                 onChange={onChange}
-                disabledDate={(e) => disabledDate(e)} />
+                disabledDate={disabledDate} />
             </p>
           </div>
         </Badge.Ribbon>
@@ -132,11 +132,11 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
           </button>
           <button
             style={{
-              background: pushTime && reason.length > 5 ? '#3751FF' : 'gray',
+              background: (pushTime && daysCalc() && reason.length > 5 && leaveType?.label !== '') ? '#3751FF' : 'gray',
               color: "white",
             }}
             onClick={() => { createLeave(leaveType, pushTime, reason); setLeaveDrop(false); }}
-            disabled={pushTime && reason.length > 5 ? false : true}
+            disabled={(pushTime && daysCalc() && reason.length > 5 && leaveType?.label !== '') ? false : true}
           >
             Submit
           </button>

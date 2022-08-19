@@ -11,13 +11,13 @@ import settings2 from '../data/assets/settings_hover.svg';
 import logout from '../data/assets/logout.svg';
 import logout_hover from '../data/assets/logout_hover.svg';
 // import search from '../data/assets/search.svg';
-import notificaton from '../data/assets/notificaton.svg';
+// import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from '../data/assets/Edit_user.svg';
 import { BoardContainer } from '../components/Board/styles';
 import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { Popover, Drawer, Badge, Result, Modal, notification } from 'antd';
+import { Popover, Drawer, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
-import Notification from "../components/leavePopup/notification";
+// import Notification from "../components/leavePopup/notification";
 // import share from '../data/assets/share.svg';
 import axios from 'axios';
 import { getHeaders, baseURL, leavesAPI, userEditAPI, getUsersAPI, addUserAPI } from "../utils/urls"
@@ -318,7 +318,9 @@ const Board = () => {
         openLeaveDetailsFun,
         userDataMain,
         desecision,
-        openNotificationWithIcon
+        openNotificationWithIcon,
+        activeLoader,
+        setActiveLoader
     }
 
     return (
@@ -373,11 +375,11 @@ const Board = () => {
                             {sideToggle === 1 && userDataMain?.role !== 'admin' && <button onClick={() => setPopup(true)}>Apply Leave</button>}
                             {sideToggle === 3 && userDataMain?.role === 'admin' && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
                             {/* <img src={search} alt="img" id="search" /> */}
-                            <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
+                            {/* <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
                                 <Badge count={userLeaveData?.leaves?.length}>
                                     <img src={notificaton} alt="img" id="notificaton" />
                                 </Badge>
-                            </Popover>
+                            </Popover> */}
                             <div id="mini_block_name">
                                 <Avatar name={userDataMain?.name} nameProf={nameProf} />
                                 <p id="name_main">{userDataMain?.name}<span>{userDataMain?.role}</span></p>

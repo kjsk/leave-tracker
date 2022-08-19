@@ -22,7 +22,7 @@ const LeaveDetails = ({ leaveDetailContent, desecision, nameProf, userDataMain }
                     </div>
                     <div id="leave_details">
                         <span>{data?.item?.type === 'cos' ? 'Casual Leave' : 'Paid Leave'}</span>
-                        <span>{moment(data?.item?.startDate).format("Do MMM")} to {moment(data?.item?.endDate).format("Do MMM, YYYY")}</span>
+                        <span>{moment(data?.item?.startDate, "Do MMM").format("Do MMM")} to {moment(data?.item?.endDate, "Do MMM, YYYY").format("Do MMM, YYYY")}</span>
                     </div>
                 </div>
                 <div id="pop_body">
