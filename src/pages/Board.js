@@ -349,7 +349,7 @@ const Board = () => {
                                 setSideSubOpen(!sideSubOpen);
                             }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'} {barOpen && <span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span>}</li>
                             :
-                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
+                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false); getUsers() }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
                         }
                         {sideSubOpen && barOpen &&
                             <div id="menu_dropdown">
@@ -370,6 +370,7 @@ const Board = () => {
                     <div id="header">
                         <h2 id="title">{sideToggle === 1 ? "Home" : sideToggle === 2 ? "Calendar" : sideToggle === 3 ? (userDataMain?.role === 'admin' ? "Admin Portal" : "User Portal") : sideToggle === 4 ? "Settings" : ""} {sideToggleSub.name && sideToggle === 3 && `(${sideToggleSub.name})`}</h2>
                         <div id="mini_block">
+                            <button onClick={() => setPopup(true)}>Apply Leave</button>
                             {sideToggle === 1 && userDataMain?.role !== 'admin' && <button onClick={() => setPopup(true)}>Apply Leave</button>}
                             {sideToggle === 3 && userDataMain?.role === 'admin' && <button onClick={() => setAddEmp(true)}>Add Employee</button>}
                             <img src={search} alt="img" id="search" />
@@ -427,7 +428,7 @@ const Board = () => {
                 onClose={() => setPopup(false)}
                 width="fit-content"
             >
-                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} openNotificationWithIcon={openNotificationWithIcon} />
+                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} openNotificationWithIcon={openNotificationWithIcon}  {...commonProps} />
             </Drawer>
 
             {/* ADD EMPLOYEE POPUP */}

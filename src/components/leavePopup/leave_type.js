@@ -1,11 +1,12 @@
 import React from 'react';
 import { LeaveContainers } from './styles';
 
-const LeaveType = ({ leaveFun, setLeaveDrop }) => {
+const LeaveType = ({ leaveFun, setLeaveDrop, userDataMain }) => {
     return (
         <LeaveContainers>
-            <p role="presentation" onClick={() => { leaveFun('gen'); setLeaveDrop(false) }}>Paid Leave</p>
-            <p role="presentation" onClick={() => { leaveFun('cos'); setLeaveDrop(false) }}>Cassual Leave</p>
+            {userDataMain?.map((item, index) =>
+                <p role="presentation" key={index} onClick={() => { leaveFun(item?.value, item?.label); setLeaveDrop(false) }}>{item?.label}</p>
+            )}
         </LeaveContainers >
     );
 };

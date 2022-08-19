@@ -18,11 +18,11 @@ const EditUser = ({ editUserPopDetails, empName, empDesignation, setEmpName, set
                 <div id="employee_wrap">
                     <div id="input_wrap">
                         <label htmlFor="input">No.of Leave Used</label>
-                        <input type="number" defaultValue={editUserPopDetails?.allowance?.cos?.used + editUserPopDetails?.allowance?.gen?.used} placeholder="Leave Used" onChange={(e) => setEmpUsed(e.target.value)} />
+                        <input type="number" defaultValue={editUserPopDetails?.allowance?.cos?.used + editUserPopDetails?.allowance?.gen?.used} placeholder="Leave Used" onChange={(e) => setEmpUsed(e.target.value)} disabled />
                     </div>
                     <div id="input_wrap">
                         <label htmlFor="input">No.of Leave Left</label>
-                        <input type="number" defaultValue={editUserPopDetails?.allowance?.cos?.remaining + editUserPopDetails?.allowance?.gen?.remaining} placeholder="Leave Left" onChange={(e) => setEmpLeft(e.target.value)} />
+                        <input type="number" defaultValue={editUserPopDetails?.allowance?.cos?.remaining + editUserPopDetails?.allowance?.gen?.remaining} placeholder="Leave Left" onChange={(e) => setEmpLeft(e.target.value)} disabled />
                     </div>
                 </div>
             </div>

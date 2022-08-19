@@ -6,6 +6,7 @@ import { LeaveDetailstyle } from "../Board/styles";
 const LeaveDetails = ({ leaveDetailContent, desecision, nameProf, userDataMain }) => {
 
     let data = leaveDetailContent;
+    console.log('data?.item', data?.item);
 
     return (
         <LeaveDetailstyle>
@@ -25,8 +26,8 @@ const LeaveDetails = ({ leaveDetailContent, desecision, nameProf, userDataMain }
                     </div>
                 </div>
                 <div id="pop_body">
-                    <span>Fidisys Technologies</span>
-                    <span>naveen@fidisys.com</span>
+                    <span>{data?.item?.orgName}</span>
+                    <span>{data?.item?.useremail}</span>
                     <textarea value={data?.item?.reason} disabled />
                     <div id="pop_btns">
                         {data?.item?.status === 'approved' ? <p style={{

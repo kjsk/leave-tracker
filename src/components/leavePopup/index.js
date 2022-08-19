@@ -9,13 +9,15 @@ import { DatePicker, Dropdown, Badge } from "antd"
 import LeaveType from "./leave_type"
 import { baseURL } from "../../utils/urls"
 
-const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
+const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
+  console.log('usersData', userDataMain)
+  console.log('usersData', userDataMain?.allowance?.leaveTypes)
   const { RangePicker } = DatePicker
 
   const [pushTime, setPushTime] = useState(false);
 
-  const [leaveType, setLeaveType] = useState("");
+  const [leaveType, setLeaveType] = useState({});
 
   // const [leavePer, setLeavePer] = useState("First Half");
 
@@ -27,8 +29,11 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
     setPushTime(date);
   }
 
-  const leaveFun = e => {
-    setLeaveType(e)
+  const leaveFun = (e, label) => {
+    setLeaveType({
+      label: label,
+      value: e
+    })
   }
 
   const daysCalc = () => {
@@ -50,7 +55,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
         startStamp: pushTime[0],
         endStamp: pushTime[1],
         reason: reason,
-        type: leaveType,
+        type: leaveType?.value,
         days: daysCalc()
       },
       headers: headers
@@ -60,13 +65,14 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       setLeaveType("");
       playAudio();
       openNotificationWithIcon(`success`, `Your Leave Request submitted successfully`);
-    }).catch((_err) => {
+    }).catch((err) => {
       getLeaves();
       setPopup(false);
       setReason("");
       setLeaveType("");
       setActiveLoader(false);
-      openNotificationWithIcon(`error`, `Your leave request failed`);
+      console.log(err)
+      openNotificationWithIcon(`error`, err?.response?.data?.message);
     })
   }
   return (
@@ -86,7 +92,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
           </div>
         </Badge.Ribbon>
         <Dropdown
-          overlay={<LeaveType leaveFun={leaveFun} setLeaveDrop={setLeaveDrop} />}
+          overlay={<LeaveType leaveFun={leaveFun} setLeaveDrop={setLeaveDrop} userDataMain={userDataMain?.allowance?.leaveTypes} />}
           placement="bottomLeft"
           trigger={['click']}
           visible={LeaveDrop}
@@ -95,9 +101,10 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
             <img src={leave_type} alt="img" />
             <input
               type="text"
-              value={leaveType === 'gen' ? 'Paid Leave' : leaveType === 'cos' ? 'Cassual Leave' : ''}
+              value={leaveType?.label}
               id="input"
               placeholder="Select leave type"
+              autoComplete="off"
             />
           </div>
         </Dropdown>
