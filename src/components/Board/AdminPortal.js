@@ -24,7 +24,7 @@ const AdminPortal = ({
         <div id="admin">
             <div id="admin_block1">
                 <h1>Leave Requests</h1>
-                <p id="share"><img src={share} alt="share" />Share</p>
+                {/* <p id="share"><img src={share} alt="share" />Share</p> */}
             </div>
             <div id="admin_tab">
                 <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>
