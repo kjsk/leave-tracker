@@ -60,7 +60,8 @@ const Login = () => {
       adminRegister(result?.user?.displayName, result?.user?.email, result?.user?.localId);
     }).catch((error) => {
       // playAudio();
-      openNotificationWithIcon(`error`, `You should be an fidisys employee`)
+      openNotificationWithIcon(`error`, `You should be an fidisys employee`);
+      setBtnDisable(false);
       setActiveLoader(false);
       console.log("error", error);
     })
