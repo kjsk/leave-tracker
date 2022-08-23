@@ -24,8 +24,8 @@ const UsersList = ({
                             <h3>Action</h3>
                         </div>
                         <div id="message_block2">
-                            {usersData?.map((item, i) =>
-                                <div>
+                            {usersData?.map((item, i) => {
+                                return (
                                     <div id="task_container">
                                         <p>{i + 1}</p>
                                         <div id="profile_box">
@@ -49,7 +49,8 @@ const UsersList = ({
                                             <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
                                         </div>
                                     </div>
-                                </div>
+                                )
+                            }
                             )}
                         </div>
                     </div>
