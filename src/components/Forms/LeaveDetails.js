@@ -1,5 +1,5 @@
 import React from "react";
-import moment from 'moment';
+import Moment from 'moment';
 import Avatar from "../Avatar/index";
 import { LeaveDetailstyle } from "../Board/styles";
 
@@ -22,7 +22,7 @@ const LeaveDetails = ({ leaveDetailContent, desecision, nameProf, userDataMain }
                     </div>
                     <div id="leave_details">
                         <span>{data?.item?.type === 'cos' ? 'Casual Leave' : 'Paid Leave'}</span>
-                        <span>{moment(data?.item?.startDate, "Do MMM").format("Do MMM")} to {moment(data?.item?.endDate, "Do MMM, YYYY").format("Do MMM, YYYY")}</span>
+                        <span>{Moment(data?.item?.startDate, "MM-Do-YYYY").format("Do MMM")} to {Moment(data?.item?.endDate, "MM-Do-YYYY").format("Do MMM, YYYY")}</span>
                     </div>
                 </div>
                 <div id="pop_body">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import EmptyRoster from '../EmptyRoster';
-import moment from 'moment';
+import Moment from 'moment';
 
 const AdminPortal = ({
     share,
@@ -59,7 +59,7 @@ const AdminPortal = ({
                                                 <p style={{ fontSize: `0.9vw` }}>{item?.userId[0] + item?.userId[1] + item?.userId[2] + item?.userId[3] + item?.userId[4]}</p>
                                             </div>
                                         </div>
-                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')} role="presentation">{moment(item?.startDate, "Do MMM").format("Do MMM")} to {moment(item?.endDate, "Do MMM, YYYY").format("Do MMM, YYYY")}</p>
+                                        <p onClick={() => openLeaveDetailsFun(item, 'pending')} role="presentation">{Moment(item?.startDate, "MM-Do-YYYY").format("Do MMM")} to {Moment(item?.endDate, "MM-Do-YYYY").format("Do MMM, YYYY")}</p>
                                         <p onClick={() => openLeaveDetailsFun(item, 'pending')} role="presentation">{item?.type === 'cos' ? 'CL' : 'PL'}</p>
                                         <p style={{
                                             whiteSpace: 'nowrap',

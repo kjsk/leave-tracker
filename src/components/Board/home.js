@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import Moment from 'moment';
 import EmptyRoster from "../EmptyRoster";
 
 const Home = ({
@@ -59,8 +59,8 @@ const Home = ({
                                 <div id="task_container" key={i}>
                                     <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{userLeaveData?.leaves?.length - i}</p>
                                     <p style={{ padding: `0` }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{moment(item?.startDate, "Do MMM YYYY - LT").format("Do MMM YYYY - LT")}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{moment(item?.endDate, "Do MMM YYYY - LT").format("Do MMM YYYY - LT")}</p>
+                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{Moment(item?.startDate, "MM-Do-YYYY").format("Do MMM YYYY - LT")}</p>
+                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{Moment(item?.endDate, "MM-Do-YYYY").format("Do MMM YYYY - LT")}</p>
                                     <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.reason}</p>
                                     <p style={{
                                         color: item?.status === 'pending' ? '#CB5A08' :

@@ -10,10 +10,8 @@ import LeaveType from "./leave_type"
 import { baseURL } from "../../utils/urls"
 import moment from 'moment';
 
-const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
+const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader, playAudio, openNotificationWithIcon }) => {
 
-  console.log('usersData', userDataMain)
-  console.log('usersData', userDataMain?.allowance?.leaveTypes)
   const { RangePicker } = DatePicker
 
   const [pushTime, setPushTime] = useState([]);
@@ -68,15 +66,23 @@ const SideModal = ({ usersData, setPopup, headers, getLeaves, userDataMain, setA
     }).then((_res) => {
       getLeaves();
       setReason("");
-      setLeaveType("");
+      setLeaveType({
+        label: '',
+        value: ''
+      });
       playAudio();
+      setPushTime([]);
       openNotificationWithIcon(`success`, `Your Leave Request submitted successfully`);
     }).catch((err) => {
       getLeaves();
       setPopup(false);
       setReason("");
-      setLeaveType("");
+      setLeaveType({
+        label: '',
+        value: ''
+      });
       setActiveLoader(false);
+      setPushTime([]);
       openNotificationWithIcon(`error`, err?.response?.data?.message);
     })
   }
