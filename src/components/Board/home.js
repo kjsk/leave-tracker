@@ -55,28 +55,31 @@ const Home = ({
                             <h3>Action</h3>
                         </div>
                         <div id="message_block2">
-                            {userLeaveData?.leaves?.reverse().map((item, i) =>
-                                <div id="task_container" key={i}>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{userLeaveData?.leaves?.length - i}</p>
-                                    <p style={{ padding: `0` }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{Moment(item?.startDate, "MM-Do-YYYY").format("Do MMM YYYY - LT")}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{Moment(item?.endDate, "MM-Do-YYYY").format("Do MMM YYYY - LT")}</p>
-                                    <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.reason}</p>
-                                    <p style={{
-                                        color: item?.status === 'pending' ? '#CB5A08' :
-                                            item?.status === 'approved' ? '#00D241'
-                                                :
-                                                item?.status === 'rejected' ? '#FF0000' :
-                                                    '', fontWeight: `bold`
-                                    }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">
-                                        {item?.status === 'pending' ? 'Pending' :
-                                            item?.status === 'approved' ? 'Approved'
-                                                :
-                                                item?.status === 'rejected' ? 'Rejected' :
-                                                    ''}
-                                    </p>
-                                    <p onClick={() => { item?.status === 'pending' ? desecision('delete', item?.id) : openNotificationWithIcon('error', 'Not allowed to delete Approved or Rejected requests') }} role="presentation"><DeleteOutlined className={item?.status === 'pending' && 'delete_icon'} /></p>
-                                </div>
+                            {userLeaveData?.leaves?.reverse().map((item, i) => {
+                                return (
+                                    <div id="task_container" key={i}>
+                                        <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{userLeaveData?.leaves?.length - i}</p>
+                                        <p style={{ padding: `0` }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.type === "gen" ? 'Paid' : 'Cassual'}</p>
+                                        <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{Moment(item?.startDate, "MM-Do-YYYY").format("Do MMM YYYY - LT")}</p>
+                                        <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{Moment(item?.endDate, "MM-Do-YYYY").format("Do MMM YYYY - LT")}</p>
+                                        <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{item?.reason}</p>
+                                        <p style={{
+                                            color: item?.status === 'pending' ? '#CB5A08' :
+                                                item?.status === 'approved' ? '#00D241'
+                                                    :
+                                                    item?.status === 'rejected' ? '#FF0000' :
+                                                        '', fontWeight: `bold`
+                                        }} onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">
+                                            {item?.status === 'pending' ? 'Pending' :
+                                                item?.status === 'approved' ? 'Approved'
+                                                    :
+                                                    item?.status === 'rejected' ? 'Rejected' :
+                                                        ''}
+                                        </p>
+                                        <p onClick={() => { item?.status === 'pending' ? desecision('delete', item?.id) : openNotificationWithIcon('error', 'Not allowed to delete Approved or Rejected requests') }} role="presentation"><DeleteOutlined className={item?.status === 'pending' && 'delete_icon'} /></p>
+                                    </div>
+                                )
+                            }
                             )}
 
                         </div>

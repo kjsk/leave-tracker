@@ -9,6 +9,8 @@ const UsersList = ({
     editUserFun,
     DeleteOutlined,
     addUser,
+    setdeleteUserState,
+    setVisible
 }) => {
     return (
         <div id="admin_home">
@@ -46,7 +48,7 @@ const UsersList = ({
                                         }}>{item.allowance?.cos?.remaining + item.allowance?.gen?.remaining}</p>
                                         <div id="btns">
                                             <img src={Edit_user} alt="Edit_user" onClick={() => editUserFun(item)} role="presentation" />
-                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => addUser(null, null, item.id)} />
+                                            <DeleteOutlined style={{ color: `red`, marginLeft: `15px`, fontSize: `23px` }} onClick={() => { setdeleteUserState({ id: item.id, name: item.name }); setVisible(true) }} />
                                         </div>
                                     </div>
                                 )

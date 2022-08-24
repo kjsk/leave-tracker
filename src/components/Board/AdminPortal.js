@@ -13,11 +13,13 @@ const AdminPortal = ({
     openLeaveDetailsFun,
     userDataMain,
     desecision,
-    setActiveLoader
+    setActiveLoader,
+    getLeaves
 }) => {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         setActiveLoader(true);
+        getLeaves();
         setTimeout(() => {
             setLoading(true);
             setActiveLoader(false);

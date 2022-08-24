@@ -55,12 +55,20 @@ const Board = () => {
     const [descId, setDescId] = useState('');
     const [name, setName] = useState('');
     const [Email, setEMail] = useState('');
+    const [logoutState, setLogoutState] = useState(false);
+    const [deleteUserState, setdeleteUserState] = useState(false);
+    const [userConform, setUserConform] = useState('');
+
 
     // common headers
     const headers = getHeaders(userData?.tokens?.accessToken);
 
     // FETCHING LEAVE ON PAGELOAD
     useEffect(() => {
+        const toggleRout = JSON.parse(localStorage.getItem('toggleRout'));
+        if (toggleRout) {
+            setSideToggle(toggleRout);
+        }
         if (userData) {
             getLeaves();
             getUsers();
@@ -70,6 +78,11 @@ const Board = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const conditionalFun = (number) => {
+        localStorage.setItem('toggleRout', number);
+        setSideToggle(number);
+        setSideToggleSub({ name: '', value: '' });
+    }
 
     // Call to fetch the number of leaves by user
     const getLeaves = () => {
@@ -320,7 +333,10 @@ const Board = () => {
         desecision,
         openNotificationWithIcon,
         activeLoader,
-        setActiveLoader
+        setActiveLoader,
+        setdeleteUserState,
+        setVisible,
+        getLeaves
     }
 
     return (
@@ -343,15 +359,15 @@ const Board = () => {
 
                     <h1><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
                     <ul>
-                        <li className={sideToggle === 1 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(1); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false); getLeaves() }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
-                        <li className={sideToggle === 2 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(2); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
+                        <li className={sideToggle === 1 && "active"} role="presentation" onClick={() => { conditionalFun(1); setSideSubOpen(false); getLeaves() }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
+                        <li className={sideToggle === 2 && "active"} role="presentation" onClick={() => { conditionalFun(2); setSideSubOpen(false) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
                         {userDataMain?.role === 'admin' ?
-                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => {
-                                setSideToggle(3);
+                            <li className={sideToggle === 3 && "active"} role="presentation" onClick={() => {
+                                conditionalFun(3);
                                 setSideSubOpen(!sideSubOpen);
                             }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && 'Admin Portal'} {barOpen && <span style={{ marginLeft: `5px` }}>{sideSubOpen ? <UpOutlined /> : <DownOutlined />}</span>}</li>
                             :
-                            <li className={sideToggle === 3 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(3); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false); getUsers(); getLeaves() }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
+                            <li className={sideToggle === 3 && "active"} role="presentation" onClick={() => { conditionalFun(3); setSideSubOpen(false) }}><img src={sideToggle === 3 ? admin2 : admin} alt="img" />{barOpen && `User Portal`}</li>
                         }
                         {sideSubOpen && barOpen &&
                             <div id="menu_dropdown">
@@ -360,12 +376,12 @@ const Board = () => {
                         }
                     </ul>
                     <ul>
-                        <li className={sideToggle === 4 ? "active" : ""} role="presentation" onClick={() => { setSideToggle(4); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
+                        <li className={sideToggle === 4 && "active"} role="presentation" onClick={() => { conditionalFun(4); setSideToggleSub({ name: '', value: '' }); setSideSubOpen(false) }}><img src={sideToggle === 4 ? settings2 : settings} alt="img" />{barOpen && 'Settings'}</li>
                     </ul>
 
 
                     <ul id="logout">
-                        <li onClick={logOut} role="presentation"> <img src={logout_hover} alt="img" className="imghover" /><img src={logout} alt="img" className="image" />{barOpen && 'logout'}</li>
+                        <li onClick={() => { setVisible(true); setLogoutState(true) }} role="presentation"> <img src={logout_hover} alt="img" className="imghover" /><img src={logout} alt="img" className="image" />{barOpen && 'logout'}</li>
                     </ul>
                 </div>
                 <div id="main_menu" style={{ background: sideToggle === 1 ? 'white' : '#FCFAFA' }}>
@@ -470,18 +486,37 @@ const Board = () => {
                 <LeaveDetails leaveDetailContent={leaveDetailContent} desecision={desecision} nameProf={nameProf} userDataMain={userDataMain} />
             </Modal>
 
-            {/* LEAVE ACTION TAKEN POPUP (APPROVE, REJECT, DELETE) */}
+            {/* LEAVE ACTION TAKEN POPUP (APPROVE, REJECT, DELETE, User delete, Logout ) */}
             <Modal
                 title="Confirmation"
                 centered
                 visible={visible}
-                onOk={() => { approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false) }}
-                onCancel={() => { setVisible(false) }}
+                onOk={() => { deleteUserState ? addUser(null, null, deleteUserState?.id) : logoutState ? logOut() : approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false) }}
+                onCancel={() => { setLogoutState(false); setdeleteUserState(false); setVisible(false); }}
                 width={1000}
-                okText={descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete'}
+                okText={(logoutState || deleteUserState) ? "Proceed" : (descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}
                 cancelText='Back'
+                okButtonProps={{ disabled: deleteUserState && (userConform !== deleteUserState?.name), display: `none` }}
             >
-                <p style={{ fontSize: `24px`, color: `#333333`, fontWeight: `600`, margin: `51px 0` }}>Are you sure you want to {descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete'}?</p>
+                <>
+                    <p style={{ fontSize: `22px`, color: `#333333`, fontWeight: `600`, margin: `30px 0` }}>{deleteUserState ? `Do you want to delete (${deleteUserState?.name})` : 'Do you want to ' + (logoutState ? "Logout" : descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}?</p>
+                    {deleteUserState &&
+                        <input type="text" placeholder='Type in the name of user to conform' id="conform_user"
+                            onChange={(e) => setUserConform(e.target.value)}
+                            autoComplete="off"
+                            style={{
+                                width: `100%`,
+                                background: `#FFFFFF`,
+                                borderRadius: `6px`,
+                                height: `48px`,
+                                margin: `0 0 20px 0`,
+                                outlineColor: `#1874D2`,
+                                paddingLeft: `12px`,
+                                border: `1px solid #F3F3F4`
+                            }}
+                        />
+                    }
+                </>
             </Modal>
         </BoardContainer >
     )
