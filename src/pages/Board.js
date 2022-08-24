@@ -491,8 +491,8 @@ const Board = () => {
                 title="Confirmation"
                 centered
                 visible={visible}
-                onOk={() => { deleteUserState ? addUser(null, null, deleteUserState?.id) : logoutState ? logOut() : approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false) }}
-                onCancel={() => { setLogoutState(false); setdeleteUserState(false); setVisible(false); }}
+                onOk={() => { deleteUserState ? addUser(null, null, deleteUserState?.id) : logoutState ? logOut() : approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false); setUserConform('') }}
+                onCancel={() => { setLogoutState(false); setdeleteUserState(false); setVisible(false); setUserConform(''); }}
                 width={1000}
                 okText={(logoutState || deleteUserState) ? "Proceed" : (descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}
                 cancelText='Back'
@@ -502,6 +502,7 @@ const Board = () => {
                     <p style={{ fontSize: `22px`, color: `#333333`, fontWeight: `600`, margin: `30px 0` }}>{deleteUserState ? `Do you want to delete (${deleteUserState?.name})` : 'Do you want to ' + (logoutState ? "Logout" : descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}?</p>
                     {deleteUserState &&
                         <input type="text" placeholder='Type in the name of user to conform' id="conform_user"
+                            value={userConform}
                             onChange={(e) => setUserConform(e.target.value)}
                             autoComplete="off"
                             style={{

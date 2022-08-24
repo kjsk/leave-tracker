@@ -19,7 +19,6 @@ const AdminPortal = ({
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         setActiveLoader(true);
-        getLeaves();
         setTimeout(() => {
             setLoading(true);
             setActiveLoader(false);

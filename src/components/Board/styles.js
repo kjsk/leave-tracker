@@ -544,6 +544,7 @@ export const BoardContainer = styled.div`
 
   #BoardContainer #admin #message #message_block2::-webkit-scrollbar {
     width: 0;
+    position:absolute;
   }
 
   #BoardContainer #admin #message:hover #message_block2::-webkit-scrollbar {
