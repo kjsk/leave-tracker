@@ -491,7 +491,7 @@ const Board = () => {
                 title="Confirmation"
                 centered
                 visible={visible}
-                onOk={() => { deleteUserState ? addUser(null, null, deleteUserState?.id) : logoutState ? logOut() : approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false); setUserConform('') }}
+                onOk={() => { deleteUserState ? addUser(null, null, deleteUserState?.id) : logoutState ? logOut() : approveLeave(descType === 'approve' ? 'approve' : descType === 'reject' ? 'reject' : 'delete', descId); setVisible(false); setUserConform(''); setdeleteUserState(false) }}
                 onCancel={() => { setLogoutState(false); setdeleteUserState(false); setVisible(false); setUserConform(''); }}
                 width={1000}
                 okText={(logoutState || deleteUserState) ? "Proceed" : (descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}
