@@ -85,7 +85,7 @@ const Home = ({
                         </div>
                     </>
                     :
-                    <EmptyRoster text="No Leaves Applied..." />
+                    <EmptyRoster text={userDataMain?.role === 'admin' ? 'No action needed...🙅' : 'No Leaves Applied...🙅'} />
                 }
             </div>
         </>

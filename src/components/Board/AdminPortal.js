@@ -96,7 +96,7 @@ const AdminPortal = ({
                     </div>
                 </div>
                 :
-                <EmptyRoster text={`No ${adminToggle} leaves!`} />
+                <EmptyRoster text={`No ${adminToggle} leaves!🙅`} />
             }
         </div>
     )

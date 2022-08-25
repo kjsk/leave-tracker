@@ -252,8 +252,8 @@ export const BoardContainer = styled.div`
   }
   #BoardContainer #main_menu #header #mini_block #mini_block_name span {
     font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 0.9vw;
+    line-height: 1.2vw;
     letter-spacing: 0.2px;
     color: #a2a2a2;
   }
