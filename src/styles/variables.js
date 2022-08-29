@@ -36,7 +36,7 @@ export const NAVLINK_COLOR = '#555555';
 export const HIGHLIGHT_TEXT = '#27AE60';
 
 // button colors
-export const BUTTON_PRIMARY = '#1976D2';
+export const BUTTON_PRIMARY = '#3751ff';
 export const BUTTON_HOVER = '#1E88E5';
 
 // icon colors

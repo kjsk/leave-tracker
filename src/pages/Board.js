@@ -501,6 +501,7 @@ const Board = () => {
                 okText={(logoutState || deleteUserState) ? "Proceed" : (descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}
                 cancelText='Back'
                 okButtonProps={{ disabled: deleteUserState && (userConform !== deleteUserState?.name), display: `none` }}
+                className={descType === 'approve' ? 'approve' : 'reject'}
             >
                 <>
                     <p style={{ fontSize: `22px`, color: `#333333`, fontWeight: `600`, margin: `30px 0` }}>{deleteUserState ? `Do you want to delete (${deleteUserState?.name})` : 'Do you want to ' + (logoutState ? "Logout" : descType === 'approve' ? 'Approve' : descType === 'reject' ? 'Reject' : 'Delete')}?</p>
