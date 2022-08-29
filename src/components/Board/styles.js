@@ -1,6 +1,21 @@
 import styled from "styled-components"
 
 export const BoardContainer = styled.div`
+   #refresh {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.15vw;
+    color: #4b506d;
+    cursor: pointer;
+    gap: 0.5vw;
+    margin-left: auto;
+    transition: 0.5s ease-in-out;
+  }
+  #refresh:hover {
+    color: rgb(255, 0, 0);
+  }
   .anticon-setting {
     animation-name: example;
     animation-duration: 4s;
@@ -291,6 +306,7 @@ export const BoardContainer = styled.div`
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 9vw;
     grid-gap: 1.8vw;
+    margin-bottom: 1vw;
   }
 
   #BoardContainer #main_menu #score #score_card {
@@ -470,14 +486,6 @@ export const BoardContainer = styled.div`
     font-weight: 700;
     font-size: 1.59vw;
     color: #252733;
-  }
-  #BoardContainer #admin #admin_block1 #share {
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    font-size: 1.15vw;
-    color: #4b506d;
-    cursor: pointer;
   }
   #BoardContainer #admin #admin_block1 p img {
     width: 1.3vw;

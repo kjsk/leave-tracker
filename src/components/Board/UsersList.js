@@ -57,7 +57,7 @@ const UsersList = ({
                         </div>
                     </div>
                     :
-                    <EmptyRoster text="No Users!🙅" />
+                    <EmptyRoster text="No Users!" />
                 }
             </div>
         </div>

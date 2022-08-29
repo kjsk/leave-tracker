@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import EmptyRoster from '../EmptyRoster';
 import Moment from 'moment';
 
 const AdminPortal = ({
-    share,
+    RedoOutlined,
     adminToggle,
     setAdminToggle,
     leaveMap,
@@ -16,27 +16,27 @@ const AdminPortal = ({
     setActiveLoader,
     getLeaves
 }) => {
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        setActiveLoader(true);
-        setTimeout(() => {
-            setLoading(true);
-            setActiveLoader(false);
-        }, 1500)
-        // eslint-disable-next-line
-    }, [])
+    // const [loading, setLoading] = useState(false);
+    // useEffect(() => {
+    //     setActiveLoader(true);
+    //     setTimeout(() => {
+    //         // setLoading(true);
+    //         setActiveLoader(false);
+    //     }, 1500)
+    //     // eslint-disable-next-line
+    // }, [])
     return (
         <div id="admin">
             <div id="admin_block1">
                 <h1>Leave Requests</h1>
-                {/* <p id="share"><img src={share} alt="share" />Share</p> */}
+                <p id="refresh" onClick={getLeaves} role="presentation"><RedoOutlined />Refresh</p>
             </div>
             <div id="admin_tab">
                 <h2 role='presentation' onClick={() => setAdminToggle('pending')} className={adminToggle === 'pending' && "active"}>Pending</h2>
                 <h2 role='presentation' onClick={() => setAdminToggle('approved')} className={adminToggle === 'approved' && "active"}>Approved</h2>
                 <h2 role='presentation' onClick={() => setAdminToggle('rejected')} className={adminToggle === 'rejected' && "active"}>Rejected</h2>
             </div>
-            {leaveMap?.length !== 0 && loading ?
+            {leaveMap?.length !== 0 ?
                 <div id="message">
                     <div id="message_block1">
                         <h3>SNo</h3>
@@ -96,7 +96,7 @@ const AdminPortal = ({
                     </div>
                 </div>
                 :
-                <EmptyRoster text={`No ${adminToggle} leaves!🙅`} />
+                <EmptyRoster text={`No ${adminToggle} leaves!`} />
             }
         </div>
     )

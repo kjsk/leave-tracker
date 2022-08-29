@@ -12,7 +12,7 @@ const EmptyRoster = ({ text }) => {
                 }}
                 description={
                     <span style={{ fontSize: `20px`, fontWeight: `bold`, color: `#6BA1DF` }}>
-                        {text}
+                        {text} 🙅
                     </span>
                 }
             />

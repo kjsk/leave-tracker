@@ -75,14 +75,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
       openNotificationWithIcon(`success`, `Your Leave Request submitted successfully`);
     }).catch((err) => {
       getLeaves();
-      setPopup(false);
-      setReason("");
-      setLeaveType({
-        label: '',
-        value: ''
-      });
       setActiveLoader(false);
-      setPushTime([]);
       openNotificationWithIcon(`error`, err?.response?.data?.message);
     })
   }
@@ -100,6 +93,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
             <p>
               <RangePicker
                 onChange={onChange}
+                value={pushTime}
                 disabledDate={disabledDate} />
             </p>
           </div>

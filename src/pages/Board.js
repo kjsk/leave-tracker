@@ -14,7 +14,7 @@ import logout_hover from '../data/assets/logout_hover.svg';
 // import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from '../data/assets/Edit_user.svg';
 import { BoardContainer } from '../components/Board/styles';
-import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SettingOutlined, CalendarOutlined, UpOutlined, DownOutlined, RightOutlined, LeftOutlined, RedoOutlined } from '@ant-design/icons';
 import { Popover, Drawer, Result, Modal, notification } from 'antd';
 import SideModal from '../components/leavePopup/index'
 // import Notification from "../components/leavePopup/notification";
@@ -48,7 +48,7 @@ const Board = () => {
     const [adminToggle, setAdminToggle] = useState('pending');
     const [visible, setVisible] = useState(false);
     const [addEmp, setAddEmp] = useState(false);
-    const [barOpen, setbarOpen] = useState(false);
+    const [barOpen, setbarOpen] = useState(true);
     const [leaveDetail, setLeaveDetail] = useState(false);
     const [leaveDetailContent, setLeaveDetailContent] = useState('');
     const [descType, setDescType] = useState('');
@@ -112,7 +112,10 @@ const Board = () => {
 
     // Call for logout and cleanup the localstorage
     const logOut = () => {
-        typeof localStorage !== `undefined` && localStorage.removeItem('userData');
+        if (typeof localStorage !== `undefined`) {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('toggleRout');
+        }
         navigate(`/Login`);
         openNotificationWithIcon(`success`, 'Logout Successfully');
     }
@@ -336,7 +339,8 @@ const Board = () => {
         setActiveLoader,
         setdeleteUserState,
         setVisible,
-        getLeaves
+        getLeaves,
+        RedoOutlined
     }
 
     return (
@@ -350,16 +354,16 @@ const Board = () => {
                     <span id='drag_button' onClick={() => setbarOpen(!barOpen)} role="presentation">
                         <Popover placement="right" content={barOpen ? 'Tap To Minimize' : 'Tap To Expand'}>
                             {barOpen ?
-                                <RightOutlined />
-                                :
                                 <LeftOutlined />
+                                :
+                                <RightOutlined />
                             }
                         </Popover>
                     </span>
 
                     <h1><img src={login_logo} alt="img" />{barOpen && 'Leave Tracker'}</h1>
                     <ul>
-                        <li className={sideToggle === 1 && "active"} role="presentation" onClick={() => { conditionalFun(1); setSideSubOpen(false); getLeaves() }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
+                        <li className={sideToggle === 1 && "active"} role="presentation" onClick={() => { conditionalFun(1); setSideSubOpen(false) }}><img src={sideToggle === 1 ? overview2 : overview} alt="img" />{barOpen && 'Home'}</li>
                         <li className={sideToggle === 2 && "active"} role="presentation" onClick={() => { conditionalFun(2); setSideSubOpen(false) }}><img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />{barOpen && 'Calendar'}</li>
                         {userDataMain?.role === 'admin' ?
                             <li className={sideToggle === 3 && "active"} role="presentation" onClick={() => {
@@ -445,7 +449,7 @@ const Board = () => {
                 onClose={() => setPopup(false)}
                 width="fit-content"
             >
-                <SideModal setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} openNotificationWithIcon={openNotificationWithIcon}  {...commonProps} />
+                <SideModal popup={popup} setPopup={setPopup} headers={headers} getLeaves={getLeaves} userDataMain={userDataMain} setActiveLoader={setActiveLoader} playAudio={playAudio} openNotificationWithIcon={openNotificationWithIcon}  {...commonProps} />
             </Drawer>
 
             {/* ADD EMPLOYEE POPUP */}

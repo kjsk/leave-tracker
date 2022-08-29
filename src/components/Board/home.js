@@ -3,6 +3,7 @@ import Moment from 'moment';
 import EmptyRoster from "../EmptyRoster";
 
 const Home = ({
+    RedoOutlined,
     leaveApproved,
     leavePending,
     leaveRejected,
@@ -11,6 +12,7 @@ const Home = ({
     desecision,
     DeleteOutlined,
     userDataMain,
+    getLeaves,
     openNotificationWithIcon
 }) => {
     const calcLeaves = (24 - leaveApproved?.length);
@@ -42,6 +44,8 @@ const Home = ({
                 </div>
             </div>
 
+            <p id="refresh" onClick={getLeaves} role="presentation"><RedoOutlined />Refresh</p>
+
             <div id="message">
                 {userLeaveData?.leaves?.length > 0 ?
                     <>
@@ -56,6 +60,7 @@ const Home = ({
                         </div>
                         <div id="message_block2">
                             {userLeaveData?.leaves?.reverse().map((item, i) => {
+
                                 return (
                                     <div id="task_container" key={i}>
                                         <p onClick={() => openLeaveDetailsFun(item, 'home')} role="presentation">{userLeaveData?.leaves?.length - i}</p>
@@ -85,7 +90,7 @@ const Home = ({
                         </div>
                     </>
                     :
-                    <EmptyRoster text={userDataMain?.role === 'admin' ? 'No action needed...🙅' : 'No Leaves Applied...🙅'} />
+                    <EmptyRoster text={userDataMain?.role === 'admin' ? 'No action needed...' : 'No Leaves Applied...'} />
                 }
             </div>
         </>
