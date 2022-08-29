@@ -109,6 +109,12 @@ export const BoardContainer = styled.div`
 
   #BoardContainer #side_menu ul li:nth-child(3) {
     margin-bottom: 1.5vw;
+    position: relative;
+    span{
+      position: absolute;
+      right: 0.5vw;
+      top: 0.8vw;
+    }
   }
 
   #BoardContainer #side_menu ul li img {
@@ -187,7 +193,6 @@ export const BoardContainer = styled.div`
   #BoardContainer #side_menu #menu_dropdown span {
     font-style: normal;
     font-weight: 400;
-    font-size: 1;
     line-height: 1.2vw;
     letter-spacing: 0.2px;
     color: #dde2ff;
@@ -502,6 +507,7 @@ export const BoardContainer = styled.div`
   #BoardContainer #admin #admin_tab h2 {
     font-weight: 500;
     font-size: 1.3vw;
+    line-height: 1.8vw;
     color: #252733;
     margin: 0 0 1.15vw 0;
     text-align: center;

@@ -59,7 +59,7 @@ const Home = ({
                             <h3>Action</h3>
                         </div>
                         <div id="message_block2">
-                            {userLeaveData?.leaves?.reverse().map((item, i) => {
+                            {userLeaveData?.leaves?.map((item, i) => {
 
                                 return (
                                     <div id="task_container" key={i}>

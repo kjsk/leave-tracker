@@ -120,7 +120,7 @@ const SideModal = ({ setPopup, headers, getLeaves, userDataMain, setActiveLoader
           <textarea
             id="textarea"
             value={reason}
-            placeholder="Add reason for leave (optional)"
+            placeholder="Add reason for leave..."
             onChange={e => { setReason(e.target.value) }}
           />
         </div>
