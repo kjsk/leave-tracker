@@ -164,7 +164,6 @@ const Login = () => {
         setActiveLoader(false)
       } else {
         navigate(`/Board`)
-        setActiveLoader(false)
       }
     })
   }
@@ -192,7 +191,6 @@ const Login = () => {
         setActiveLoader(false)
       } else {
         navigate(`/Board`)
-        setActiveLoader(false)
       }
     })
   }
