@@ -15,6 +15,7 @@ const SideModal = ({
   headers,
   getLeaves,
   userDataMain,
+  activeLoader,
   setActiveLoader,
   playAudio,
   openNotificationWithIcon,
@@ -65,6 +66,11 @@ const SideModal = ({
       setDayCount(0)
     }
   }, [pushTime])
+
+  if (dayCount > 3) {
+    setDayCount(0)
+    openNotificationWithIcon(`warning`, `Leave count exceeds`)
+  }
   const createLeave = (leaveType, pushTime, reason) => {
     setPopup(false)
     setActiveLoader(true)
@@ -191,14 +197,14 @@ const SideModal = ({
             }}
             disabled={
               pushTime &&
-              daysCalc() &&
+              !(daysCalc() >= 4) &&
               reason.length > 5 &&
               leaveType?.label !== ""
                 ? false
                 : true
             }
           >
-            Submit
+            {activeLoader ? "Process..." : "Submit"}
           </button>
         </div>
       </div>

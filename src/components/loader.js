@@ -17,6 +17,7 @@ const Loader = () => {
         left: `0`,
         width: `100%`,
         zIndex: 100000,
+        opacity: 0.5,
       }}
     >
       <Spin indicator={antIcon} />

@@ -1,7 +1,7 @@
 import styled from "styled-components"
 
 export const BoardContainer = styled.div`
-   #refresh {
+  #refresh {
     width: fit-content;
     display: flex;
     align-items: center;
@@ -110,7 +110,7 @@ export const BoardContainer = styled.div`
   #BoardContainer #side_menu ul li:nth-child(3) {
     margin-bottom: 1.5vw;
     position: relative;
-    span{
+    span {
       position: absolute;
       right: 0.5vw;
       top: 0.8vw;
@@ -551,14 +551,14 @@ export const BoardContainer = styled.div`
   }
   #BoardContainer #admin #message #message_block2 {
     width: 100%;
-    height: 23vw;
+    height: 33vw;
     overflow: scroll;
     overflow-x: hidden;
   }
 
   #BoardContainer #admin #message #message_block2::-webkit-scrollbar {
     width: 0;
-    position:absolute;
+    position: absolute;
   }
 
   #BoardContainer #admin #message:hover #message_block2::-webkit-scrollbar {
