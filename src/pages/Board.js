@@ -579,7 +579,7 @@ const Board = () => {
           {sideToggle === 2 && sideToggleSub.value === "" && (
             <Result
               icon={<CalendarOutlined />}
-              title="Hello, Calender comming soon!"
+              title="Hello, Calender coming soon!"
             />
           )}
 
@@ -597,7 +597,7 @@ const Board = () => {
           {sideToggle === 4 && (
             <Result
               icon={<SettingOutlined />}
-              title="Hello, Settings comming soon!"
+              title="Hello, Settings coming soon!"
             />
           )}
         </div>
