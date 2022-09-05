@@ -182,6 +182,7 @@ const Board = () => {
   const addUser = (name, Email, id) => {
     setActiveLoader(true)
     setButtonProcess(true)
+    const userEmail = Email.toLowerCase();
     let conditionAPI
     if (id) {
       conditionAPI = axios({
@@ -195,7 +196,7 @@ const Board = () => {
         url: addUserAPI(),
         data: {
           name: name,
-          email: Email,
+          email: userEmail,
         },
         headers: headers,
       })
