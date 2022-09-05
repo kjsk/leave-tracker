@@ -67,10 +67,6 @@ const SideModal = ({
     }
   }, [pushTime])
 
-  if (dayCount > 3) {
-    setDayCount(0)
-    openNotificationWithIcon(`warning`, `Leave count exceeds`)
-  }
   const createLeave = (leaveType, pushTime, reason) => {
     setPopup(false)
     setActiveLoader(true)
@@ -197,7 +193,7 @@ const SideModal = ({
             }}
             disabled={
               pushTime &&
-              !(daysCalc() >= 4) &&
+              daysCalc() &&
               reason.length > 5 &&
               leaveType?.label !== ""
                 ? false
