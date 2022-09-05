@@ -65,6 +65,7 @@ const SideModal = ({
     } else {
       setDayCount(0)
     }
+    // eslint-disable-next-line
   }, [pushTime])
 
   const createLeave = (leaveType, pushTime, reason) => {
