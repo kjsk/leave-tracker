@@ -146,23 +146,16 @@ const Home = ({
                           ? "Rejected"
                           : ""}
                       </p>
-                      <p
-                        onClick={() => {
-                          item?.status === "pending"
-                            ? desecision("delete", item?.id)
-                            : openNotificationWithIcon(
-                                "error",
-                                "Not allowed to delete Approved or Rejected requests"
-                              )
-                        }}
-                        role="presentation"
-                      >
-                        <DeleteOutlined
-                          className={
-                            item?.status === "pending" && "delete_icon"
-                          }
-                        />
-                      </p>
+                      {item?.status === "pending" && (
+                        <p
+                          onClick={() => {
+                            desecision("delete", item?.id)
+                          }}
+                          role="presentation"
+                        >
+                          <DeleteOutlined className="delete_icon" />
+                        </p>
+                      )}
                     </div>
                   )
                 })}

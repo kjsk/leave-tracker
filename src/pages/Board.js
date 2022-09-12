@@ -18,8 +18,6 @@ import {
   DeleteOutlined,
   SettingOutlined,
   CalendarOutlined,
-  UpOutlined,
-  DownOutlined,
   RightOutlined,
   LeftOutlined,
   RedoOutlined,
@@ -62,7 +60,7 @@ const Board = () => {
   const [sideToggleSub, setSideToggleSub] = useState({ name: "", value: "" })
   const [userLeaveData, setUserLeaveData] = useState([])
   const [activeLoader, setActiveLoader] = useState(false)
-  const [adminToggle, setAdminToggle] = useState("pending")
+  const [adminToggle, setAdminToggle] = useState("all")
   const [visible, setVisible] = useState(false)
   const [addEmp, setAddEmp] = useState(false)
   const [barOpen, setbarOpen] = useState(true)
@@ -259,8 +257,8 @@ const Board = () => {
     audioPlayer.current.play()
   }
 
-  const leaveMap = userLeaveData?.leaves?.filter(
-    item => item.status === adminToggle
+  const leaveMap = userLeaveData?.leaves?.filter(item =>
+    adminToggle === "all" ? item : item.status === adminToggle
   )
 
   const openNotificationWithIcon = (type, data) => {
@@ -352,8 +350,8 @@ const Board = () => {
   const leavePending = userLeaveData?.leaves?.filter(
     item => item.status === "pending"
   )
-  const userRealData = userLeaveData?.leaves?.filter(
-    item => item.status === adminToggle
+  const userRealData = userLeaveData?.leaves?.filter(item =>
+    adminToggle === "all" ? item : item.status === adminToggle
   )
   useEffect(() => {
     if (sideSubOpen === false) {
@@ -449,51 +447,29 @@ const Board = () => {
               <img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />
               {barOpen && "Calendar"}
             </li>
-            {userDataMain?.role === "admin" ? (
-              <li
-                className={sideToggle === 3 && "active"}
-                role="presentation"
-                onClick={() => {
-                  conditionalFun(3)
-                }}
-              >
-                <img src={sideToggle === 3 ? admin2 : admin} alt="img" />
-                {barOpen && "Admin Portal"}{" "}
-                {barOpen && (
-                  <span
-                    onClick={() => setSideSubOpen(!sideSubOpen)}
-                    role="presentation"
-                  >
-                    {sideSubOpen ? <UpOutlined /> : <DownOutlined />}
-                  </span>
-                )}
-              </li>
-            ) : (
-              <li
-                className={sideToggle === 3 && "active"}
-                role="presentation"
-                onClick={() => {
-                  conditionalFun(3)
-                  setSideSubOpen(false)
-                }}
-              >
-                <img src={sideToggle === 3 ? admin2 : admin} alt="img" />
-                {barOpen && `User Portal`}
-              </li>
-            )}
-            {sideSubOpen && barOpen && (
-              <div id="menu_dropdown">
-                <span
-                  id={sideToggleSub.value === 1 && "active"}
-                  onClick={() =>
-                    setSideToggleSub({ name: "Employee List", value: 1 })
-                  }
-                  role="presentation"
-                >
-                  Employee List
-                </span>
-              </div>
-            )}
+            <li
+              className={sideToggle === 3 && "active"}
+              role="presentation"
+              onClick={() => {
+                conditionalFun(3)
+              }}
+            >
+              <img src={sideToggle === 3 ? admin2 : admin} alt="img" />
+              {userDataMain?.role === "admin"
+                ? barOpen && "Admin Portal"
+                : barOpen && "User Portal"}
+            </li>
+            <li
+              className={sideToggle === 5 && "active"}
+              role="presentation"
+              onClick={() => {
+                conditionalFun(5)
+                setSideSubOpen(false)
+              }}
+            >
+              <img src={sideToggle === 5 ? Calendar2 : Calendar} alt="img" />
+              {barOpen && "Employee List"}
+            </li>
           </ul>
           <ul>
             <li
@@ -541,12 +517,12 @@ const Board = () => {
                   : "User Portal"
                 : sideToggle === 4
                 ? "Settings"
+                : sideToggle === 5
+                ? "Employee List"
                 : ""}{" "}
-              {sideToggleSub.name &&
-                sideToggle === 3 &&
-                `(${sideToggleSub.name})`}
             </h2>
             <div id="mini_block">
+              <button onClick={() => setPopup(true)}>Apply Leave</button>
               {sideToggle === 1 && userDataMain?.role !== "admin" && (
                 <button onClick={() => setPopup(true)}>Apply Leave</button>
               )}
@@ -589,9 +565,7 @@ const Board = () => {
           )}
 
           {/* USERLIST */}
-          {sideToggle === 3 && sideToggleSub.value === 1 && (
-            <UsersList {...commonProps} />
-          )}
+          {sideToggle === 5 && <UsersList {...commonProps} />}
 
           {/* SETTINGS */}
           {sideToggle === 4 && (
