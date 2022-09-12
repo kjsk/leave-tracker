@@ -48,7 +48,7 @@ const SideModal = ({
     setLeaveType({
       label: label,
       value: e,
-    })
+    })``
   }
   const daysCalc = () => {
     let Difference_In_Time = pushTime
@@ -181,9 +181,9 @@ const SideModal = ({
             style={{
               background:
                 pushTime &&
-                daysCalc() &&
-                reason.length > 5 &&
-                leaveType?.label !== ""
+                  daysCalc() &&
+                  reason.length > 5 &&
+                  leaveType?.label !== ""
                   ? "#3751FF"
                   : "gray",
               color: "white",
@@ -194,9 +194,9 @@ const SideModal = ({
             }}
             disabled={
               pushTime &&
-              daysCalc() &&
-              reason.length > 5 &&
-              leaveType?.label !== ""
+                daysCalc() &&
+                reason.length > 5 &&
+                leaveType?.label !== ""
                 ? false
                 : true
             }

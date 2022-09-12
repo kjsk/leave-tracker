@@ -547,6 +547,7 @@ const Board = () => {
                 `(${sideToggleSub.name})`}
             </h2>
             <div id="mini_block">
+              <button onClick={() => setPopup(true)}>Apply Leave</button>
               {sideToggle === 1 && userDataMain?.role !== "admin" && (
                 <button onClick={() => setPopup(true)}>Apply Leave</button>
               )}
