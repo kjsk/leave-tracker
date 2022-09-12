@@ -459,17 +459,19 @@ const Board = () => {
                 ? barOpen && "Admin Portal"
                 : barOpen && "User Portal"}
             </li>
-            <li
-              className={sideToggle === 5 && "active"}
-              role="presentation"
-              onClick={() => {
-                conditionalFun(5)
-                setSideSubOpen(false)
-              }}
-            >
-              <img src={sideToggle === 5 ? Calendar2 : Calendar} alt="img" />
-              {barOpen && "Employee List"}
-            </li>
+            {userDataMain?.role === "admin" && (
+              <li
+                className={sideToggle === 5 && "active"}
+                role="presentation"
+                onClick={() => {
+                  conditionalFun(5)
+                  setSideSubOpen(false)
+                }}
+              >
+                <img src={sideToggle === 5 ? Calendar2 : Calendar} alt="img" />
+                {barOpen && "Employee List"}
+              </li>
+            )}
           </ul>
           <ul>
             <li
