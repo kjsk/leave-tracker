@@ -107,7 +107,7 @@ export const BoardContainer = styled.div`
     padding: 0 2.02898550724638vw;
   }
 
-  #BoardContainer #side_menu ul li:nth-child(3) {
+  #BoardContainer #side_menu ul li:nth-child(4) {
     margin-bottom: 1.5vw;
     position: relative;
     span {
@@ -158,51 +158,6 @@ export const BoardContainer = styled.div`
     .imghover {
       display: inherit;
     }
-  }
-
-  #BoardContainer #side_menu #menu_dropdown {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-left: 40px;
-    height: 80px;
-    overflow: scroll;
-    direction: rtl;
-    overflow-x: hidden;
-    transition: 0.5s ease-in-out;
-    ::-webkit-scrollbar {
-      width: 2px;
-    }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #b4b4b4;
-      opacity: 0.1;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #dde2ff;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
-  }
-  #BoardContainer #side_menu #menu_dropdown span {
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1.2vw;
-    letter-spacing: 0.2px;
-    color: #dde2ff;
-    padding: 0.5vw 2vw;
-    cursor: pointer;
-    direction: ltr;
-    font-size: 1vw;
-  }
-  #BoardContainer #side_menu #menu_dropdown #active {
-    font-weight: bold;
   }
 
   #BoardContainer #main_menu {
@@ -500,7 +455,7 @@ export const BoardContainer = styled.div`
   #BoardContainer #admin #admin_tab {
     border-bottom: 0.07vw solid #aaaaaa7a;
     display: grid;
-    grid-template-columns: 6.81vw 6.81vw 6.81vw;
+    grid-template-columns: 6.81vw 6.81vw 6.81vw 6.81vw;
     gap: 6.81vw;
     margin: 2.31vw 0 0 0;
   }
@@ -551,7 +506,7 @@ export const BoardContainer = styled.div`
   }
   #BoardContainer #admin #message #message_block2 {
     width: 100%;
-    height: 33vw;
+    height: 25vw;
     overflow: scroll;
     overflow-x: hidden;
   }
@@ -714,6 +669,9 @@ export const BoardContainer = styled.div`
   }
   #BoardContainer #admin_home #admin #message #message_block1 {
     grid-template-columns: 6% 20% 20% 20% 20% 10%;
+  }
+  #BoardContainer #admin_home #admin #message #message_block2 {
+    height: 30vw;
   }
   #BoardContainer #admin_home #admin #message #message_block2 #btns img {
     width: 26px;
