@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { Column } from "@ant-design/plots"
 import { DashboardContainer } from "./styles"
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"

@@ -20,7 +20,7 @@ const Home = ({
   const calcLeaves = 24 - leaveApproved?.length
   return (
     <>
-      <div id="score">
+      {/* <div id="score">
         {userDataMain?.role === "admin" ? (
           <div id="score_card">
             <h2 id="score">
@@ -61,6 +61,40 @@ const Home = ({
               : leaveRejected?.length}
           </h2>
           <p>Rejected Leaves</p>
+        </div>
+      </div> */}
+      <div id="score">
+        <div id="score_card">
+          <h2 id="score">
+            <span className="main_count">16</span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">20</span>
+          </h2>
+          <p>Casual leave</p>
+        </div>
+        <div id="score_card">
+          <h2 id="score">
+            <span className="main_count">03</span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">05</span>
+          </h2>
+          <p>Sick leave</p>
+        </div>
+        <div id="score_card">
+          <h2 id="score">
+            <span className="main_count">06</span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">08</span>
+          </h2>
+          <p>General leave</p>
+        </div>
+        <div id="score_card">
+          <h2 id="score">
+            <span className="main_count">02</span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">05</span>
+          </h2>
+          <p>Loss of pay</p>
         </div>
       </div>
 

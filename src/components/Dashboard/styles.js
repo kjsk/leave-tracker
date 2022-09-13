@@ -1,8 +1,10 @@
 import styled from "styled-components"
 
 export const DashboardContainer = styled.div`
-  padding: 1vw;
   #dashboard_container {
+    canvas {
+      height: 16vw !important;
+    }
     #dashboard_nav {
       display: flex;
       cursor: pointer;
@@ -19,7 +21,7 @@ export const DashboardContainer = styled.div`
     }
   }
   .dashboard_detail {
-    padding: 0 2.8vw;
+    padding: 0 1vw;
     h1 {
       font-style: normal;
       font-weight: 700;
@@ -31,7 +33,7 @@ export const DashboardContainer = styled.div`
       border-bottom: 0.1vw solid #d0d0d0;
     }
     .dashboard_detail_cards {
-      height: 10vw;
+      height: 15vw;
       overflow: scroll;
       overflow-x: hidden;
       transition: 0.5s ease-in-out;

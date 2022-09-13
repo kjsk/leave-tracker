@@ -10,6 +10,8 @@ import settings from "../data/assets/settings.svg"
 import settings2 from "../data/assets/settings_hover.svg"
 import logout from "../data/assets/logout.svg"
 import logout_hover from "../data/assets/logout_hover.svg"
+import Employee from "../data/assets/Employee.svg"
+import Employee_hover from "../data/assets/Employee_hover.svg"
 // import search from '../data/assets/search.svg';
 // import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from "../data/assets/Edit_user.svg"
@@ -27,6 +29,17 @@ import SideModal from "../components/leavePopup/index"
 // import Notification from "../components/leavePopup/notification";
 // import share from '../data/assets/share.svg';
 import axios from "axios"
+import { navigate } from "gatsby"
+import NotificationSound from "../utils/notification.mp3"
+import Avatar from "../components/Avatar/index"
+import CompoLoader from "../components/ComponentLoader"
+import Home from "../components/Board/home"
+import AdminPortal from "../components/Board/AdminPortal"
+import UsersList from "../components/Board/UsersList"
+import AddEmployee from "../components/Forms/AddEmployee"
+import EditUser from "../components/Forms/EditUser"
+import LeaveDetails from "../components/Forms/LeaveDetails"
+import Dashboard from "../components/Dashboard/dashboard"
 import {
   getHeaders,
   baseURL,
@@ -35,16 +48,6 @@ import {
   getUsersAPI,
   addUserAPI,
 } from "../utils/urls"
-import { navigate } from "gatsby"
-import NotificationSound from "../utils/notification.mp3"
-import AddEmployee from "../components/Forms/AddEmployee"
-import EditUser from "../components/Forms/EditUser"
-import LeaveDetails from "../components/Forms/LeaveDetails"
-import Avatar from "../components/Avatar/index"
-import Home from "../components/Board/home"
-import AdminPortal from "../components/Board/AdminPortal"
-import UsersList from "../components/Board/UsersList"
-import CompoLoader from "../components/ComponentLoader"
 import { nameProf } from "../utils/functions"
 
 const Board = () => {
@@ -56,7 +59,7 @@ const Board = () => {
   const userDataMain = userData?.user
 
   const [popup, setPopup] = useState(false)
-  const [sideToggle, setSideToggle] = useState(1)
+  const [sideToggle, setSideToggle] = useState(6)
   const [sideSubOpen, setSideSubOpen] = useState(false)
   const [sideToggleSub, setSideToggleSub] = useState({ name: "", value: "" })
   const [userLeaveData, setUserLeaveData] = useState([])
@@ -415,6 +418,17 @@ const Board = () => {
           </h1>
           <ul>
             <li
+              className={sideToggle === 6 && "active"}
+              role="presentation"
+              onClick={() => {
+                conditionalFun(6)
+                setSideSubOpen(false)
+              }}
+            >
+              <img src={sideToggle === 6 ? overview2 : overview} alt="img" />
+              {barOpen && "Dashboard"}
+            </li>
+            <li
               className={sideToggle === 1 && "active"}
               role="presentation"
               onClick={() => {
@@ -457,7 +471,10 @@ const Board = () => {
                   setSideSubOpen(false)
                 }}
               >
-                <img src={sideToggle === 5 ? Calendar2 : Calendar} alt="img" />
+                <img
+                  src={sideToggle === 5 ? Employee_hover : Employee}
+                  alt="img"
+                />
                 {barOpen && "Employee List"}
               </li>
             )}
@@ -510,10 +527,11 @@ const Board = () => {
                 ? "Settings"
                 : sideToggle === 5
                 ? "Employee List"
+                : sideToggle === 6
+                ? "Dashboard"
                 : ""}{" "}
             </h2>
             <div id="mini_block">
-              <button onClick={() => setPopup(true)}>Apply Leave</button>
               {sideToggle === 1 && userDataMain?.role !== "admin" && (
                 <button onClick={() => setPopup(true)}>Apply Leave</button>
               )}
@@ -536,12 +554,10 @@ const Board = () => {
               </div>
             </div>
           </div>
-
           {/* HOME */}
           {sideToggle === 1 && sideToggleSub.value === "" && (
             <Home {...commonProps} />
           )}
-
           {/* CALENDAR */}
           {sideToggle === 2 && sideToggleSub.value === "" && (
             <Result
@@ -549,15 +565,10 @@ const Board = () => {
               title="Hello, Calender coming soon!"
             />
           )}
-
           {/* ADMIN & USER PORTAL */}
           {sideToggle === 3 && sideToggleSub.value === "" && (
             <AdminPortal {...commonProps} />
           )}
-
-          {/* USERLIST */}
-          {sideToggle === 5 && <UsersList {...commonProps} />}
-
           {/* SETTINGS */}
           {sideToggle === 4 && (
             <Result
@@ -565,6 +576,10 @@ const Board = () => {
               title="Hello, Settings coming soon!"
             />
           )}
+          {/* USERLIST */}
+          {sideToggle === 5 && <UsersList {...commonProps} />}
+          {/* Dashboard */}
+          {sideToggle === 6 && <Dashboard />}
         </div>
       </div>
 
