@@ -47,6 +47,7 @@ import Home from "../components/Board/home"
 import AdminPortal from "../components/Board/AdminPortal"
 import UsersList from "../components/Board/UsersList"
 import CompoLoader from "../components/ComponentLoader"
+import { nameProf } from "../utils/functions"
 
 const Board = () => {
   const urlGlobal = baseURL // ADDING GLOBAL BASE URL
@@ -120,18 +121,6 @@ const Board = () => {
         setButtonProcess(false)
         console.log("Error", _err)
       })
-  }
-
-  // Function to split letters in user name to use as DP
-  const nameProf = name => {
-    let text = name
-    const myArray = text?.split(" ")
-    return (
-      myArray &&
-      (myArray[0] ? myArray[0][0] : "") +
-        " " +
-        (myArray[1] ? myArray[1][0] : "")
-    )
   }
 
   // Call for logout and cleanup the localstorage

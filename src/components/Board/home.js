@@ -92,7 +92,7 @@ const Home = ({
                         onClick={() => openLeaveDetailsFun(item, "home")}
                         role="presentation"
                       >
-                        {userLeaveData?.leaves?.length - i}
+                        {i + 1}
                       </p>
                       <p
                         style={{ padding: `0` }}
