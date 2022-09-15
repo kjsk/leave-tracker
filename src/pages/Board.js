@@ -78,6 +78,7 @@ const Board = () => {
   const [deleteUserState, setdeleteUserState] = useState(false)
   const [userConform, setUserConform] = useState("")
   const [buttonProcess, setButtonProcess] = useState(false)
+  const [LeaveDrop, setLeaveDrop] = useState(false)
 
   // common headers
   const headers = getHeaders(userData?.tokens?.accessToken)
@@ -382,6 +383,8 @@ const Board = () => {
     CompoLoader,
     setButtonProcess,
     buttonProcess,
+    setLeaveDrop,
+    LeaveDrop,
   }
 
   return (
@@ -586,7 +589,7 @@ const Board = () => {
       {/* SIDE MODAL DRAWER TO APPLY LEAVE */}
       <Drawer
         visible={popup}
-        onClose={() => setPopup(false)}
+        onClose={() => (setPopup(false), setLeaveDrop(false))}
         width="fit-content"
       >
         <SideModal

@@ -11,6 +11,8 @@ import { baseURL } from "../../utils/urls"
 import moment from "moment"
 
 const SideModal = ({
+  setLeaveDrop,
+  LeaveDrop,
   setPopup,
   headers,
   getLeaves,
@@ -24,12 +26,11 @@ const SideModal = ({
 
   const [pushTime, setPushTime] = useState([])
 
-  const [leaveType, setLeaveType] = useState({ label: "" })
+  const [leaveType, setLeaveType] = useState({ label: "", value: "" })
 
   // const [leavePer, setLeavePer] = useState("First Half");
 
   const [reason, setReason] = useState("")
-  const [LeaveDrop, setLeaveDrop] = useState(false)
   const [dayCount, setDayCount] = useState(0)
 
   const onChange = date => {
@@ -48,7 +49,7 @@ const SideModal = ({
     setLeaveType({
       label: label,
       value: e,
-    })``
+    })
   }
   const daysCalc = () => {
     let Difference_In_Time = pushTime
@@ -181,9 +182,9 @@ const SideModal = ({
             style={{
               background:
                 pushTime &&
-                  daysCalc() &&
-                  reason.length > 5 &&
-                  leaveType?.label !== ""
+                daysCalc() &&
+                reason.length > 5 &&
+                leaveType?.label !== ""
                   ? "#3751FF"
                   : "gray",
               color: "white",
@@ -194,9 +195,9 @@ const SideModal = ({
             }}
             disabled={
               pushTime &&
-                daysCalc() &&
-                reason.length > 5 &&
-                leaveType?.label !== ""
+              daysCalc() &&
+              reason.length > 5 &&
+              leaveType?.label !== ""
                 ? false
                 : true
             }
