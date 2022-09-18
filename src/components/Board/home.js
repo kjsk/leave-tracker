@@ -5,8 +5,8 @@ import EmptyRoster from "../EmptyRoster"
 const Home = ({
   RedoOutlined,
   leaveApproved,
-  leavePending,
-  leaveRejected,
+  // leavePending,
+  // leaveRejected,
   userLeaveData,
   openLeaveDetailsFun,
   desecision,
@@ -17,7 +17,7 @@ const Home = ({
   activeLoader,
   CompoLoader,
 }) => {
-  const calcLeaves = 24 - leaveApproved?.length
+  // const calcLeaves = 24 - leaveApproved?.length
   return (
     <>
       {/* <div id="score">

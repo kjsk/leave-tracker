@@ -12,6 +12,8 @@ import logout from "../data/assets/logout.svg"
 import logout_hover from "../data/assets/logout_hover.svg"
 import Employee from "../data/assets/Employee.svg"
 import Employee_hover from "../data/assets/Employee_hover.svg"
+import DashboardImg from "../data/assets/dashboard.svg"
+import Dashboard_hover from "../data/assets/dashboard_hover.svg"
 // import search from '../data/assets/search.svg';
 // import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from "../data/assets/Edit_user.svg"
@@ -354,6 +356,7 @@ const Board = () => {
 
   // SETTING COMMON PROPS FOR ALL THE COMPONENTS
   const commonProps = {
+    headers,
     leaveApproved,
     leavePending,
     leaveRejected,
@@ -428,7 +431,10 @@ const Board = () => {
                 setSideSubOpen(false)
               }}
             >
-              <img src={sideToggle === 6 ? overview2 : overview} alt="img" />
+              <img
+                src={sideToggle === 6 ? Dashboard_hover : DashboardImg}
+                alt="img"
+              />
               {barOpen && "Dashboard"}
             </li>
             <li
@@ -582,14 +588,17 @@ const Board = () => {
           {/* USERLIST */}
           {sideToggle === 5 && <UsersList {...commonProps} />}
           {/* Dashboard */}
-          {sideToggle === 6 && <Dashboard />}
+          {sideToggle === 6 && <Dashboard {...commonProps} />}
         </div>
       </div>
 
       {/* SIDE MODAL DRAWER TO APPLY LEAVE */}
       <Drawer
         visible={popup}
-        onClose={() => (setPopup(false), setLeaveDrop(false))}
+        onClose={() => {
+          setPopup(false)
+          setLeaveDrop(false)
+        }}
         width="fit-content"
       >
         <SideModal

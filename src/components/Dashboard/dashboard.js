@@ -1,194 +1,45 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Column } from "@ant-design/plots"
 import { DashboardContainer } from "./styles"
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"
 import Avatar from "../Avatar/index"
 import { nameProf } from "../../utils/functions"
+import axios from "axios"
+import { baseURL } from "../../utils/urls"
 
-const Dashboard = () => {
-  // const [data, setData] = useState([]);
+const Dashboard = ({ headers }) => {
+  useEffect(() => {
+    getGraphData()
+    // eslint-disable-next-line
+  }, [])
+  const currentMonth = new Date().getMonth()
+  const currentYear = new Date().getFullYear()
+  const [month, setMonth] = useState(currentMonth + 1)
+  const [graphData, setGraphData] = useState()
+  console.log("month", month)
 
-  // useEffect(() => {
-  //     asyncFetch();
-  // }, []);
+  // Get leave graph data
+  const getGraphData = () => {
+    axios({
+      url: `${baseURL}/api/v2/dashboard?month=${month}&year=${currentYear}`,
+      method: "GET",
+      headers: headers,
+    })
+      .then(res => setGraphData(res?.data?.data))
+      .catch(err => console.log("err", err))
+  }
+  console.log("graphData", graphData)
 
-  // const asyncFetch = () => {
-  //     fetch('https://gw.alipayobjects.com/os/antfincdn/8elHX%26irfq/stack-column-data.json')
-  //         .then((response) => response.json())
-  //         .then((json) => setData(json))
-  //         .catch((error) => {
-  //             console.log('fetch data failed', error);
-  //         });
-  // };
-  // console.log("data", data)
-
-  const data = [
-    {
-      day: "1",
-      value: 7,
-      type: "Sick leave",
-    },
-    {
-      day: "2",
-      value: 2,
-      type: "Causal leave",
-    },
-    {
-      day: "3",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "4",
-      value: 3.5,
-      type: "Causal leave",
-    },
-    {
-      day: "5",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "6",
-      value: 4.9,
-      type: "Sick leave",
-    },
-    {
-      day: "7",
-      value: "",
-      type: "Causal leave",
-    },
-    {
-      day: "7",
-      value: "",
-      type: "Sick leave",
-    },
-    {
-      day: "8",
-      value: "",
-      type: "Sick leave",
-    },
-    {
-      day: "9",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "10",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "11",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "12",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "13",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "14",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "14",
-      value: 10,
-      type: "Causal leave",
-    },
-    {
-      day: "15",
-      value: "",
-      type: "Sick leave",
-    },
-    {
-      day: "16",
-      value: "",
-      type: "Sick leave",
-    },
-    {
-      day: "17",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "18",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "19",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "20",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "21",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "22",
-      value: "",
-      type: "Sick leave",
-    },
-    {
-      day: "23",
-      value: "",
-      type: "Sick leave",
-    },
-    {
-      day: "24",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "25",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "26",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "27",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "28",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "29",
-      value: 5,
-      type: "Sick leave",
-    },
-    {
-      day: "29",
-      value: 2,
-      type: "Causal leave",
-    },
-    {
-      day: "30",
-      value: 2,
-      type: "Causal leave",
-    },
-  ]
+  const data = graphData
+    ? graphData?.days
+    : [
+        {
+          day: "09",
+          value: 1,
+          type: "cos",
+        },
+      ]
+  // Graph configuration
   const config = {
     data,
     isStack: true,
@@ -215,14 +66,52 @@ const Dashboard = () => {
       },
     },
   }
+  if (month >= 12) {
+    setMonth(1)
+  }
+
+  const newDate = graphData?.edate.split(" ")[0]
+  console.log(typeof newDate)
+
+  const newDate2 = newDate <= 10 ? newDate[1] : newDate
+  console.log("newDate2", newDate2)
+  let newDateArr = []
+
+  var newDay
+  for (var i = 1; i <= newDate2; i++) {
+    newDay = i
+    newDateArr.push({
+      day: newDay,
+      value: 0,
+      type: "",
+    })
+  }
+  // console.log("newDay", newDay)
+
+  console.log("newDateArr", newDateArr)
   return (
     <DashboardContainer>
       <div id="dashboard">
         <div id="dashboard_container">
           <div id="dashboard_nav">
-            <LeftOutlined />
-            <span>September 2022</span>
-            <RightOutlined />
+            <LeftOutlined
+              onClick={() => {
+                setMonth(month - 1)
+                getGraphData()
+              }}
+            />
+            <span>
+              {graphData &&
+                graphData.sdate.split(" ")[1] +
+                  ", " +
+                  graphData.sdate.split(" ")[2]}
+            </span>
+            <RightOutlined
+              onClick={() => {
+                setMonth(month + 1)
+                getGraphData()
+              }}
+            />
           </div>
           <Column {...config} />
         </div>
