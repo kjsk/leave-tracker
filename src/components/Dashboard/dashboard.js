@@ -3,21 +3,21 @@ import { Column } from "@ant-design/plots"
 import { DashboardContainer } from "./styles"
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"
 import Avatar from "../Avatar/index"
+import EmptyRoster from "../EmptyRoster"
 import { nameProf } from "../../utils/functions"
 import axios from "axios"
 import { baseURL } from "../../utils/urls"
 
 const Dashboard = ({ headers, CompoLoader }) => {
-  useEffect(() => {
-    getGraphData()
-    // eslint-disable-next-line
-  }, [])
   const [loader, setLoader] = useState(false)
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
   const [month, setMonth] = useState(currentMonth + 1)
   const [graphData, setGraphData] = useState()
-
+  useEffect(() => {
+    getGraphData()
+    // eslint-disable-next-line
+  }, [month])
   if (month >= 12) {
     setMonth(1)
   }
@@ -97,7 +97,6 @@ const Dashboard = ({ headers, CompoLoader }) => {
             <LeftOutlined
               onClick={() => {
                 setMonth(month - 1)
-                getGraphData()
               }}
             />
             <span>
@@ -109,15 +108,28 @@ const Dashboard = ({ headers, CompoLoader }) => {
             <RightOutlined
               onClick={() => {
                 setMonth(month + 1)
-                getGraphData()
               }}
             />
           </div>
-          {loader ? <CompoLoader /> : <Column {...config} />}
+          {loader ? (
+            <CompoLoader />
+          ) : graphData?.days?.length === 0 ? (
+            <EmptyRoster
+              text={`No leave's applied for ${graphData.sdate.split(" ")[1]}`}
+            />
+          ) : (
+            <Column {...config} />
+          )}
         </div>
       </div>
       <div className="dashboard_detail">
-        <h1>September 05 ,2022</h1>
+        <h1>
+          {" "}
+          {graphData &&
+            graphData.sdate.split(" ")[1] +
+              ", " +
+              graphData.sdate.split(" ")[2]}
+        </h1>
         <div className="dashboard_detail_cards">
           <div className="card">
             <div className="card_container1">

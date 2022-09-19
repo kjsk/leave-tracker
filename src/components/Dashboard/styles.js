@@ -19,6 +19,16 @@ export const DashboardContainer = styled.div`
         color: #252733;
       }
     }
+    .chart_container {
+      height: 16vw;
+      display: flex;
+      justify-content: center;
+      align-item: center;
+      span {
+        margin: auto;
+        color: #00d241;
+      }
+    }
   }
   .dashboard_detail {
     padding: 0 1vw;
