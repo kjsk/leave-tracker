@@ -7,28 +7,34 @@ import { nameProf } from "../../utils/functions"
 import axios from "axios"
 import { baseURL } from "../../utils/urls"
 
-const Dashboard = ({ headers }) => {
+const Dashboard = ({ headers, CompoLoader }) => {
   useEffect(() => {
     getGraphData()
     // eslint-disable-next-line
   }, [])
+  const [loader, setLoader] = useState(false)
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
   const [month, setMonth] = useState(currentMonth + 1)
   const [graphData, setGraphData] = useState()
-  console.log("month", month)
 
+  if (month >= 12) {
+    setMonth(1)
+  }
   // Get leave graph data
   const getGraphData = () => {
+    setLoader(true)
     axios({
       url: `${baseURL}/api/v2/dashboard?month=${month}&year=${currentYear}`,
       method: "GET",
       headers: headers,
     })
-      .then(res => setGraphData(res?.data?.data))
+      .then(res => {
+        setLoader(false)
+        setGraphData(res?.data?.data)
+      })
       .catch(err => console.log("err", err))
   }
-  console.log("graphData", graphData)
 
   const data = graphData
     ? graphData?.days
@@ -66,29 +72,23 @@ const Dashboard = ({ headers }) => {
       },
     },
   }
-  if (month >= 12) {
-    setMonth(1)
-  }
 
-  const newDate = graphData?.edate.split(" ")[0]
-  console.log(typeof newDate)
+  // const newDate = graphData?.edate.split(" ")[0]
+  // console.log(typeof newDate)
 
-  const newDate2 = newDate <= 10 ? newDate[1] : newDate
-  console.log("newDate2", newDate2)
-  let newDateArr = []
+  // const newDate2 = newDate <= 10 ? newDate[1] : newDate
+  // console.log("newDate2", newDate2)
+  // let newDateArr = []
 
-  var newDay
-  for (var i = 1; i <= newDate2; i++) {
-    newDay = i
-    newDateArr.push({
-      day: newDay,
-      value: 0,
-      type: "",
-    })
-  }
-  // console.log("newDay", newDay)
-
-  console.log("newDateArr", newDateArr)
+  // var newDay
+  // for (var i = 1; i <= newDate2; i++) {
+  //   newDay = i
+  //   newDateArr.push({
+  //     day: newDay,
+  //     value: 0,
+  //     type: "",
+  //   })
+  // }
   return (
     <DashboardContainer>
       <div id="dashboard">
@@ -113,7 +113,7 @@ const Dashboard = ({ headers }) => {
               }}
             />
           </div>
-          <Column {...config} />
+          {loader ? <CompoLoader /> : <Column {...config} />}
         </div>
       </div>
       <div className="dashboard_detail">
