@@ -99,6 +99,12 @@ export const PopupContainer = styled.div`
     border-radius: 8px;
     background: none;
     cursor: pointer;
+    transition: 0.5s ease-in-out;
+    :hover {
+      color: #3751ff;
+      background: white;
+      outline: 0.2vw solid #3751ff;
+    }
   }
 
   #popup #buttons button:nth-child(1) {

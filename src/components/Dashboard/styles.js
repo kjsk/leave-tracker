@@ -33,6 +33,8 @@ export const DashboardContainer = styled.div`
   .dashboard_detail {
     padding: 0 1vw;
     h1 {
+      display: flex;
+      align-items: center;
       font-style: normal;
       font-weight: 700;
       font-size: 1.3vw;
@@ -78,12 +80,12 @@ export const DashboardContainer = styled.div`
           border-radius: 100px;
           font-style: normal;
           font-weight: 500;
-          font-size: 4.2vw;
-          line-height: 0;
+          font-size: 2.5vw;
           color: #252733;
           display: flex;
           justify-content: center;
           align-items: center;
+          flex-direction: block;
         }
         .card_container2 {
           width: 100%;

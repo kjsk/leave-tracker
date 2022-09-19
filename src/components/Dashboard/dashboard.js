@@ -14,6 +14,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const currentYear = new Date().getFullYear()
   const [month, setMonth] = useState(currentMonth + 1)
   const [graphData, setGraphData] = useState()
+  const [getDay, setGetDay] = useState("")
   useEffect(() => {
     getGraphData()
     // eslint-disable-next-line
@@ -22,10 +23,11 @@ const Dashboard = ({ headers, CompoLoader }) => {
     setMonth(1)
   }
   // Get leave graph data
+  const newDate = month <= 10 ? 0 + "" + month : month
   const getGraphData = () => {
     setLoader(true)
     axios({
-      url: `${baseURL}/api/v2/dashboard?month=${month}&year=${currentYear}`,
+      url: `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}`,
       method: "GET",
       headers: headers,
     })
@@ -41,23 +43,39 @@ const Dashboard = ({ headers, CompoLoader }) => {
     : [
         {
           day: "09",
-          value: 1,
+          value: 50,
           type: "cos",
         },
       ]
+
   // Graph configuration
   const config = {
     data,
     isStack: true,
     xField: "day",
     yField: "value",
+    yAxis: {
+      max: 30,
+    },
     seriesField: "type",
-    columnStyle: { r: 1 },
+    columnStyle: {
+      radius: [50, 50, 0, 0],
+    },
     label: {
       position: "bottom",
     },
     legend: {
       position: "bottom-left",
+      marker: {
+        symbol: "circle", // shape of the marker
+        radius: 5, // radius of the circle
+      },
+    },
+    onReady: plot => {
+      plot.on("element:click", args => {
+        console.log("args", args?.data?.data)
+        setGetDay(args?.data?.data?.day)
+      })
     },
     color: ["#F0BD70", "#8E95E9", "#FA7272", "#9FDEB3"],
     interactions: [
@@ -73,11 +91,9 @@ const Dashboard = ({ headers, CompoLoader }) => {
     },
   }
 
-  // const newDate = graphData?.edate.split(" ")[0]
-  // console.log(typeof newDate)
+  // const newDate2 = graphData?.edate.split(" ")[0]
 
-  // const newDate2 = newDate <= 10 ? newDate[1] : newDate
-  // console.log("newDate2", newDate2)
+  // const newDate22 = newDate2 <= 10 ? newDate2[1] : newDate2
   // let newDateArr = []
 
   // var newDay
@@ -85,10 +101,29 @@ const Dashboard = ({ headers, CompoLoader }) => {
   //   newDay = i
   //   newDateArr.push({
   //     day: newDay,
-  //     value: 0,
-  //     type: "",
   //   })
   // }
+
+  // console.log("newDateArr", newDateArr)
+
+  useEffect(() => {
+    getLeaveDetails()
+    // eslint-disable-next-line
+  }, [getDay])
+  const [empLeaveData, setEmpLeaveData] = useState([])
+  const getLeaveDetails = () => {
+    axios({
+      url: `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}&day=${getDay}`,
+      method: "GET",
+      headers: headers,
+    })
+      .then(res => {
+        setEmpLeaveData(res?.data?.data?.leaves)
+      })
+      .catch(err => console.log("err", err))
+  }
+
+  console.log("empLeaveData", empLeaveData)
   return (
     <DashboardContainer>
       <div id="dashboard">
@@ -124,93 +159,38 @@ const Dashboard = ({ headers, CompoLoader }) => {
       </div>
       <div className="dashboard_detail">
         <h1>
-          {" "}
           {graphData &&
-            graphData.sdate.split(" ")[1] +
+            getDay +
+              " " +
+              graphData.sdate.split(" ")[1] +
               ", " +
               graphData.sdate.split(" ")[2]}
         </h1>
         <div className="dashboard_detail_cards">
-          <div className="card">
-            <div className="card_container1">
-              <Avatar name="M" nameProf={nameProf} />
-            </div>
-            <div className="card_container2">
-              <div className="card_name_container">
-                <div className="card_name_container1">
-                  <div className="leave_tag">Sick leave</div>
-                  <p>Bobbili praveen</p>
+          {empLeaveData?.length >= 1 ? (
+            empLeaveData.map(item => (
+              <div className="card">
+                <div className="card_container1">
+                  <Avatar name={item?.username} nameProf={nameProf} />
                 </div>
-                <h2>
-                  Approved by:<span>Hr@fidisys</span>
-                </h2>
-              </div>
-              <h3 className="detail">
-                Suffering from fever leave from sep 6 th to sep 8 th 2022{" "}
-              </h3>
-              <span className="day_tag">3 days off</span>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card_container1">
-              <Avatar name="M" nameProf={nameProf} />
-            </div>
-            <div className="card_container2">
-              <div className="card_name_container">
-                <div className="card_name_container1">
-                  <div className="leave_tag">Sick leave</div>
-                  <p>Bobbili praveen</p>
+                <div className="card_container2">
+                  <div className="card_name_container">
+                    <div className="card_name_container1">
+                      <div className="leave_tag">Sick leave</div>
+                      <p>{item?.username}</p>
+                    </div>
+                    <h2>
+                      Approved by:<span>Hr@fidisys</span>
+                    </h2>
+                  </div>
+                  <h3 className="detail">{item?.reason}</h3>
+                  <span className="day_tag">3 days off</span>
                 </div>
-                <h2>
-                  Approved by:<span>Hr@fidisys</span>
-                </h2>
               </div>
-              <h3 className="detail">
-                Suffering from fever leave from sep 6 th to sep 8 th 2022{" "}
-              </h3>
-              <span className="day_tag">3 days off</span>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card_container1">
-              <Avatar name="M" nameProf={nameProf} />
-            </div>
-            <div className="card_container2">
-              <div className="card_name_container">
-                <div className="card_name_container1">
-                  <div className="leave_tag">Sick leave</div>
-                  <p>Bobbili praveen</p>
-                </div>
-                <h2>
-                  Approved by:<span>Hr@fidisys</span>
-                </h2>
-              </div>
-              <h3 className="detail">
-                Suffering from fever leave from sep 6 th to sep 8 th 2022{" "}
-              </h3>
-              <span className="day_tag">3 days off</span>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card_container1">
-              <Avatar name="M" nameProf={nameProf} />
-            </div>
-            <div className="card_container2">
-              <div className="card_name_container">
-                <div className="card_name_container1">
-                  <div className="leave_tag">Sick leave</div>
-                  <p>Bobbili praveen</p>
-                </div>
-                <h2>
-                  Approved by:<span>Hr@fidisys</span>
-                </h2>
-              </div>
-              <h3 className="detail">
-                Suffering from fever leave from sep 6 th to sep 8 th 2022{" "}
-              </h3>
-              <span className="day_tag">3 days off</span>
-            </div>
-          </div>
+            ))
+          ) : (
+            <EmptyRoster text={`No leaves added`} />
+          )}
         </div>
       </div>
     </DashboardContainer>

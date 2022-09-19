@@ -207,6 +207,12 @@ export const BoardContainer = styled.div`
     border-radius: 0.579710144927536vw;
     margin: 0 3.47826086956522vw 0 0;
     padding: 0 1.5vw;
+    transition: 0.5s ease-in-out;
+    :hover {
+      color: #3751ff;
+      background: white;
+      outline: 0.2vw solid #3751ff;
+    }
   }
 
   #BoardContainer #main_menu #header #mini_block #mini_block_name {
@@ -308,11 +314,11 @@ export const BoardContainer = styled.div`
       top: 2.5vw;
       color: #a4add1;
     }
-  }
-  span:nth-child(3) {
-    font-size: 0.8vw;
-    right: 0.6vw;
-    bottom: 1.4vw;
+    span:nth-child(3) {
+      font-size: 0.8vw;
+      right: 0.6vw;
+      bottom: 1.4vw;
+    }
   }
 
   #BoardContainer #main_menu #score #score_card:nth-child(2) #score {
@@ -768,6 +774,12 @@ export const EmployeeFormStyle = styled.div`
     width: 100%;
     margin-top: 50px;
     cursor: pointer;
+    transition: 0.5s ease-in-out;
+    :hover {
+      color: #3751ff;
+      background: white;
+      outline: 0.2vw solid #3751ff;
+    }
   }
 `
 
