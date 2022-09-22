@@ -6,7 +6,7 @@ import Avatar from "../Avatar/index"
 import EmptyRoster from "../EmptyRoster"
 import { nameProf } from "../../utils/functions"
 import axios from "axios"
-import { baseURL } from "../../utils/urls"
+import { baseURL, leavesByIdAPI } from "../../utils/urls"
 
 const Dashboard = ({ headers, CompoLoader }) => {
   const [loader, setLoader] = useState(false)
@@ -14,7 +14,9 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const currentYear = new Date().getFullYear()
   const [month, setMonth] = useState(currentMonth + 1)
   const [graphData, setGraphData] = useState()
+  const [newGraphData, setNewGraphData] = useState([])
   const [getDay, setGetDay] = useState("")
+  const [getDaysData, setGetDaysData] = useState()
   useEffect(() => {
     getGraphData()
     // eslint-disable-next-line
@@ -34,12 +36,22 @@ const Dashboard = ({ headers, CompoLoader }) => {
       .then(res => {
         setLoader(false)
         setGraphData(res?.data?.data)
+        setGetDaysData(res?.data?.data?.ddData)
+        setNewGraphData(
+          res?.data?.data?.days.map(item => {
+            return {
+              day: item.day,
+              value: item.value,
+              type: item.type,
+            }
+          })
+        )
       })
       .catch(err => console.log("err", err))
   }
 
   const data = graphData
-    ? graphData?.days
+    ? newGraphData
     : [
         {
           day: "09",
@@ -55,14 +67,14 @@ const Dashboard = ({ headers, CompoLoader }) => {
     xField: "day",
     yField: "value",
     yAxis: {
-      max: 30,
+      max: 15,
     },
     seriesField: "type",
     columnStyle: {
-      radius: [50, 50, 0, 0],
+      radius: [5, 5, 0, 0],
     },
     label: {
-      position: "bottom",
+      position: "middle",
     },
     legend: {
       position: "bottom-left",
@@ -73,15 +85,25 @@ const Dashboard = ({ headers, CompoLoader }) => {
     },
     onReady: plot => {
       plot.on("element:click", args => {
-        console.log("args", args?.data?.data)
+        console.log("argsargsargsargsargsargsargs", args)
         setGetDay(args?.data?.data?.day)
       })
     },
-    color: ["#F0BD70", "#8E95E9", "#FA7272", "#9FDEB3"],
+    color: ({ type }) => {
+      if (type === "weekend") {
+        return "gray"
+      } else if (type === "cos") {
+        return "#8E95E9"
+      } else if (type === "gen") {
+        return "#F0BD70"
+      } else if (type === "lop") {
+        return "#9FDEB3"
+      }
+    },
     interactions: [
       {
         type: "active-region",
-        enable: false,
+        enable: true,
       },
     ],
     columnBackground: {
@@ -91,39 +113,31 @@ const Dashboard = ({ headers, CompoLoader }) => {
     },
   }
 
-  // const newDate2 = graphData?.edate.split(" ")[0]
+  const actualDay = getDay
+  const getIdObj =
+    getDaysData &&
+    actualDay &&
+    getDaysData.filter(item => item.day === actualDay && item)
 
-  // const newDate22 = newDate2 <= 10 ? newDate2[1] : newDate2
-  // let newDateArr = []
-
-  // var newDay
-  // for (var i = 1; i <= newDate2; i++) {
-  //   newDay = i
-  //   newDateArr.push({
-  //     day: newDay,
-  //   })
-  // }
-
-  // console.log("newDateArr", newDateArr)
+  const newIds = getIdObj && getIdObj[0]?.leaveids
 
   useEffect(() => {
-    getLeaveDetails()
+    getLeaveDetails(newIds)
     // eslint-disable-next-line
   }, [getDay])
   const [empLeaveData, setEmpLeaveData] = useState([])
-  const getLeaveDetails = () => {
+  const getLeaveDetails = id => {
     axios({
-      url: `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}&day=${getDay}`,
+      url: leavesByIdAPI(id),
       method: "GET",
       headers: headers,
     })
       .then(res => {
-        setEmpLeaveData(res?.data?.data?.leaves)
+        console.log("res?.data?", res?.data)
+        setEmpLeaveData(res?.data?.leaves)
       })
       .catch(err => console.log("err", err))
   }
-
-  console.log("empLeaveData", empLeaveData)
   return (
     <DashboardContainer>
       <div id="dashboard">
@@ -160,7 +174,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
       <div className="dashboard_detail">
         <h1>
           {graphData &&
-            getDay +
+            actualDay +
               " " +
               graphData.sdate.split(" ")[1] +
               ", " +
@@ -176,15 +190,29 @@ const Dashboard = ({ headers, CompoLoader }) => {
                 <div className="card_container2">
                   <div className="card_name_container">
                     <div className="card_name_container1">
-                      <div className="leave_tag">Sick leave</div>
+                      <div
+                        className="leave_tag"
+                        style={{
+                          background:
+                            item?.type === "cos"
+                              ? "#8E95E9"
+                              : item?.type === "gen"
+                              ? "#F0BD70"
+                              : item?.type === "lop"
+                              ? "#9FDEB3"
+                              : "",
+                        }}
+                      >
+                        {item?.type}
+                      </div>
                       <p>{item?.username}</p>
                     </div>
                     <h2>
-                      Approved by:<span>Hr@fidisys</span>
+                      Approved by:<span>{item?.approverEmail}</span>
                     </h2>
                   </div>
                   <h3 className="detail">{item?.reason}</h3>
-                  <span className="day_tag">3 days off</span>
+                  <span className="day_tag">No of days: {item?.days}</span>
                 </div>
               </div>
             ))

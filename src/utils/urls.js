@@ -33,6 +33,9 @@ export const leavesAPI = () => {
   return baseURL + `/api/v2/leaves`
 }
 
+export const leavesByIdAPI = id => {
+  return baseURL + `/api/v2/leaves?ids=${id}`
+}
 export const addUserAPI = () => {
   return baseURL + `/api/v2/users`
 }
