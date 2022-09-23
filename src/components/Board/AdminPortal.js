@@ -33,6 +33,13 @@ const AdminPortal = ({
           <div id="admin_tab">
             <h2
               role="presentation"
+              onClick={() => setAdminToggle("all")}
+              className={adminToggle === "all" && "active"}
+            >
+              All
+            </h2>
+            <h2
+              role="presentation"
               onClick={() => setAdminToggle("pending")}
               className={adminToggle === "pending" && "active"}
             >
@@ -51,13 +58,6 @@ const AdminPortal = ({
               className={adminToggle === "rejected" && "active"}
             >
               Rejected
-            </h2>
-            <h2
-              role="presentation"
-              onClick={() => setAdminToggle("all")}
-              className={adminToggle === "all" && "active"}
-            >
-              All
             </h2>
           </div>
           {leaveMap?.length !== 0 ? (

@@ -354,9 +354,28 @@ const Board = () => {
     }
   }, [sideSubOpen])
 
+  useEffect(() => {
+    getUserById(userDataMain.id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const [getNewUserLeave, setGetNewUserLeave] = useState()
+  const getUserById = id => {
+    axios({
+      url: userEditAPI(id),
+      method: "GET",
+      headers: headers,
+    })
+      .then(res => {
+        setGetNewUserLeave(res?.data?.user?.allowance)
+      })
+      .catch(err => {
+        console.log("err", err)
+      })
+  }
   // SETTING COMMON PROPS FOR ALL THE COMPONENTS
   const commonProps = {
     headers,
+    getNewUserLeave,
     leaveApproved,
     leavePending,
     leaveRejected,
