@@ -106,6 +106,8 @@ export const DashboardContainer = styled.div`
                 font-weight: 500;
                 font-size: 0.8vw;
                 color: #ffffff;
+                min-width: 4vw;
+                text-align: center;
               }
               p {
                 font-style: normal;
