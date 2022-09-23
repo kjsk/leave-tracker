@@ -21,7 +21,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
     getGraphData()
     // eslint-disable-next-line
   }, [month])
-  if (month >= 12) {
+  if (month > 12) {
     setMonth(1)
   }
   // Get leave graph data
