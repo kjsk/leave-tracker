@@ -45,6 +45,7 @@ const SideModal = ({
       modDate > current.valueOf() || current.day() === 0 || current.day() === 6
     )
   }
+  console.log("disabledDate", disabledDate)
   const leaveFun = (e, label) => {
     setLeaveType({
       label: label,
@@ -57,7 +58,11 @@ const SideModal = ({
       : ""
     const newvAR = Difference_In_Time / (1000 * 3600 * 24)
     const newDays = newvAR + 1 === newvAR ? newvAR : newvAR + 1
-    return newDays
+    const newDayName =
+      pushTime[0]?.format("dddd") === "Friday" && pushTime.length > 1
+        ? newDays - 2
+        : newDays
+    return newDayName
   }
 
   useEffect(() => {
