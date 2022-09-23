@@ -58,12 +58,13 @@ const SideModal = ({
       : ""
     const newvAR = Difference_In_Time / (1000 * 3600 * 24)
     const newDays = newvAR + 1 === newvAR ? newvAR : newvAR + 1
+    console.log("newDays", newDays)
     const newDayName =
-      pushTime &&
-      pushTime[0]?.format("dddd") === "Friday" &&
-      pushTime.length > 2
+      pushTime && pushTime[0]?.format("dddd") === "Friday" && newDays > 1
         ? newDays - 2
         : newDays
+
+    console.log("newDayName", newDayName)
     return newDayName
   }
 
