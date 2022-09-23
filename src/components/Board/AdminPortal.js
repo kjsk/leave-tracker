@@ -233,9 +233,15 @@ const AdminPortal = ({
                         {item.status === "approved" ? (
                           <p
                             style={{
-                              color: `#00D241`,
-                              fontSize: `1.2vw`,
+                              fontSize: `1.01vw`,
                               fontWeight: `700`,
+                              padding: 0,
+                              color: `white`,
+                              background: `rgb(0, 210, 65)`,
+                              width: `15vw`,
+                              justifyContent: `center`,
+                              height: `3vw`,
+                              borderRadius: `0.57vw`,
                             }}
                           >
                             Approved
@@ -243,9 +249,15 @@ const AdminPortal = ({
                         ) : item.status === "rejected" ? (
                           <p
                             style={{
-                              color: `#FF0000`,
-                              fontSize: `1.2vw`,
+                              fontSize: `1.01vw`,
                               fontWeight: `700`,
+                              padding: 0,
+                              color: `white`,
+                              background: `#FF0000`,
+                              width: `15vw`,
+                              justifyContent: `center`,
+                              height: `3vw`,
+                              borderRadius: `0.57vw`,
                             }}
                           >
                             Rejected

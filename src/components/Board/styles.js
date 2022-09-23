@@ -687,10 +687,10 @@ export const BoardContainer = styled.div`
     #task_container
     #btns
     button:nth-child(2) {
-    background: transparent;
-    color: #ff0000;
+    background: #f64949;
     border: none;
     outline: none;
+    margin-left: 1vw;
   }
 
   ${"" /* Admin home */}

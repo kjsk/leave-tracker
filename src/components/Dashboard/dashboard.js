@@ -41,8 +41,8 @@ const Dashboard = ({ headers, CompoLoader }) => {
           res?.data?.data?.days.map(item => {
             return {
               day: item.day,
-              value: item.value,
-              type: item.type,
+              value: item.value === 0 ? null : item.value,
+              type: item.value === 0 ? null : item.type,
             }
           })
         )
@@ -75,6 +75,9 @@ const Dashboard = ({ headers, CompoLoader }) => {
     },
     label: {
       position: "middle",
+      style: {
+        fontSize: 0,
+      },
     },
     legend: {
       position: "bottom-left",
