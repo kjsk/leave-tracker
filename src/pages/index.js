@@ -13,7 +13,7 @@ const IndexPage = () => {
   return (
     <Fragment>
       <SEO
-        title="Login"
+        title="Leave Tracker"
         description="Gatsby is a React-based open source framework with performance, scalability and security built-in."
         keywords={["gatsby", "react"]}
       />
