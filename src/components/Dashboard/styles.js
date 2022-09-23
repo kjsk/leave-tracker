@@ -101,7 +101,7 @@ export const DashboardContainer = styled.div`
               .leave_tag {
                 background: #f0bd70;
                 border-radius: 0.25vw;
-                padding: 0.5vw 0.9vw;
+                padding: 0.1vw 0.9vw;
                 font-style: normal;
                 font-weight: 500;
                 font-size: 0.8vw;

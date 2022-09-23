@@ -17,13 +17,14 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const [newGraphData, setNewGraphData] = useState([])
   const [getDay, setGetDay] = useState("")
   const [getDaysData, setGetDaysData] = useState()
+  const [empLeaveData, setEmpLeaveData] = useState([])
+  if (month > 12) {
+    setMonth(1)
+  }
   useEffect(() => {
     getGraphData()
     // eslint-disable-next-line
   }, [month])
-  if (month > 12) {
-    setMonth(1)
-  }
   // Get leave graph data
   const newDate = month <= 10 ? 0 + "" + month : month
   const getGraphData = () => {
@@ -90,6 +91,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
       plot.on("element:click", args => {
         console.log("argsargsargsargsargsargsargs", args)
         setGetDay(args?.data?.data?.day)
+        setEmpLeaveData([])
       })
     },
     color: ({ type }) => {
@@ -128,7 +130,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
     getLeaveDetails(newIds)
     // eslint-disable-next-line
   }, [getDay])
-  const [empLeaveData, setEmpLeaveData] = useState([])
+
   const getLeaveDetails = id => {
     axios({
       url: leavesByIdAPI(id),
@@ -136,11 +138,15 @@ const Dashboard = ({ headers, CompoLoader }) => {
       headers: headers,
     })
       .then(res => {
-        console.log("res?.data?", res?.data)
         setEmpLeaveData(res?.data?.leaves)
       })
-      .catch(err => console.log("err", err))
+      .catch(err => {
+        setEmpLeaveData([])
+        console.log("err", err)
+      })
   }
+
+  console.log("empLeaveData", empLeaveData)
   return (
     <DashboardContainer>
       <div id="dashboard">
@@ -148,8 +154,10 @@ const Dashboard = ({ headers, CompoLoader }) => {
           <div id="dashboard_nav">
             <LeftOutlined
               onClick={() => {
-                setMonth(month - 1)
+                month !== 1 && setMonth(month - 1)
+                setEmpLeaveData([])
               }}
+              style={{ opacity: month === 1 && 0.1 }}
             />
             <span>
               {graphData &&
@@ -160,6 +168,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
             <RightOutlined
               onClick={() => {
                 setMonth(month + 1)
+                setEmpLeaveData([])
               }}
             />
           </div>
@@ -220,7 +229,11 @@ const Dashboard = ({ headers, CompoLoader }) => {
               </div>
             ))
           ) : (
-            <EmptyRoster text={`No leaves added`} />
+            <EmptyRoster
+              text={`No leaves on ${
+                graphData && actualDay + " " + graphData.sdate.split(" ")[1]
+              }`}
+            />
           )}
         </div>
       </div>
