@@ -18,6 +18,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const [getDay, setGetDay] = useState("")
   const [getDaysData, setGetDaysData] = useState()
   const [empLeaveData, setEmpLeaveData] = useState([])
+  const [dataLoader, setDataLoader] = useState(false)
   if (month > 12) {
     setMonth(1)
   }
@@ -132,15 +133,18 @@ const Dashboard = ({ headers, CompoLoader }) => {
   }, [getDay])
 
   const getLeaveDetails = id => {
+    setDataLoader(true)
     axios({
       url: leavesByIdAPI(id),
       method: "GET",
       headers: headers,
     })
       .then(res => {
+        setDataLoader(false)
         setEmpLeaveData(res?.data?.leaves)
       })
       .catch(err => {
+        setDataLoader(false)
         setEmpLeaveData([])
         console.log("err", err)
       })
@@ -183,60 +187,64 @@ const Dashboard = ({ headers, CompoLoader }) => {
           )}
         </div>
       </div>
-      <div className="dashboard_detail">
-        <h1>
-          {graphData &&
-            actualDay +
-              " " +
-              graphData.sdate.split(" ")[1] +
-              ", " +
-              graphData.sdate.split(" ")[2]}
-        </h1>
-        <div className="dashboard_detail_cards">
-          {empLeaveData?.length >= 1 ? (
-            empLeaveData.map(item => (
-              <div className="card">
-                <div className="card_container1">
-                  <Avatar name={item?.username} nameProf={nameProf} />
-                </div>
-                <div className="card_container2">
-                  <div className="card_name_container">
-                    <div className="card_name_container1">
-                      <div
-                        className="leave_tag"
-                        style={{
-                          background:
-                            item?.type === "cos"
-                              ? "#8E95E9"
-                              : item?.type === "gen"
-                              ? "#F0BD70"
-                              : item?.type === "lop"
-                              ? "#9FDEB3"
-                              : "",
-                        }}
-                      >
-                        {item?.type}
-                      </div>
-                      <p>{item?.username}</p>
-                    </div>
-                    <h2>
-                      Approved by:<span>{item?.approverEmail}</span>
-                    </h2>
+      {dataLoader ? (
+        <CompoLoader />
+      ) : (
+        <div className="dashboard_detail">
+          <h1>
+            {graphData &&
+              actualDay +
+                " " +
+                graphData.sdate.split(" ")[1] +
+                ", " +
+                graphData.sdate.split(" ")[2]}
+          </h1>
+          <div className="dashboard_detail_cards">
+            {empLeaveData?.length >= 1 ? (
+              empLeaveData.map(item => (
+                <div className="card">
+                  <div className="card_container1">
+                    <Avatar name={item?.username} nameProf={nameProf} />
                   </div>
-                  <h3 className="detail">{item?.reason}</h3>
-                  <span className="day_tag">No of days: {item?.days}</span>
+                  <div className="card_container2">
+                    <div className="card_name_container">
+                      <div className="card_name_container1">
+                        <div
+                          className="leave_tag"
+                          style={{
+                            background:
+                              item?.type === "cos"
+                                ? "#8E95E9"
+                                : item?.type === "gen"
+                                ? "#F0BD70"
+                                : item?.type === "lop"
+                                ? "#9FDEB3"
+                                : "",
+                          }}
+                        >
+                          {item?.type}
+                        </div>
+                        <p>{item?.username}</p>
+                      </div>
+                      <h2>
+                        Approved by:<span>{item?.approverEmail}</span>
+                      </h2>
+                    </div>
+                    <h3 className="detail">{item?.reason}</h3>
+                    <span className="day_tag">No of days: {item?.days}</span>
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <EmptyRoster
-              text={`No leaves on ${
-                graphData && actualDay + " " + graphData.sdate.split(" ")[1]
-              }`}
-            />
-          )}
+              ))
+            ) : (
+              <EmptyRoster
+                text={`No leaves on ${
+                  graphData && actualDay + " " + graphData.sdate.split(" ")[1]
+                }`}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </DashboardContainer>
   )
 }
