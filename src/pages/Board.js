@@ -590,7 +590,7 @@ const Board = () => {
           {sideToggle === 2 && sideToggleSub.value === "" && (
             <Result
               icon={<CalendarOutlined />}
-              title="Hello, Calender coming soon!"
+              title="Hello, Calendar coming soon!"
             />
           )}
           {/* ADMIN & USER PORTAL */}
