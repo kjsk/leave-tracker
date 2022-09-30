@@ -60,7 +60,12 @@ const SideModal = ({
     const newDays = newvAR + 1 === newvAR ? newvAR : newvAR + 1
     console.log("newDays", newDays)
     const newDayName =
-      pushTime && pushTime[0]?.format("dddd") === "Friday" && newDays > 1
+      pushTime &&
+      ((pushTime[0]?.format("dddd") === "Monday" && newDays > 5) ||
+        (pushTime[0]?.format("dddd") === "Tuesday" && newDays > 4) ||
+        (pushTime[0]?.format("dddd") === "Wednesday" && newDays > 3) ||
+        (pushTime[0]?.format("dddd") === "Thursday" && newDays > 2) ||
+        (pushTime[0]?.format("dddd") === "Friday" && newDays > 1))
         ? newDays - 2
         : newDays
 
