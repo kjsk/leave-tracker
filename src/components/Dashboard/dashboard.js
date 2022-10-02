@@ -19,16 +19,27 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const [getDaysData, setGetDaysData] = useState()
   const [empLeaveData, setEmpLeaveData] = useState([])
   const [dataLoader, setDataLoader] = useState(false)
-  if (month > 12) {
-    setMonth(1)
-  }
   useEffect(() => {
     getGraphData()
     // eslint-disable-next-line
-  }, [month])
+  }, [])
+
+  const newMonth = inc => {
+    getGraphData()
+    if (month > 12) {
+      setMonth(1)
+    } else if (inc === "plus") {
+      month !== 1 && setMonth(month + 1)
+      setEmpLeaveData([])
+    } else {
+      month !== 1 && setMonth(month - 1)
+      setEmpLeaveData([])
+    }
+  }
+
   // Get leave graph data
-  const newDate = month <= 10 ? 0 + "" + month : month
   const getGraphData = () => {
+    const newDate = month <= 10 ? 0 + "" + month : month
     setLoader(true)
     axios({
       url: `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}`,
@@ -90,7 +101,6 @@ const Dashboard = ({ headers, CompoLoader }) => {
     },
     onReady: plot => {
       plot.on("element:click", args => {
-        console.log("argsargsargsargsargsargsargs", args)
         setGetDay(args?.data?.data?.day)
         setEmpLeaveData([])
       })
@@ -150,17 +160,13 @@ const Dashboard = ({ headers, CompoLoader }) => {
       })
   }
 
-  console.log("empLeaveData", empLeaveData)
   return (
     <DashboardContainer>
       <div id="dashboard">
         <div id="dashboard_container">
           <div id="dashboard_nav">
             <LeftOutlined
-              onClick={() => {
-                month !== 1 && setMonth(month - 1)
-                setEmpLeaveData([])
-              }}
+              onClick={() => newMonth("plse")}
               style={{ opacity: month === 1 && 0.1 }}
             />
             <span>
@@ -169,12 +175,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
                   ", " +
                   graphData.sdate.split(" ")[2]}
             </span>
-            <RightOutlined
-              onClick={() => {
-                setMonth(month + 1)
-                setEmpLeaveData([])
-              }}
-            />
+            <RightOutlined onClick={() => newMonth("minus")} />
           </div>
           {loader ? (
             <CompoLoader />

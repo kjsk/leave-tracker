@@ -7,7 +7,7 @@ import cal from "../../data/assets/pop_Calendar.svg"
 import Edit from "../../data/assets/Edit.svg"
 import { DatePicker, Dropdown, Badge } from "antd"
 import LeaveType from "./leave_type"
-import { baseURL } from "../../utils/urls"
+import { baseURL, leavesAPI } from "../../utils/urls"
 import moment from "moment"
 
 const SideModal = ({
@@ -15,11 +15,13 @@ const SideModal = ({
   LeaveDrop,
   setPopup,
   headers,
-  getLeaves,
   userDataMain,
+  setUserLeaveData,
   activeLoader,
   setActiveLoader,
   playAudio,
+  setButtonProcess,
+  buttonProcess,
   openNotificationWithIcon,
 }) => {
   const { RangePicker } = DatePicker
@@ -45,7 +47,6 @@ const SideModal = ({
       modDate > current.valueOf() || current.day() === 0 || current.day() === 6
     )
   }
-  console.log("disabledDate", disabledDate)
   const leaveFun = (e, label) => {
     setLeaveType({
       label: label,
@@ -68,8 +69,6 @@ const SideModal = ({
         (pushTime[0]?.format("dddd") === "Friday" && newDays > 1))
         ? newDays - 2
         : newDays
-
-    console.log("newDayName", newDayName)
     return newDayName
   }
 
@@ -83,8 +82,7 @@ const SideModal = ({
   }, [pushTime])
 
   const createLeave = (leaveType, pushTime, reason) => {
-    setPopup(false)
-    setActiveLoader(true)
+    setButtonProcess(true)
     axios({
       method: "POST",
       url: `${baseURL}/api/v2/leaves`,
@@ -102,6 +100,8 @@ const SideModal = ({
       .then(_res => {
         getLeaves()
         setReason("")
+        setPopup(false)
+        setButtonProcess(false)
         setLeaveType({
           label: "",
           value: "",
@@ -115,8 +115,22 @@ const SideModal = ({
       })
       .catch(err => {
         getLeaves()
-        setActiveLoader(false)
+        setButtonProcess(false)
         openNotificationWithIcon(`error`, err?.response?.data?.message)
+      })
+  }
+  // Call to fetch the number of leaves by user
+  const getLeaves = () => {
+    axios({
+      method: "GET",
+      url: leavesAPI(),
+      headers: headers,
+    })
+      .then(res => {
+        setUserLeaveData(res?.data)
+      })
+      .catch(_err => {
+        console.log("Error", _err)
       })
   }
 
@@ -215,7 +229,7 @@ const SideModal = ({
                 : true
             }
           >
-            {activeLoader ? "Process..." : "Submit"}
+            {buttonProcess ? "Process..." : "Submit"}
           </button>
         </div>
       </div>

@@ -54,14 +54,14 @@ import { nameProf } from "../utils/functions"
 
 const Board = () => {
   const urlGlobal = baseURL // ADDING GLOBAL BASE URL
-
+  const toggleRout = JSON.parse(localStorage.getItem("toggleRout"))
   const userData =
     typeof localStorage !== "undefined" &&
     JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
   const userDataMain = userData?.user
 
   const [popup, setPopup] = useState(false)
-  const [sideToggle, setSideToggle] = useState(6)
+  const [sideToggle, setSideToggle] = useState(toggleRout ? toggleRout : 6)
   const [sideSubOpen, setSideSubOpen] = useState(false)
   const [sideToggleSub, setSideToggleSub] = useState({ name: "", value: "" })
   const [userLeaveData, setUserLeaveData] = useState([])
@@ -87,7 +87,6 @@ const Board = () => {
 
   // FETCHING LEAVE ON PAGELOAD
   useEffect(() => {
-    const toggleRout = JSON.parse(localStorage.getItem("toggleRout"))
     if (toggleRout) {
       setSideToggle(toggleRout)
     }
@@ -109,7 +108,6 @@ const Board = () => {
   // Call to fetch the number of leaves by user
   const getLeaves = () => {
     setActiveLoader(true)
-    setButtonProcess(true)
     axios({
       method: "GET",
       url: leavesAPI(),
@@ -117,12 +115,10 @@ const Board = () => {
     })
       .then(res => {
         setActiveLoader(false)
-        setButtonProcess(false)
         setUserLeaveData(res?.data)
       })
       .catch(_err => {
         setActiveLoader(false)
-        setButtonProcess(false)
         console.log("Error", _err)
       })
   }
@@ -380,6 +376,7 @@ const Board = () => {
     leavePending,
     leaveRejected,
     userLeaveData,
+    setUserLeaveData,
     usersData,
     Edit_user,
     editUserFun,
@@ -560,6 +557,7 @@ const Board = () => {
                 : ""}{" "}
             </h2>
             <div id="mini_block">
+              <button onClick={() => setPopup(true)}>Apply Leave</button>
               {sideToggle === 1 && userDataMain?.role !== "admin" && (
                 <button onClick={() => setPopup(true)}>Apply Leave</button>
               )}

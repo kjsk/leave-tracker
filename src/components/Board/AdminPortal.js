@@ -1,6 +1,11 @@
 import React from "react"
 import EmptyRoster from "../EmptyRoster"
 import Moment from "moment"
+import {
+  CheckOutlined,
+  CloseOutlined,
+  ExclamationOutlined,
+} from "@ant-design/icons"
 
 const AdminPortal = ({
   RedoOutlined,
@@ -132,6 +137,7 @@ const AdminPortal = ({
                               fontWeight: `700`,
                             }}
                           >
+                            <CheckOutlined style={{ marginRight: `0.6vw` }} />
                             Approved
                           </p>
                         ) : item.status === "rejected" ? (
@@ -142,6 +148,7 @@ const AdminPortal = ({
                               fontWeight: `700`,
                             }}
                           >
+                            <CloseOutlined style={{ marginRight: `0.6vw` }} />
                             Rejected
                           </p>
                         ) : (
@@ -171,6 +178,9 @@ const AdminPortal = ({
                                   fontWeight: `700`,
                                 }}
                               >
+                                <ExclamationOutlined
+                                  style={{ marginRight: `0.6vw` }}
+                                />
                                 Pending
                               </p>
                             )}
@@ -233,33 +243,23 @@ const AdminPortal = ({
                         {item.status === "approved" ? (
                           <p
                             style={{
-                              fontSize: `1.01vw`,
+                              fontSize: `1.2vw`,
                               fontWeight: `700`,
-                              padding: 0,
-                              color: `white`,
-                              background: `rgb(0, 210, 65)`,
-                              width: `15vw`,
-                              justifyContent: `center`,
-                              height: `3vw`,
-                              borderRadius: `0.57vw`,
+                              color: `rgb(0, 210, 65)`,
                             }}
                           >
+                            <CheckOutlined style={{ marginRight: `0.6vw` }} />
                             Approved
                           </p>
                         ) : item.status === "rejected" ? (
                           <p
                             style={{
-                              fontSize: `1.01vw`,
+                              fontSize: `1.2vw`,
                               fontWeight: `700`,
-                              padding: 0,
-                              color: `white`,
-                              background: `#FF0000`,
-                              width: `15vw`,
-                              justifyContent: `center`,
-                              height: `3vw`,
-                              borderRadius: `0.57vw`,
+                              color: `#FF0000`,
                             }}
                           >
+                            <CloseOutlined style={{ marginRight: `0.6vw` }} />
                             Rejected
                           </p>
                         ) : (
@@ -289,6 +289,9 @@ const AdminPortal = ({
                                   fontWeight: `700`,
                                 }}
                               >
+                                <ExclamationOutlined
+                                  style={{ marginRight: `0.6vw` }}
+                                />
                                 Pending
                               </p>
                             )}
