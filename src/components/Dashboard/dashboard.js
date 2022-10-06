@@ -166,7 +166,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
         <div id="dashboard_container">
           <div id="dashboard_nav">
             <LeftOutlined
-              onClick={() => newMonth("plse")}
+              onClick={() => newMonth("plus")}
               style={{ opacity: month === 1 && 0.1 }}
             />
             <span>
