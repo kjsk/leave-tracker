@@ -54,7 +54,9 @@ import { nameProf } from "../utils/functions"
 
 const Board = () => {
   const urlGlobal = baseURL // ADDING GLOBAL BASE URL
-  const toggleRout = JSON.parse(localStorage.getItem("toggleRout"))
+  const toggleRout =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("toggleRout"))
   const userData =
     typeof localStorage !== "undefined" &&
     JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
