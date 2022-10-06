@@ -166,7 +166,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
         <div id="dashboard_container">
           <div id="dashboard_nav">
             <LeftOutlined
-              onClick={() => newMonth("plus")}
+              onClick={() => newMonth("minus")}
               style={{ opacity: month === 1 && 0.1 }}
             />
             <span>
@@ -175,7 +175,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
                   ", " +
                   graphData.sdate.split(" ")[2]}
             </span>
-            <RightOutlined onClick={() => newMonth("minus")} />
+            <RightOutlined onClick={() => newMonth("plus")} />
           </div>
           {loader ? (
             <CompoLoader />
