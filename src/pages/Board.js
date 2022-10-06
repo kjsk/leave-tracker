@@ -61,7 +61,7 @@ const Board = () => {
   const userDataMain = userData?.user
 
   const [popup, setPopup] = useState(false)
-  const [sideToggle, setSideToggle] = useState(toggleRout ? toggleRout : 6)
+  const [sideToggle, setSideToggle] = useState(6)
   const [sideSubOpen, setSideSubOpen] = useState(false)
   const [sideToggleSub, setSideToggleSub] = useState({ name: "", value: "" })
   const [userLeaveData, setUserLeaveData] = useState([])
