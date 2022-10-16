@@ -623,8 +623,9 @@ const Board = () => {
             <UsersList {...commonProps} />
           )}
           {/* Dashboard */}
-          {sideToggle === 6 ||
-            (toggleRout === 6 && <Dashboard {...commonProps} />)}
+          {(sideToggle === 6 || toggleRout === 6) && (
+            <Dashboard {...commonProps} />
+          )}
         </div>
       </div>
 
