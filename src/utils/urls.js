@@ -47,3 +47,7 @@ export const userEditAPI = id => {
 export const getUsersAPI = () => {
   return baseURL + `/api/v2/users?page=0&limit=0`
 }
+
+export const getDashboardDataAPI = (newDate, currentYear) => {
+  return `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}`
+}

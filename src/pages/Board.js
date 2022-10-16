@@ -63,9 +63,7 @@ const Board = () => {
   const userDataMain = userData?.user
 
   const [popup, setPopup] = useState(false)
-  const [sideToggle, setSideToggle] = useState(6)
-  const [sideSubOpen, setSideSubOpen] = useState(false)
-  const [sideToggleSub, setSideToggleSub] = useState({ name: "", value: "" })
+  const [sideToggle, setSideToggle] = useState(toggleRout || 6)
   const [userLeaveData, setUserLeaveData] = useState([])
   const [activeLoader, setActiveLoader] = useState(false)
   const [adminToggle, setAdminToggle] = useState("all")
@@ -89,9 +87,6 @@ const Board = () => {
 
   // FETCHING LEAVE ON PAGELOAD
   useEffect(() => {
-    if (toggleRout) {
-      setSideToggle(toggleRout)
-    }
     if (userData) {
       getLeaves()
       getUsers()
@@ -104,7 +99,6 @@ const Board = () => {
   const conditionalFun = number => {
     localStorage.setItem("toggleRout", number)
     setSideToggle(number)
-    setSideToggleSub({ name: "", value: "" })
   }
 
   // Call to fetch the number of leaves by user
@@ -346,11 +340,6 @@ const Board = () => {
   const userRealData = userLeaveData?.leaves?.filter(item =>
     adminToggle === "all" ? item : item.status === adminToggle
   )
-  useEffect(() => {
-    if (sideSubOpen === false) {
-      setSideToggleSub({ name: "", value: "" })
-    }
-  }, [sideSubOpen])
 
   useEffect(() => {
     getUserById(userDataMain.id)
@@ -446,7 +435,6 @@ const Board = () => {
               role="presentation"
               onClick={() => {
                 conditionalFun(6)
-                setSideSubOpen(false)
               }}
             >
               <img
@@ -460,7 +448,6 @@ const Board = () => {
               role="presentation"
               onClick={() => {
                 conditionalFun(1)
-                setSideSubOpen(false)
               }}
             >
               <img src={sideToggle === 1 ? overview2 : overview} alt="img" />
@@ -471,7 +458,6 @@ const Board = () => {
               role="presentation"
               onClick={() => {
                 conditionalFun(2)
-                setSideSubOpen(false)
               }}
             >
               <img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />
@@ -495,7 +481,6 @@ const Board = () => {
                 role="presentation"
                 onClick={() => {
                   conditionalFun(5)
-                  setSideSubOpen(false)
                 }}
               >
                 <img
@@ -512,8 +497,6 @@ const Board = () => {
               role="presentation"
               onClick={() => {
                 conditionalFun(4)
-                setSideToggleSub({ name: "", value: "" })
-                setSideSubOpen(false)
               }}
             >
               <img src={sideToggle === 4 ? settings2 : settings} alt="img" />
@@ -582,20 +565,16 @@ const Board = () => {
             </div>
           </div>
           {/* HOME */}
-          {sideToggle === 1 && sideToggleSub.value === "" && (
-            <Home {...commonProps} />
-          )}
+          {sideToggle === 1 && <Home {...commonProps} />}
           {/* CALENDAR */}
-          {sideToggle === 2 && sideToggleSub.value === "" && (
+          {sideToggle === 2 && (
             <Result
               icon={<CalendarOutlined />}
               title="Hello, Calendar coming soon!"
             />
           )}
           {/* ADMIN & USER PORTAL */}
-          {sideToggle === 3 && sideToggleSub.value === "" && (
-            <AdminPortal {...commonProps} />
-          )}
+          {sideToggle === 3 && <AdminPortal {...commonProps} />}
           {/* SETTINGS */}
           {sideToggle === 4 && (
             <Result

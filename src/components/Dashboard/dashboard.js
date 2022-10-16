@@ -5,8 +5,7 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons"
 import Avatar from "../Avatar/index"
 import EmptyRoster from "../EmptyRoster"
 import { nameProf } from "../../utils/functions"
-import axios from "axios"
-import { baseURL, leavesByIdAPI } from "../../utils/urls"
+import { getGraphData, getLeaveDetails } from "./Function/function"
 
 const Dashboard = ({ headers, CompoLoader }) => {
   const [loader, setLoader] = useState(false)
@@ -19,138 +18,99 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const [getDaysData, setGetDaysData] = useState()
   const [empLeaveData, setEmpLeaveData] = useState([])
   const [dataLoader, setDataLoader] = useState(false)
+
   if (month > 12) {
     setMonth(1)
   }
+
+  // Get graph data initially
   useEffect(() => {
-    getGraphData()
+    getGraphData({
+      headers,
+      newDate,
+      currentYear,
+      setLoader,
+      setGraphData,
+      setGetDaysData,
+      setNewGraphData,
+    })
     // eslint-disable-next-line
   }, [month])
+
   // Get leave graph data
   const newDate = month < 10 ? 0 + "" + month : month
-  const getGraphData = () => {
-    setLoader(true)
-    axios({
-      url: `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}`,
-      method: "GET",
-      headers: headers,
-    })
-      .then(res => {
-        setLoader(false)
-        setGraphData(res?.data?.data)
-        setGetDaysData(res?.data?.data?.ddData)
-        setNewGraphData(
-          res?.data?.data?.days.map(item => {
-            return {
-              day: item.day,
-              value: item.value === 0 ? null : item.value,
-              type: item.value === 0 ? null : item.type,
-            }
-          })
-        )
-      })
-      .catch(err => console.log("err", err))
-  }
 
-  const data = graphData
-    ? newGraphData
-    : [
-        {
-          day: "09",
-          value: 50,
-          type: "cos",
-        },
-      ]
+  const data = newGraphData
 
   // Graph configuration
-  const config = {
-    data,
-    isStack: true,
-    xField: "day",
-    yField: "value",
-    yAxis: {
-      max: 15,
-    },
-    seriesField: "type",
-    columnStyle: {
-      radius: [5, 5, 0, 0],
-    },
-    label: {
-      position: "middle",
-      style: {
-        fontSize: 0,
+  const graphConfigFun = () => {
+    return {
+      data,
+      isStack: true,
+      xField: "day",
+      yField: "value",
+      yAxis: {
+        max: 15,
       },
-    },
-    legend: {
-      position: "bottom-left",
-      marker: {
-        symbol: "circle", // shape of the marker
-        radius: 5, // radius of the circle
+      seriesField: "type",
+      columnStyle: {
+        radius: [5, 5, 0, 0],
       },
-    },
-    onReady: plot => {
-      plot.on("element:click", args => {
-        console.log("argsargsargsargsargsargsargs", args)
-        setGetDay(args?.data?.data?.day)
-        setEmpLeaveData([])
-      })
-    },
-    color: ({ type }) => {
-      if (type === "weekend") {
-        return "gray"
-      } else if (type === "cos") {
-        return "#8E95E9"
-      } else if (type === "gen") {
-        return "#F0BD70"
-      } else if (type === "lop") {
-        return "#9FDEB3"
-      }
-    },
-    interactions: [
-      {
-        type: "active-region",
-        enable: true,
+      label: {
+        position: "middle",
+        style: {
+          fontSize: 0,
+        },
       },
-    ],
-    columnBackground: {
-      style: {
-        fill: "rgba(0,0,0,0.1)",
+      legend: {
+        position: "bottom-left",
+        marker: {
+          symbol: "circle", // shape of the marker
+          radius: 5, // radius of the circle
+        },
       },
-    },
+      onReady: plot => {
+        plot.on("element:click", args => {
+          setGetDay(args?.data?.data?.day)
+          setEmpLeaveData([])
+        })
+      },
+      color: ({ type }) => {
+        if (type === "weekend") {
+          return "gray"
+        } else if (type === "cos") {
+          return "#8E95E9"
+        } else if (type === "gen") {
+          return "#F0BD70"
+        } else if (type === "lop") {
+          return "#9FDEB3"
+        }
+      },
+      interactions: [
+        {
+          type: "active-region",
+          enable: true,
+        },
+      ],
+      columnBackground: {
+        style: {
+          fill: "rgba(0,0,0,0.1)",
+        },
+      },
+    }
   }
 
-  const actualDay = getDay
-  const getIdObj =
+  // Get leave Data
+  const newday = getDay
+  const newId =
     getDaysData &&
-    actualDay &&
-    getDaysData.filter(item => item.day === actualDay && item)
-
-  const newIds = getIdObj && getIdObj[0]?.leaveids
-
+    newday &&
+    getDaysData?.find(item => item.day === newday)?.leaveids
   useEffect(() => {
-    getLeaveDetails(newIds)
+    getLeaveDetails(newId, headers, setDataLoader, setEmpLeaveData)
     // eslint-disable-next-line
   }, [getDay])
 
-  const getLeaveDetails = id => {
-    setDataLoader(true)
-    axios({
-      url: leavesByIdAPI(id),
-      method: "GET",
-      headers: headers,
-    })
-      .then(res => {
-        setDataLoader(false)
-        setEmpLeaveData(res?.data?.leaves)
-      })
-      .catch(err => {
-        setDataLoader(false)
-        setEmpLeaveData([])
-        console.log("err", err)
-      })
-  }
-
-  console.log("empLeaveData", empLeaveData)
   return (
     <DashboardContainer>
       <div id="dashboard">
@@ -183,7 +143,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
               text={`No leave's applied for ${graphData.sdate.split(" ")[1]}`}
             />
           ) : (
-            <Column {...config} />
+            <Column {...graphConfigFun()} />
           )}
         </div>
       </div>
@@ -193,7 +153,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
         <div className="dashboard_detail">
           <h1>
             {graphData &&
-              actualDay +
+              getDay +
                 " " +
                 graphData.sdate.split(" ")[1] +
                 ", " +
@@ -238,7 +198,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
             ) : (
               <EmptyRoster
                 text={`No leaves on ${
-                  graphData && actualDay + " " + graphData.sdate.split(" ")[1]
+                  graphData && getDay + " " + graphData.sdate.split(" ")[1]
                 }`}
               />
             )}
