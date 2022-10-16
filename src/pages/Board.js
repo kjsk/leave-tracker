@@ -63,7 +63,7 @@ const Board = () => {
   const userDataMain = userData?.user
 
   const [popup, setPopup] = useState(false)
-  const [sideToggle, setSideToggle] = useState(toggleRout || 6)
+  const [sideToggle, setSideToggle] = useState(6)
   const [userLeaveData, setUserLeaveData] = useState([])
   const [activeLoader, setActiveLoader] = useState(false)
   const [adminToggle, setAdminToggle] = useState("all")
@@ -92,6 +92,9 @@ const Board = () => {
       getUsers()
     } else {
       logOut()
+    }
+    if (toggleRout) {
+      setSideToggle(toggleRout)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
