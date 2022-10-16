@@ -434,60 +434,81 @@ const Board = () => {
           </h1>
           <ul>
             <li
-              className={sideToggle === 6 && "active"}
+              className={(sideToggle === 6 || toggleRout === 6) && "active"}
               role="presentation"
               onClick={() => {
                 conditionalFun(6)
               }}
             >
               <img
-                src={sideToggle === 6 ? Dashboard_hover : DashboardImg}
+                src={
+                  sideToggle === 6 || toggleRout === 6
+                    ? Dashboard_hover
+                    : DashboardImg
+                }
                 alt="img"
               />
               {barOpen && "Dashboard"}
             </li>
             <li
-              className={sideToggle === 1 && "active"}
+              className={(sideToggle === 1 || toggleRout === 1) && "active"}
               role="presentation"
               onClick={() => {
                 conditionalFun(1)
               }}
             >
-              <img src={sideToggle === 1 ? overview2 : overview} alt="img" />
+              <img
+                src={
+                  sideToggle === 1 || toggleRout === 1 ? overview2 : overview
+                }
+                alt="img"
+              />
               {barOpen && "Home"}
             </li>
             <li
-              className={sideToggle === 2 && "active"}
+              className={(sideToggle === 2 || toggleRout === 2) && "active"}
               role="presentation"
               onClick={() => {
                 conditionalFun(2)
               }}
             >
-              <img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />
+              <img
+                src={
+                  sideToggle === 2 || toggleRout === 2 ? Calendar2 : Calendar
+                }
+                alt="img"
+              />
               {barOpen && "Calendar"}
             </li>
             <li
-              className={sideToggle === 3 && "active"}
+              className={(sideToggle === 3 || toggleRout === 3) && "active"}
               role="presentation"
               onClick={() => {
                 conditionalFun(3)
               }}
             >
-              <img src={sideToggle === 3 ? admin2 : admin} alt="img" />
+              <img
+                src={sideToggle === 3 || toggleRout === 3 ? admin2 : admin}
+                alt="img"
+              />
               {userDataMain?.role === "admin"
                 ? barOpen && "Admin Portal"
                 : barOpen && "User Portal"}
             </li>
             {userDataMain?.role === "admin" && (
               <li
-                className={sideToggle === 5 && "active"}
+                className={(sideToggle === 5 || toggleRout === 5) && "active"}
                 role="presentation"
                 onClick={() => {
                   conditionalFun(5)
                 }}
               >
                 <img
-                  src={sideToggle === 5 ? Employee_hover : Employee}
+                  src={
+                    sideToggle === 5 || toggleRout === 5
+                      ? Employee_hover
+                      : Employee
+                  }
                   alt="img"
                 />
                 {barOpen && "Employee List"}
@@ -496,13 +517,18 @@ const Board = () => {
           </ul>
           <ul>
             <li
-              className={sideToggle === 4 && "active"}
+              className={(sideToggle === 4 || toggleRout === 4) && "active"}
               role="presentation"
               onClick={() => {
                 conditionalFun(4)
               }}
             >
-              <img src={sideToggle === 4 ? settings2 : settings} alt="img" />
+              <img
+                src={
+                  sideToggle === 4 || toggleRout === 4 ? settings2 : settings
+                }
+                alt="img"
+              />
               {barOpen && "Settings"}
             </li>
           </ul>
@@ -524,33 +550,38 @@ const Board = () => {
         </div>
         <div
           id="main_menu"
-          style={{ background: sideToggle === 1 ? "white" : "#FCFAFA" }}
+          style={{
+            background:
+              sideToggle === 1 || toggleRout === 1 ? "white" : "#FCFAFA",
+          }}
         >
           <div id="header">
             <h2 id="title">
-              {sideToggle === 1
+              {sideToggle === 1 || toggleRout === 1
                 ? "Home"
-                : sideToggle === 2
+                : sideToggle === 2 || toggleRout === 2
                 ? "Calendar"
-                : sideToggle === 3
+                : sideToggle === 3 || toggleRout === 3
                 ? userDataMain?.role === "admin"
                   ? "Admin Portal"
                   : "User Portal"
-                : sideToggle === 4
+                : sideToggle === 4 || toggleRout === 4
                 ? "Settings"
-                : sideToggle === 5
+                : sideToggle === 5 || toggleRout === 5
                 ? "Employee List"
-                : sideToggle === 6
+                : sideToggle === 6 || toggleRout === 6
                 ? "Dashboard"
                 : ""}{" "}
             </h2>
             <div id="mini_block">
-              {sideToggle === 1 && userDataMain?.role !== "admin" && (
-                <button onClick={() => setPopup(true)}>Apply Leave</button>
-              )}
-              {sideToggle === 3 && userDataMain?.role === "admin" && (
-                <button onClick={() => setAddEmp(true)}>Add Employee</button>
-              )}
+              {(sideToggle === 1 || toggleRout === 1) &&
+                userDataMain?.role !== "admin" && (
+                  <button onClick={() => setPopup(true)}>Apply Leave</button>
+                )}
+              {(sideToggle === 3 || toggleRout === 3) &&
+                userDataMain?.role === "admin" && (
+                  <button onClick={() => setAddEmp(true)}>Add Employee</button>
+                )}
               {/* <img src={search} alt="img" id="search" /> */}
               {/* <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
                                 <Badge count={userLeaveData?.leaves?.length}>
@@ -568,27 +599,32 @@ const Board = () => {
             </div>
           </div>
           {/* HOME */}
-          {sideToggle === 1 && <Home {...commonProps} />}
+          {(sideToggle === 1 || toggleRout === 1) && <Home {...commonProps} />}
           {/* CALENDAR */}
-          {sideToggle === 2 && (
+          {(sideToggle === 2 || toggleRout === 2) && (
             <Result
               icon={<CalendarOutlined />}
               title="Hello, Calendar coming soon!"
             />
           )}
           {/* ADMIN & USER PORTAL */}
-          {sideToggle === 3 && <AdminPortal {...commonProps} />}
+          {(sideToggle === 3 || toggleRout === 3) && (
+            <AdminPortal {...commonProps} />
+          )}
           {/* SETTINGS */}
-          {sideToggle === 4 && (
+          {(sideToggle === 4 || toggleRout === 4) && (
             <Result
               icon={<SettingOutlined />}
               title="Hello, Settings coming soon!"
             />
           )}
           {/* USERLIST */}
-          {sideToggle === 5 && <UsersList {...commonProps} />}
+          {(sideToggle === 5 || toggleRout === 5) && (
+            <UsersList {...commonProps} />
+          )}
           {/* Dashboard */}
-          {sideToggle === 6 && <Dashboard {...commonProps} />}
+          {sideToggle === 6 ||
+            (toggleRout === 6 && <Dashboard {...commonProps} />)}
         </div>
       </div>
 
