@@ -130,7 +130,7 @@ const Login = () => {
       method: "POST",
       url: adminLoginAPI(),
       data: {
-        email: `naveen@fidisys.com`,
+        email: email,
       },
       headers: headers,
     })

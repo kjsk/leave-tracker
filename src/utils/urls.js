@@ -4,7 +4,7 @@ export const envURL = {
   prod: `https://prod-fidisyslt.herokuapp.com`,
 }
 
-export const baseURL = envURL?.dev
+export const baseURL = envURL?.stage
 
 export const getHeaders = token => {
   return {
