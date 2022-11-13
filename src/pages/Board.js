@@ -131,8 +131,9 @@ const Board = () => {
     setButtonProcess(true)
     axios({
       method: type === "delete" ? "Delete" : "PUT",
-      url: `${urlGlobal}/api/v2/leaves${type !== "delete" ? "/" + type : ""
-        }/${leaveId}`,
+      url: `${urlGlobal}/api/v2/leaves${
+        type !== "delete" ? "/" + type : ""
+      }/${leaveId}`,
       headers: headers,
     })
       .then(async res => {
@@ -390,6 +391,7 @@ const Board = () => {
     setLogoutState,
   }
 
+  const [policyPop, setPolicyPop] = useState(false)
   return (
     <BoardContainer>
       <audio ref={audioPlayer} src={NotificationSound}>
@@ -411,20 +413,20 @@ const Board = () => {
               {sideToggle === 1
                 ? "Home"
                 : sideToggle === 2
-                  ? "Calendar"
-                  : sideToggle === 3
-                    ? userDataMain?.role === "admin"
-                      ? "Admin Portal"
-                      : "User Portal"
-                    : sideToggle === 4
-                      ? "Settings"
-                      : sideToggle === 5
-                        ? "Employee List"
-                        : sideToggle === 6
-                          ? "Dashboard"
-                          : sideToggle === 7
-                            ? "Leave allowance"
-                            : ""}{" "}
+                ? "Calendar"
+                : sideToggle === 3
+                ? userDataMain?.role === "admin"
+                  ? "Admin Portal"
+                  : "User Portal"
+                : sideToggle === 4
+                ? "Settings"
+                : sideToggle === 5
+                ? "Employee List"
+                : sideToggle === 6
+                ? "Dashboard"
+                : sideToggle === 7
+                ? "Leave allowance"
+                : ""}{" "}
             </h2>
             <div id="mini_block">
               {sideToggle === 1 &&
@@ -439,10 +441,10 @@ const Board = () => {
                 )}
 
               {sideToggle === 7 && userDataMain?.role === "admin" && (
-                <button onClick={() => setPopup(true)}>Add Policy</button>
+                <button onClick={() => setAddEmp(true)}>Add Leavetype</button>
               )}
               {sideToggle === 7 && userDataMain?.role === "admin" && (
-                <button onClick={() => setAddEmp(true)}>Add Leavetype</button>
+                <button onClick={() => setPolicyPop(true)}>Add Policy</button>
               )}
               {/* <img src={search} alt="img" id="search" /> */}
               {/* <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
@@ -483,7 +485,9 @@ const Board = () => {
           {/* Dashboard */}
           {sideToggle === 6 && <Dashboard {...commonProps} />}
           {/* Policy */}
-          {sideToggle === 7 && <Allowance {...commonProps} />}
+          {sideToggle === 7 && (
+            <Allowance policyPop={policyPop} setPolicyPop={setPolicyPop} />
+          )}
         </div>
       </div>
 
@@ -590,13 +594,13 @@ const Board = () => {
           deleteUserState
             ? addUser(null, null, deleteUserState?.id)
             : logoutState
-              ? logOut()
-              : approveLeave(
+            ? logOut()
+            : approveLeave(
                 descType === "approve"
                   ? "approve"
                   : descType === "reject"
-                    ? "reject"
-                    : "delete",
+                  ? "reject"
+                  : "delete",
                 descId
               )
           setVisible(false)
@@ -614,12 +618,12 @@ const Board = () => {
           buttonProcess
             ? "Processing..."
             : logoutState || deleteUserState
-              ? "Proceed"
-              : descType === "approve"
-                ? "Approve"
-                : descType === "reject"
-                  ? "Reject"
-                  : "Delete"
+            ? "Proceed"
+            : descType === "approve"
+            ? "Approve"
+            : descType === "reject"
+            ? "Reject"
+            : "Delete"
         }
         cancelText="Back"
         okButtonProps={{
@@ -640,13 +644,13 @@ const Board = () => {
             {deleteUserState
               ? `Do you want to delete (${deleteUserState?.name})`
               : "Do you want to " +
-              (logoutState
-                ? "Logout"
-                : descType === "approve"
+                (logoutState
+                  ? "Logout"
+                  : descType === "approve"
                   ? "Approve"
                   : descType === "reject"
-                    ? "Reject"
-                    : "Delete")}
+                  ? "Reject"
+                  : "Delete")}
             ?
           </p>
           {deleteUserState && (

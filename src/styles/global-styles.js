@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components"
 // Abstracts
-import * as palette from './variables';
+import * as palette from "./variables"
 
 export const GlobalStyle = createGlobalStyle`
   @-ms-viewport {
@@ -162,7 +162,7 @@ export const GlobalStyle = createGlobalStyle`
     width: 550px;
     margin: auto;
     padding: 40px;
-    top: 25% !important;
+    top: 15% !important;
     border-radius: 12px !important;
   }
   .ant-modal-body {
@@ -327,4 +327,4 @@ height: 48px;
     background-color: ${palette.BUTTON_PRIMARY};
     border-color: ${palette.BUTTON_PRIMARY};
   }
-`;
+`

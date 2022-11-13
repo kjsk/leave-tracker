@@ -1,63 +1,45 @@
-import React from "react"
+import React, { useState } from "react"
 import EmptyRoster from "../EmptyRoster"
+import { Modal } from "antd"
+import CreateAllowancePop from "./createAllowancePop"
+import { AllowanceContainer } from "./styles"
 
-function loadscript(src) {
-  return new Promise(resolve => {
-    const script = document.createElement("script")
-    script.src = src
-    document.body.appendChild(script)
-    script.onload = () => {
-      resolve(true)
-    }
-    script.onerror = () => {
-      resolve(false)
-    }
-    document.body.appendChild(script)
-  })
-}
-
-const Allowance = () => {
-  const newFun = async () => {
-    await loadscript("https://checkout.razorpay.com/v1/checkout.js")
-    const options = {
-      key: "rzp_live_h3HQKK2XFgJopO",
-      currency: "INR",
-      amount: 1 * 100,
-      name: "Content Concepts",
-      description: "Adding value to the lives",
-      prefill: {
-        name: "Manoj Ponugoti",
-        Email: "manoj@fidisys.com",
-        contact: "9494978552",
-      },
-      theme: {
-        color: "rgb(25, 118, 210) !important",
-      },
-    }
-    const paymentObject = new window.Razorpay(options)
-    paymentObject.open()
-    console.log("paymentObject", paymentObject)
-  }
+const Allowance = ({ policyPop, setPolicyPop }) => {
   return (
-    <div id="admin_homes">
-      <button onClick={() => newFun()}>click me</button>
-      <div id="admin" className="admin">
-        <div id="message">
-          <div id="message_block1">
-            <h3>SNo</h3>
-            <h3>Name</h3>
-            <h3>Description</h3>
-          </div>
-          <div id="message_block2">
-            <div id="task_container">
-              <p>1</p>
-              <p>Policy 1</p>
-              <p>Description 1</p>
+    <AllowanceContainer>
+      <div id="admin_homes">
+        <div id="admin" className="admin">
+          <h2>Employe Details</h2>
+          <div id="message">
+            <div id="message_block1">
+              <h3>SNo</h3>
+              <h3>Name</h3>
+              <h3>Description</h3>
+            </div>
+            <div id="message_block2">
+              <div id="task_container">
+                <p>1</p>
+                <p>Policy 1</p>
+                <p>Description 1</p>
+              </div>
             </div>
           </div>
         </div>
+        <Modal
+          title="Create a policy"
+          visible={policyPop}
+          onCancel={() => {
+            setPolicyPop(false)
+          }}
+          style={{ top: 800 }}
+          cancelButtonProps={{
+            style: { border: "1px solid #3751FF", color: "#3751FF" },
+          }}
+        >
+          <CreateAllowancePop />
+        </Modal>
       </div>
-    </div>
+    </AllowanceContainer>
   )
 }
 export default Allowance

@@ -143,7 +143,7 @@ export const BoardContainer = styled.div`
   }
 
   #BoardContainer #side_menu #logout {
-    margin-top: 5vw;
+    margin-top: 3vw;
     transition: 0.5s ease-in-out;
     .imghover {
       display: none;
