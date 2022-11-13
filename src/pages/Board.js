@@ -1,19 +1,4 @@
 import React, { useEffect, useState, useRef } from "react"
-import login_logo from "../data/assets/login_logo.svg"
-import overview from "../data/assets/overview.svg"
-import overview2 from "../data/assets/overview_hover.svg"
-import admin from "../data/assets/admin.svg"
-import admin2 from "../data/assets/admin_hover.svg"
-import Calendar from "../data/assets/Calendar.svg"
-import Calendar2 from "../data/assets/Calendar_hover.svg"
-import settings from "../data/assets/settings.svg"
-import settings2 from "../data/assets/settings_hover.svg"
-import logout from "../data/assets/logout.svg"
-import logout_hover from "../data/assets/logout_hover.svg"
-import Employee from "../data/assets/Employee.svg"
-import Employee_hover from "../data/assets/Employee_hover.svg"
-import DashboardImg from "../data/assets/dashboard.svg"
-import Dashboard_hover from "../data/assets/dashboard_hover.svg"
 // import search from '../data/assets/search.svg';
 // import notificaton from '../data/assets/notificaton.svg';
 import Edit_user from "../data/assets/Edit_user.svg"
@@ -22,8 +7,6 @@ import {
   DeleteOutlined,
   SettingOutlined,
   CalendarOutlined,
-  RightOutlined,
-  LeftOutlined,
   RedoOutlined,
 } from "@ant-design/icons"
 import { Popover, Drawer, Result, Modal, notification } from "antd"
@@ -42,6 +25,7 @@ import AddEmployee from "../components/Forms/AddEmployee"
 import EditUser from "../components/Forms/EditUser"
 import LeaveDetails from "../components/Forms/LeaveDetails"
 import Dashboard from "../components/Dashboard/dashboard"
+import Allowance from "../components/Allowance"
 import {
   getHeaders,
   baseURL,
@@ -51,6 +35,7 @@ import {
   addUserAPI,
 } from "../utils/urls"
 import { nameProf } from "../utils/functions"
+import SideBar from "../components/SideBar"
 
 const Board = () => {
   const urlGlobal = baseURL // ADDING GLOBAL BASE URL
@@ -146,23 +131,22 @@ const Board = () => {
     setButtonProcess(true)
     axios({
       method: type === "delete" ? "Delete" : "PUT",
-      url: `${urlGlobal}/api/v2/leaves${
-        type !== "delete" ? "/" + type : ""
-      }/${leaveId}`,
+      url: `${urlGlobal}/api/v2/leaves${type !== "delete" ? "/" + type : ""
+        }/${leaveId}`,
       headers: headers,
     })
-      .then(res => {
-        getLeaves()
+      .then(async res => {
+        await getLeaves()
         setLeaveDetail(false)
         setButtonProcess(false)
         openNotificationWithIcon("success", res?.data?.message)
-        playAudio()
+        await playAudio()
       })
       .catch(_err => {
         setActiveLoader(false)
         setButtonProcess(false)
         setLeaveDetail(false)
-        console.log("Error", _err)
+        console.log("Error while approving leave", _err)
       })
   }
 
@@ -191,8 +175,8 @@ const Board = () => {
     }
 
     conditionAPI
-      .then(res => {
-        openNotificationWithIcon(
+      .then(async res => {
+        await openNotificationWithIcon(
           `success`,
           id
             ? `${res?.data?.user?.name} removed`
@@ -201,8 +185,8 @@ const Board = () => {
         setAddEmp(false)
         setActiveLoader(false)
         setButtonProcess(false)
-        playAudio()
-        getUsers()
+        await playAudio()
+        await getUsers()
         setName("")
         setEMail("")
       })
@@ -312,11 +296,11 @@ const Board = () => {
         data: data,
         headers: headers,
       })
-        .then(resp => {
-          openNotificationWithIcon(`success`, "Changes updated")
+        .then(async resp => {
+          await openNotificationWithIcon(`success`, "Changes updated")
           console.log(resp)
           setEditUserPop(false)
-          getUsers()
+          await getUsers()
           setActiveLoader(false)
           setButtonProcess(false)
         })
@@ -345,7 +329,7 @@ const Board = () => {
   )
 
   useEffect(() => {
-    getUserById(userDataMain.id)
+    getUserById(userDataMain?.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const [getNewUserLeave, setGetNewUserLeave] = useState()
@@ -398,6 +382,12 @@ const Board = () => {
     buttonProcess,
     setLeaveDrop,
     LeaveDrop,
+    barOpen,
+    setbarOpen,
+    Popover,
+    sideToggle,
+    conditionalFun,
+    setLogoutState,
   }
 
   return (
@@ -411,117 +401,7 @@ const Board = () => {
         />
       </audio>
       <div id="BoardContainer">
-        <div
-          id="side_menu"
-          style={{ width: !barOpen && "6vw", transition: `0.5s ease-in-out` }}
-        >
-          <span
-            id="drag_button"
-            onClick={() => setbarOpen(!barOpen)}
-            role="presentation"
-          >
-            <Popover
-              placement="right"
-              content={barOpen ? "Tap To Minimize" : "Tap To Expand"}
-            >
-              {barOpen ? <LeftOutlined /> : <RightOutlined />}
-            </Popover>
-          </span>
-
-          <h1>
-            <img src={login_logo} alt="img" />
-            {barOpen && "Leave Tracker"}
-          </h1>
-          <ul>
-            <li
-              className={sideToggle === 6 && "active"}
-              role="presentation"
-              onClick={() => {
-                conditionalFun(6)
-              }}
-            >
-              <img
-                src={sideToggle === 6 ? Dashboard_hover : DashboardImg}
-                alt="img"
-              />
-              {barOpen && "Dashboard"}
-            </li>
-            <li
-              className={sideToggle === 1 && "active"}
-              role="presentation"
-              onClick={() => {
-                conditionalFun(1)
-              }}
-            >
-              <img src={sideToggle === 1 ? overview2 : overview} alt="img" />
-              {barOpen && "Home"}
-            </li>
-            <li
-              className={sideToggle === 2 && "active"}
-              role="presentation"
-              onClick={() => {
-                conditionalFun(2)
-              }}
-            >
-              <img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />
-              {barOpen && "Calendar"}
-            </li>
-            <li
-              className={sideToggle === 3 && "active"}
-              role="presentation"
-              onClick={() => {
-                conditionalFun(3)
-              }}
-            >
-              <img src={sideToggle === 3 ? admin2 : admin} alt="img" />
-              {userDataMain?.role === "admin"
-                ? barOpen && "Admin Portal"
-                : barOpen && "User Portal"}
-            </li>
-            {userDataMain?.role === "admin" && (
-              <li
-                className={sideToggle === 5 && "active"}
-                role="presentation"
-                onClick={() => {
-                  conditionalFun(5)
-                }}
-              >
-                <img
-                  src={sideToggle === 5 ? Employee_hover : Employee}
-                  alt="img"
-                />
-                {barOpen && "Employee List"}
-              </li>
-            )}
-          </ul>
-          <ul>
-            <li
-              className={sideToggle === 4 && "active"}
-              role="presentation"
-              onClick={() => {
-                conditionalFun(4)
-              }}
-            >
-              <img src={sideToggle === 4 ? settings2 : settings} alt="img" />
-              {barOpen && "Settings"}
-            </li>
-          </ul>
-
-          <ul id="logout">
-            <li
-              onClick={() => {
-                setVisible(true)
-                setLogoutState(true)
-              }}
-              role="presentation"
-            >
-              {" "}
-              <img src={logout_hover} alt="img" className="imghover" />
-              <img src={logout} alt="img" className="image" />
-              {barOpen && "logout"}
-            </li>
-          </ul>
-        </div>
+        <SideBar {...commonProps} />
         <div
           id="main_menu"
           style={{ background: sideToggle === 1 ? "white" : "#FCFAFA" }}
@@ -531,25 +411,38 @@ const Board = () => {
               {sideToggle === 1
                 ? "Home"
                 : sideToggle === 2
-                ? "Calendar"
-                : sideToggle === 3
-                ? userDataMain?.role === "admin"
-                  ? "Admin Portal"
-                  : "User Portal"
-                : sideToggle === 4
-                ? "Settings"
-                : sideToggle === 5
-                ? "Employee List"
-                : sideToggle === 6
-                ? "Dashboard"
-                : ""}{" "}
+                  ? "Calendar"
+                  : sideToggle === 3
+                    ? userDataMain?.role === "admin"
+                      ? "Admin Portal"
+                      : "User Portal"
+                    : sideToggle === 4
+                      ? "Settings"
+                      : sideToggle === 5
+                        ? "Employee List"
+                        : sideToggle === 6
+                          ? "Dashboard"
+                          : sideToggle === 7
+                            ? "Leave allowance"
+                            : ""}{" "}
             </h2>
             <div id="mini_block">
-              {sideToggle === 1 && userDataMain?.role !== "admin" && (
-                <button onClick={() => setPopup(true)}>Apply Leave</button>
+              {sideToggle === 1 &&
+                sideToggle !== 7 &&
+                userDataMain?.role !== "admin" && (
+                  <button onClick={() => setPopup(true)}>Apply Leave</button>
+                )}
+              {sideToggle === 3 &&
+                sideToggle !== 7 &&
+                userDataMain?.role === "admin" && (
+                  <button onClick={() => setAddEmp(true)}>Add Employee</button>
+                )}
+
+              {sideToggle === 7 && userDataMain?.role === "admin" && (
+                <button onClick={() => setPopup(true)}>Add Policy</button>
               )}
-              {sideToggle === 3 && userDataMain?.role === "admin" && (
-                <button onClick={() => setAddEmp(true)}>Add Employee</button>
+              {sideToggle === 7 && userDataMain?.role === "admin" && (
+                <button onClick={() => setAddEmp(true)}>Add Leavetype</button>
               )}
               {/* <img src={search} alt="img" id="search" /> */}
               {/* <Popover placement="bottomRight" content={<Notification />} style={{ position: 'relative' }}>
@@ -589,6 +482,8 @@ const Board = () => {
           {sideToggle === 5 && <UsersList {...commonProps} />}
           {/* Dashboard */}
           {sideToggle === 6 && <Dashboard {...commonProps} />}
+          {/* Policy */}
+          {sideToggle === 7 && <Allowance {...commonProps} />}
         </div>
       </div>
 
@@ -695,13 +590,13 @@ const Board = () => {
           deleteUserState
             ? addUser(null, null, deleteUserState?.id)
             : logoutState
-            ? logOut()
-            : approveLeave(
+              ? logOut()
+              : approveLeave(
                 descType === "approve"
                   ? "approve"
                   : descType === "reject"
-                  ? "reject"
-                  : "delete",
+                    ? "reject"
+                    : "delete",
                 descId
               )
           setVisible(false)
@@ -719,12 +614,12 @@ const Board = () => {
           buttonProcess
             ? "Processing..."
             : logoutState || deleteUserState
-            ? "Proceed"
-            : descType === "approve"
-            ? "Approve"
-            : descType === "reject"
-            ? "Reject"
-            : "Delete"
+              ? "Proceed"
+              : descType === "approve"
+                ? "Approve"
+                : descType === "reject"
+                  ? "Reject"
+                  : "Delete"
         }
         cancelText="Back"
         okButtonProps={{
@@ -745,13 +640,13 @@ const Board = () => {
             {deleteUserState
               ? `Do you want to delete (${deleteUserState?.name})`
               : "Do you want to " +
-                (logoutState
-                  ? "Logout"
-                  : descType === "approve"
+              (logoutState
+                ? "Logout"
+                : descType === "approve"
                   ? "Approve"
                   : descType === "reject"
-                  ? "Reject"
-                  : "Delete")}
+                    ? "Reject"
+                    : "Delete")}
             ?
           </p>
           {deleteUserState && (

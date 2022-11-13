@@ -6,8 +6,14 @@ import Avatar from "../Avatar/index"
 import EmptyRoster from "../EmptyRoster"
 import { nameProf } from "../../utils/functions"
 import { getGraphData, getLeaveDetails } from "./Function/function"
+import CompoLoader from "../../components/ComponentLoader"
+import { getHeaders } from "../../utils/urls"
 
-const Dashboard = ({ headers, CompoLoader }) => {
+const Dashboard = () => {
+  const userData =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
+  const headers = getHeaders(userData?.tokens?.accessToken)
   const [loader, setLoader] = useState(false)
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
@@ -19,9 +25,14 @@ const Dashboard = ({ headers, CompoLoader }) => {
   const [empLeaveData, setEmpLeaveData] = useState([])
   const [dataLoader, setDataLoader] = useState(false)
 
-  if (month > 12) {
-    setMonth(1)
+  const monthSetFun = () => {
+    if (month > 12) {
+      setMonth(1)
+    }
   }
+
+  // Get leave graph data
+  const newDate = month < 10 ? 0 + "" + month : month
 
   // Get graph data initially
   useEffect(() => {
@@ -36,9 +47,6 @@ const Dashboard = ({ headers, CompoLoader }) => {
     })
     // eslint-disable-next-line
   }, [month])
-
-  // Get leave graph data
-  const newDate = month < 10 ? 0 + "" + month : month
 
   const data = newGraphData
 
@@ -119,6 +127,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
             <LeftOutlined
               onClick={() => {
                 month !== 1 && setMonth(month - 1)
+                monthSetFun()
                 setEmpLeaveData([])
               }}
               style={{ opacity: month === 1 && 0.1 }}
@@ -132,6 +141,7 @@ const Dashboard = ({ headers, CompoLoader }) => {
             <RightOutlined
               onClick={() => {
                 setMonth(month + 1)
+                monthSetFun()
                 setEmpLeaveData([])
               }}
             />
