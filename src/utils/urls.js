@@ -51,3 +51,19 @@ export const getUsersAPI = () => {
 export const getDashboardDataAPI = (newDate, currentYear) => {
   return `${baseURL}/api/v2/dashboard?month=${newDate}&year=${currentYear}`
 }
+
+export const getPolicyDataAPI = () => {
+  return `${baseURL}/api/v2/policies`
+}
+
+export const getAllowanceByPolicy = policyId => {
+  return `${baseURL}/api/v2/policies/${policyId}/allowances`
+}
+
+export const updateAllowanceAPI = (policyId, allowanceId) => {
+  return `${baseURL}/api/v2/policies/${policyId}/allowances/${allowanceId}`
+}
+
+export const deleteAllowanceAPI = (policyId, allowanceId) => {
+  return `${baseURL}/api/v2/policies/${policyId}/allowances/${allowanceId}`
+}

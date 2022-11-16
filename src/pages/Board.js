@@ -425,7 +425,7 @@ const Board = () => {
                 : sideToggle === 6
                 ? "Dashboard"
                 : sideToggle === 7
-                ? "Leave allowance"
+                ? "Leave Policy"
                 : ""}{" "}
             </h2>
             <div id="mini_block">

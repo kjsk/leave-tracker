@@ -1,14 +1,14 @@
 import React, { useState } from "react"
-import { CreateAllowancePopStyles } from "./styles"
+import { AddAllowancePopStyles } from "./styles"
 import { Switch } from "antd"
 import { PlusCircleOutlined, MinusOutlined } from "@ant-design/icons"
 
-const CreateAllowancePop = () => {
+const AddAllowancePop = () => {
   const onChange = checked => {
     console.log(`switch to ${checked}`)
   }
 
-  const [container, setContainer] = useState([])
+  const [container, setContainer] = useState([{}])
   const AddContainer = () => {
     const tempArr = [...container]
     tempArr.push({})
@@ -21,25 +21,8 @@ const CreateAllowancePop = () => {
   }
 
   return (
-    <CreateAllowancePopStyles>
+    <AddAllowancePopStyles>
       <div id="add_employee_main">
-        <div id="employee_wrap">
-          <div id="input_wrap">
-            <label htmlFor="input">Policy name</label>
-            <input type="text" placeholder="Policy name" />
-          </div>
-        </div>
-        <div id="employee_wrap">
-          <div id="input_wrap">
-            <label htmlFor="input">Start Month</label>
-            <input type="text" placeholder="Start Month" />
-          </div>
-          <div id="input_wrap">
-            <label htmlFor="input">End month</label>
-            <input type="text" placeholder="End month" />
-          </div>
-        </div>
-
         {container?.map((item, index) => {
           return (
             <div id="add_allowance_container" key={index}>
@@ -99,7 +82,7 @@ const CreateAllowancePop = () => {
           </button>
         </div>
       </div>
-    </CreateAllowancePopStyles>
+    </AddAllowancePopStyles>
   )
 }
-export default CreateAllowancePop
+export default AddAllowancePop

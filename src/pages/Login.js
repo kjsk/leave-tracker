@@ -85,7 +85,7 @@ const Login = () => {
       method: "POST",
       url: adminRegisterAPI(),
       data: {
-        email: email,
+        email: `naveen@fidisys.com`,
         name: name,
         uId: uId,
       },
@@ -130,7 +130,7 @@ const Login = () => {
       method: "POST",
       url: adminLoginAPI(),
       data: {
-        email: email,
+        email: `naveen@fidisys.com`,
       },
       headers: headers,
     })
