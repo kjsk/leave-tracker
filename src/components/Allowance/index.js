@@ -9,9 +9,12 @@ import {
   getPolicyDataAPI,
   getAllowanceByPolicy,
   getHeaders,
+  deletePolicyAPI,
+  editPolicyAPI,
 } from "../../utils/urls"
 import Edit_user from "../../data/assets/Edit_user.svg"
 import { DeleteOutlined } from "@ant-design/icons"
+import EditPolicy from "../Forms/EditPolicy"
 
 const Allowance = ({ policyPop, setPolicyPop }) => {
   const [openAllowance, setOpenAllowance] = useState(false)
@@ -19,6 +22,11 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
   const [policyData, setPolicyData] = useState([])
   const [policyDataObj, setPolicyDataObj] = useState()
   const [policyName, setPolicyName] = useState()
+
+  // Edit policy setState
+  const [editPolicyName, setEditPolicyName] = useState("")
+  const [editPolicyDesc, setEditPolicyDesc] = useState("")
+  const [editPolicyPop, setEditPolicyPop] = useState(false)
 
   let localToken =
     typeof localStorage !== "undefined" &&
@@ -49,12 +57,65 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
     setPolicyDataObj(item?.id)
     setPolicyName(item?.name)
   }
+
+  // Call to delete Allowance
+  const DeleteAPIFun = policyId => {
+    axios({
+      url: deletePolicyAPI(policyId),
+      method: "DELETE",
+      headers: headers,
+    })
+      .then(res => {
+        console.log("res", res)
+        GetPolicyFun()
+      })
+      .catch(err => console.log("Error", err))
+  }
+
+  // Set policy data
+  const EditAPIDataFun = item => {
+    console.log("itemitem", item)
+    setPolicyDataObj(item?.id)
+    setEditPolicyName(item?.name)
+    setEditPolicyDesc(item?.description)
+    setEditPolicyPop(true)
+  }
+
+  console.log("editPolicyName", editPolicyName)
+
+  console.log("editPolicyDesc", editPolicyDesc)
+
+  console.log("obbbj", {
+    name: editPolicyName,
+    desc: editPolicyDesc,
+  })
+
+  // Call to delete Allowance
+  const EditAPIFun = policyId => {
+    axios({
+      url: editPolicyAPI(policyId),
+      method: "PATCH",
+      headers: headers,
+      data: {
+        name: editPolicyName,
+        desc: editPolicyDesc,
+      },
+    })
+      .then(res => {
+        console.log("res", res)
+        setEditPolicyName("")
+        setEditPolicyDesc("")
+        GetPolicyFun()
+        setEditPolicyPop(false)
+      })
+      .catch(err => console.log("Error", err))
+  }
+
   return (
     <Fragment>
       {" "}
       {!openAllowance ? (
         <AllowanceContainer>
-          <button onClick={() => GetPolicyFun()}>Click</button>
           <div id="admin_homes">
             <div id="admin" className="admin">
               <div id="message">
@@ -81,7 +142,7 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
                             src={Edit_user}
                             alt="Edit_user"
                             role="presentation"
-                            // onClick={() => setEditAllowancePop(true)}
+                            onClick={() => EditAPIDataFun(item)}
                           />
                           <DeleteOutlined
                             style={{
@@ -89,7 +150,9 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
                               marginLeft: `15px`,
                               fontSize: `23px`,
                             }}
-                            onClick={() => {}}
+                            onClick={() => {
+                              DeleteAPIFun(item?.id)
+                            }}
                           />
                         </div>
                       </div>
@@ -107,18 +170,37 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
           setOpenAllowance={setOpenAllowance}
         />
       )}
+      {/* Create policy modal */}
       <Modal
         title="Create a policy"
         visible={policyPop}
         onCancel={() => {
           setPolicyPop(false)
         }}
-        style={{ top: 800 }}
         cancelButtonProps={{
           style: { border: "1px solid #3751FF", color: "#3751FF" },
         }}
       >
         <CreateAllowancePop />
+      </Modal>
+      {/* Edit policy modal */}
+      <Modal
+        title="Edit a policy"
+        visible={editPolicyPop}
+        onOk={() => {
+          EditAPIFun(policyDataObj)
+        }}
+        onCancel={() => {
+          setEditPolicyPop(false)
+        }}
+        okText="Update"
+      >
+        <EditPolicy
+          editPolicyName={editPolicyName}
+          setEditPolicyName={setEditPolicyName}
+          editPolicyDesc={editPolicyDesc}
+          setEditPolicyDesc={setEditPolicyDesc}
+        />
       </Modal>
     </Fragment>
   )

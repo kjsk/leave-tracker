@@ -267,3 +267,35 @@ export const AllowanceTableViewStyles = styled.div`
     }
   }
 `
+
+export const EditPolicyFormStyle = styled.div`
+  #employee_wrap {
+    padding: 50px 0 0 0;
+  }
+  #input_wrap {
+    display: flex;
+    flex-direction: column;
+  }
+  #input_wrap label {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #555555;
+    margin-bottom: 6px;
+  }
+  #input_wrap input {
+    height: 48px;
+    border-radius: 6px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    color: #121212;
+    padding: 12px;
+    background: #f3f3f4;
+    border: none;
+    outline-color: #1874d2;
+  }
+  #input_wrap:nth-child(2) {
+    margin: 32px 0 32px 0;
+  }
+`

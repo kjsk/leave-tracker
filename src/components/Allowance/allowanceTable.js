@@ -10,6 +10,7 @@ import {
   updateAllowanceAPI,
   getHeaders,
   deleteAllowanceAPI,
+  addAllowanceAPI,
 } from "../../utils/urls"
 import { AllowanceTableViewStyles } from "./styles"
 import AddAllowancePop from "./addAllowancePop"
@@ -35,8 +36,32 @@ const AllowanceTableView = ({
   const [type, SetType] = useState("")
   const [days, SetDays] = useState("")
   const [limit, SetLimit] = useState("")
-  const [addAllowancePop, setAddAllowancePop] = useState("")
+  const [status, SetStatus] = useState(false)
+  const [container, setContainer] = useState({
+    amount: "",
+    maxLimit: true,
+    maxLimitAmount: "",
+    name: "",
+    type: "",
+  })
 
+  // Add alowance setState
+  const [addAllowancePop, setAddAllowancePop] = useState(false)
+  const [allowancename, setAllowanceName] = useState("")
+  const [allowancetype, SetAllowanceType] = useState("")
+  const [allowancedays, SetAllowanceDays] = useState("")
+  const [allowancelimit, SetAllowanceLimit] = useState(0)
+  const [allowancelimitStatus, SetAllowanceLimitStatus] = useState(true)
+  const [allowanceDescription, SetAllowanceDescription] = useState("")
+
+  console.log("allowancename", allowancename)
+  console.log("allowancetype", allowancetype)
+  console.log("allowancedays", allowancedays)
+  console.log("allowancelimit", allowancelimit)
+  console.log("allowancelimitStatus", allowancelimitStatus)
+  console.log("allowanceDescription", allowanceDescription)
+
+  // Local token
   let localToken =
     typeof localStorage !== "undefined" &&
     JSON.parse(localStorage.getItem("userData"))
@@ -74,12 +99,16 @@ const AllowanceTableView = ({
       type: item?.type,
       maxLimitAmount: item?.maxLimit,
     })
-    setName(item?.name)
-    SetType(item?.type)
-    SetDays(item?.amount)
-    SetLimit(item?.maxLimit)
+    if (item) {
+      setName(item?.name)
+      SetType(item?.type)
+      SetDays(item?.amount)
+      SetLimit(item?.maxLimitAmount)
+      SetStatus(item?.maxLimit)
+    }
   }
 
+  // Call to update Allowance
   const Updatedata = (policyId, item) => {
     axios({
       url: updateAllowanceAPI(policyId, item?.id),
@@ -88,22 +117,27 @@ const AllowanceTableView = ({
       data: {
         amount: days || item?.amount,
         name: name || item?.name,
-        maxLimit: true,
+        maxLimit: status,
         type: type || item?.type,
         maxLimitAmount: limit || item?.maxLimit,
       },
     })
       .then(res => {
         if (res?.data) {
-          setName("")
           setEditAllowancePop(false)
           setAllowanceData(res?.data)
           OpenPolicy(policyId)
+          setName("")
+          SetType("")
+          SetDays("")
+          SetLimit(true)
+          SetStatus("")
         }
       })
       .catch(err => console.log("Error", err))
   }
 
+  // Call to delete Allowance
   const DeleteAPIFun = (policyId, allowanceId) => {
     axios({
       url: deleteAllowanceAPI(policyId, allowanceId),
@@ -115,6 +149,39 @@ const AllowanceTableView = ({
         OpenPolicy(policyId)
       })
       .catch(err => console.log("Error", err))
+  }
+
+  // Add allowance Function
+  const AddAllowanceFun = policyId => {
+    console.log("policyIdpolicyId", policyId)
+    axios({
+      url: addAllowanceAPI(policyId),
+      method: "POST",
+      headers: headers,
+      data: {
+        amount: allowancedays,
+        maxLimit: allowancelimitStatus,
+        maxLimitAmount: allowancelimit,
+        name: allowancename,
+        type: allowancetype,
+      },
+    })
+      .then(res => {
+        if (res?.data) {
+          OpenPolicy(policyId)
+          setAddAllowancePop(false)
+          setAllowanceName("")
+          SetAllowanceType("")
+          SetAllowanceDays("")
+          SetAllowanceLimit("")
+          SetAllowanceLimitStatus(true)
+          SetAllowanceDescription("")
+        }
+      })
+      .catch(err => {
+        console.log("Error", err)
+        setAddAllowancePop(false)
+      })
   }
   return (
     <AllowanceTableViewStyles>
@@ -131,7 +198,10 @@ const AllowanceTableView = ({
               </span>
             </h3>
             <div className="btn_container">
-              <button id="add_allowance_btn">
+              <button
+                id="add_allowance_btn"
+                onClick={() => setAddAllowancePop(true)}
+              >
                 <PlusCircleOutlined style={{ margin: `0 10px 0 0 ` }} />
                 Add Allowance
               </button>
@@ -155,7 +225,11 @@ const AllowanceTableView = ({
                       <p>{item?.name}</p>
                       <p>{item?.type}</p>
                       <p>{item?.amount}</p>
-                      <p>{item?.maxLimit ? item?.maxLimitAmount : ""}</p>
+                      <p>
+                        {item?.maxLimit > 0
+                          ? item?.maxLimitAmount
+                          : "Not Applicable"}
+                      </p>
                       <div id="btns">
                         <img
                           src={Edit_user}
@@ -183,12 +257,15 @@ const AllowanceTableView = ({
             </div>
           </div>
         </div>
+
+        {/* Edit allowance modal */}
         <Modal
           visible={editAllowancePop}
           onCancel={() => setEditAllowancePop(false)}
           onOk={() => {
             Updatedata(policyDataObj, editAllowanceData)
           }}
+          okText={"Update"}
         >
           <EditAllowance
             editAllowanceData={editAllowanceData}
@@ -201,17 +278,36 @@ const AllowanceTableView = ({
             SetDays={SetDays}
             limit={limit}
             SetLimit={SetLimit}
+            status={status}
+            SetStatus={SetStatus}
           />
         </Modal>
 
+        {/* Add allowance modal */}
         <Modal
-          visible={true}
-          // onCancel={() => setEditAllowancePop(false)}
-          // onOk={() => {
-          //   Updatedata(policyDataObj, editAllowanceData)
-          // }}
+          visible={addAllowancePop}
+          onOk={() => {
+            AddAllowanceFun(policyDataObj)
+          }}
+          onCancel={() => setAddAllowancePop(false)}
+          okText={"Add Allowance"}
         >
-          <AddAllowancePop />
+          <AddAllowancePop
+            container={container}
+            setContainer={setContainer}
+            allowancename={allowancename}
+            allowancetype={allowancetype}
+            allowancedays={allowancedays}
+            allowancelimit={allowancelimit}
+            allowancelimitStatus={allowancelimitStatus}
+            allowanceDescription={allowanceDescription}
+            setAllowanceName={setAllowanceName}
+            SetAllowanceType={SetAllowanceType}
+            SetAllowanceDays={SetAllowanceDays}
+            SetAllowanceLimit={SetAllowanceLimit}
+            SetAllowanceLimitStatus={SetAllowanceLimitStatus}
+            SetAllowanceDescription={SetAllowanceDescription}
+          />
         </Modal>
       </div>
     </AllowanceTableViewStyles>

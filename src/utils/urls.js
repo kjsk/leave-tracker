@@ -67,3 +67,15 @@ export const updateAllowanceAPI = (policyId, allowanceId) => {
 export const deleteAllowanceAPI = (policyId, allowanceId) => {
   return `${baseURL}/api/v2/policies/${policyId}/allowances/${allowanceId}`
 }
+
+export const addAllowanceAPI = policyId => {
+  return `${baseURL}/api/v2/policies/${policyId}/allowances`
+}
+
+export const deletePolicyAPI = policyId => {
+  return `${baseURL}/api/v2/policies/${policyId}`
+}
+
+export const editPolicyAPI = policyId => {
+  return `${baseURL}/api/v2/policies/${policyId}`
+}
