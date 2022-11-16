@@ -299,3 +299,60 @@ export const EditPolicyFormStyle = styled.div`
     margin: 32px 0 32px 0;
   }
 `
+
+// Create leave popup styles
+export const CreateLeaveStyle = styled.div`
+  #employee_wrap {
+    padding: 50px 0 0 0;
+  }
+  #input_wrap {
+    display: flex;
+    flex-direction: column;
+  }
+  #input_wrap label {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #555555;
+    margin-bottom: 6px;
+  }
+  #input_wrap input {
+    height: 48px;
+    border-radius: 6px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    color: #121212;
+    padding: 12px;
+    background: #f3f3f4;
+    border: none;
+    outline-color: #1874d2;
+  }
+  #input_wrap {
+    margin-top: 32px;
+  }
+  #input_wrap:nth-child(1) {
+    margin-top: 0;
+  }
+  #add_employee_main button {
+    height: 48px;
+    background: #3751ff;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: 0.1px;
+    color: #ffffff;
+    border: none;
+    outline: none;
+    width: 100%;
+    margin-top: 50px;
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+    :hover {
+      color: #3751ff;
+      background: white;
+      outline: 0.2vw solid #3751ff;
+    }
+  }
+`

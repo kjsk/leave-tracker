@@ -79,3 +79,7 @@ export const deletePolicyAPI = policyId => {
 export const editPolicyAPI = policyId => {
   return `${baseURL}/api/v2/policies/${policyId}`
 }
+
+export const createLeaveAPI = () => {
+  return `${baseURL}/api/v2/leavetypes`
+}

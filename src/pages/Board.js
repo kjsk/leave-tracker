@@ -33,9 +33,11 @@ import {
   userEditAPI,
   getUsersAPI,
   addUserAPI,
+  createLeaveAPI,
 } from "../utils/urls"
 import { nameProf } from "../utils/functions"
 import SideBar from "../components/SideBar"
+import CreateLeave from "../components/Forms/CreateLeave"
 
 const Board = () => {
   const urlGlobal = baseURL // ADDING GLOBAL BASE URL
@@ -66,6 +68,13 @@ const Board = () => {
   const [userConform, setUserConform] = useState("")
   const [buttonProcess, setButtonProcess] = useState(false)
   const [LeaveDrop, setLeaveDrop] = useState(false)
+
+  const [policyPop, setPolicyPop] = useState(false)
+  const [createLeavePop, setCreateLeavePop] = useState("")
+  const [createLeaveSave, setCreateLeaveSave] = useState("")
+  const [createLeaveName, setCreateLeaveName] = useState("")
+  const [createLeaveType, setCreateLeaveType] = useState("")
+  const [createLeaveColor, setCreateLeaveColor] = useState("")
 
   // common headers
   const headers = getHeaders(userData?.tokens?.accessToken)
@@ -391,7 +400,38 @@ const Board = () => {
     setLogoutState,
   }
 
-  const [policyPop, setPolicyPop] = useState(false)
+  const CreateLeaveFun = () => {
+    const obj = {
+      label: createLeaveName,
+      value: createLeaveType,
+      description: createLeaveColor,
+    }
+    setButtonProcess(true)
+    axios({
+      url: createLeaveAPI(),
+      method: "POST",
+      headers: headers,
+      data: obj,
+    })
+      .then(res => {
+        if (res.data) {
+          playAudio()
+          openNotificationWithIcon(`success`, "Leave type added!")
+          setCreateLeavePop(false)
+          setButtonProcess(false)
+          setCreateLeaveName("")
+          setCreateLeaveType("")
+          setCreateLeaveColor("")
+        }
+      })
+      .catch(err => {
+        openNotificationWithIcon(`Error`, "Oops!")
+        setCreateLeavePop(false)
+        setButtonProcess(false)
+        console.log("Error", err)
+      })
+  }
+
   return (
     <BoardContainer>
       <audio ref={audioPlayer} src={NotificationSound}>
@@ -441,7 +481,9 @@ const Board = () => {
                 )}
 
               {sideToggle === 7 && userDataMain?.role === "admin" && (
-                <button onClick={() => setAddEmp(true)}>Add Leavetype</button>
+                <button onClick={() => setCreateLeavePop(true)}>
+                  Add Leavetype
+                </button>
               )}
               {sideToggle === 7 && userDataMain?.role === "admin" && (
                 <button onClick={() => setPolicyPop(true)}>Add Policy</button>
@@ -674,6 +716,32 @@ const Board = () => {
             />
           )}
         </>
+      </Modal>
+
+      {/* ADD LEAVE POPUP */}
+      <Modal
+        title="Create Leave"
+        centered
+        visible={createLeavePop}
+        onCancel={() => {
+          setCreateLeavePop(false)
+        }}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+      >
+        <CreateLeave
+          createLeaveName={createLeaveName}
+          setCreateLeaveName={setCreateLeaveName}
+          createLeaveType={createLeaveType}
+          setCreateLeaveType={setCreateLeaveType}
+          createLeaveColor={createLeaveColor}
+          setCreateLeaveColor={setCreateLeaveColor}
+          CreateLeaveFun={CreateLeaveFun}
+          buttonProcess={buttonProcess}
+          setButtonProcess={setButtonProcess}
+          createLeavePop={createLeavePop}
+          setCreateLeavePop={setCreateLeavePop}
+        />
       </Modal>
     </BoardContainer>
   )

@@ -85,10 +85,10 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
 
   console.log("editPolicyDesc", editPolicyDesc)
 
-  console.log("obbbj", {
+  const setObj = {
     name: editPolicyName,
     desc: editPolicyDesc,
-  })
+  }
 
   // Call to delete Allowance
   const EditAPIFun = policyId => {
@@ -96,10 +96,7 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
       url: editPolicyAPI(policyId),
       method: "PATCH",
       headers: headers,
-      data: {
-        name: editPolicyName,
-        desc: editPolicyDesc,
-      },
+      data: setObj,
     })
       .then(res => {
         console.log("res", res)
