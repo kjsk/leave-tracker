@@ -62,11 +62,11 @@ const SideModal = ({
     console.log("newDays", newDays)
     const newDayName =
       pushTime &&
-      ((pushTime[0]?.format("dddd") === "Monday" && newDays > 5) ||
-        (pushTime[0]?.format("dddd") === "Tuesday" && newDays > 4) ||
-        (pushTime[0]?.format("dddd") === "Wednesday" && newDays > 3) ||
-        (pushTime[0]?.format("dddd") === "Thursday" && newDays > 2) ||
-        (pushTime[0]?.format("dddd") === "Friday" && newDays > 1))
+        ((pushTime[0]?.format("dddd") === "Monday" && newDays > 5) ||
+          (pushTime[0]?.format("dddd") === "Tuesday" && newDays > 4) ||
+          (pushTime[0]?.format("dddd") === "Wednesday" && newDays > 3) ||
+          (pushTime[0]?.format("dddd") === "Thursday" && newDays > 2) ||
+          (pushTime[0]?.format("dddd") === "Friday" && newDays > 1))
         ? newDays - 2
         : newDays
     return newDayName
@@ -209,9 +209,9 @@ const SideModal = ({
             style={{
               background:
                 pushTime &&
-                daysCalc() &&
-                reason.length > 5 &&
-                leaveType?.label !== ""
+                  daysCalc() &&
+                  reason.length > 5 &&
+                  leaveType?.label !== ""
                   ? "#3751FF"
                   : "gray",
               color: "white",
@@ -222,9 +222,9 @@ const SideModal = ({
             }}
             disabled={
               pushTime &&
-              daysCalc() &&
-              reason.length > 5 &&
-              leaveType?.label !== ""
+                daysCalc() &&
+                reason.length > 5 &&
+                leaveType?.label !== ""
                 ? false
                 : true
             }

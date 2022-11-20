@@ -1,24 +1,23 @@
 import React, { useState } from "react"
 import { CreateAllowancePopStyles } from "./styles"
-import { Switch } from "antd"
+import { Switch, Dropdown } from "antd"
 import { PlusCircleOutlined, MinusOutlined } from "@ant-design/icons"
+import LeaveType from "../leavePopup/leave_type"
+import { monthData } from "../../utils/mockdata"
 
-const CreateAllowancePop = () => {
-  const onChange = checked => {
-    console.log(`switch to ${checked}`)
-  }
-
-  const [container, setContainer] = useState([])
-  const AddContainer = () => {
-    const tempArr = [...container]
-    tempArr.push({})
-    setContainer([...tempArr])
-  }
-
-  const RemoveContainer = index => {
-    container.splice(index, 1)
-    setContainer([...container])
-  }
+const CreateAllowancePop = (props) => {
+  const {
+    container,
+    AddContainer,
+    RemoveContainer,
+    editContainerFun,
+    setNewPolicyName,
+    setStartMonth,
+    setStartMonthOpen,
+    startMonthObj,
+    setEndMonth,
+    endMonthObj
+  } = props;
 
   return (
     <CreateAllowancePopStyles>
@@ -26,17 +25,35 @@ const CreateAllowancePop = () => {
         <div id="employee_wrap">
           <div id="input_wrap">
             <label htmlFor="input">Policy name</label>
-            <input type="text" placeholder="Policy name" />
+            <input type="text" placeholder="Policy name"
+              onChange={(e) => setNewPolicyName(e.target.value)}
+            />
           </div>
         </div>
         <div id="employee_wrap">
           <div id="input_wrap">
             <label htmlFor="input">Start Month</label>
-            <input type="text" placeholder="Start Month" />
+            <Dropdown overlay={
+              <LeaveType
+                leaveFun={setStartMonth}
+                setLeaveDrop={setStartMonthOpen}
+                userDataMain={monthData}
+              />
+            } trigger={['click']} placement="bottomLeft">
+              <input type="text" value={startMonthObj?.label} placeholder="Start Month" />
+            </Dropdown>
           </div>
           <div id="input_wrap">
             <label htmlFor="input">End month</label>
-            <input type="text" placeholder="End month" />
+            <Dropdown overlay={
+              <LeaveType
+                leaveFun={setEndMonth}
+                setLeaveDrop={setStartMonthOpen}
+                userDataMain={monthData}
+              />
+            } trigger={['click']} placement="bottomLeft">
+              <input type="text" value={endMonthObj?.label} placeholder="End month" />
+            </Dropdown>
           </div>
         </div>
 
@@ -47,7 +64,7 @@ const CreateAllowancePop = () => {
                 <div className="btn_container">
                   <button
                     className="remove_allowance_btn"
-                    onClick={() => RemoveContainer(index)}
+                    onClick={() => RemoveContainer(item)}
                   >
                     <MinusOutlined style={{ margin: `0 10px 0 0 ` }} />
                     Remove Allowance
@@ -57,27 +74,43 @@ const CreateAllowancePop = () => {
               <div id="employee_wrap">
                 <div id="input_wrap">
                   <label htmlFor="input">Allowance name</label>
-                  <input type="text" placeholder="Allowance name" />
+                  <input
+                    value={item?.name}
+                    type="text" placeholder="Allowance name"
+                    onChange={(e) => {
+                      editContainerFun(index, "name", e.target.value)
+                    }} />
                 </div>
                 <div id="input_wrap">
                   <label htmlFor="input">Type</label>
-                  <input type="text" placeholder="Type" />
+                  <input type="text"
+                    value={item?.type}
+                    placeholder="Type"
+                    onChange={(e) => editContainerFun(index, 'type', e.target.value)} />
                 </div>
               </div>
               <div id="employee_wrap_policy">
                 <div id="input_wrap">
                   <label htmlFor="input">No of Days</label>
-                  <input type="text" placeholder="No of Days" />
+                  <input type="text"
+                    value={item?.days}
+                    placeholder="No of Days"
+                    onChange={(e) => editContainerFun(index, 'days', e.target.value)}
+                  />
                 </div>
                 <div id="input_wrap">
                   <label htmlFor="input">Max Limit</label>
-                  <input type="text" placeholder="Max Limit" />
+                  <input type="text"
+                    value={item?.limitToggle ? item?.maxLimit : 0}
+                    placeholder="Max Limit"
+                    onChange={(e) => editContainerFun(index, 'maxLimit', e.target.value)}
+                  />
                 </div>
                 <div id="input_wrap" className="input_wrap">
                   <label htmlFor="input">Max Limit</label>
                   <Switch
-                    defaultChecked
-                    onChange={onChange}
+                    checked={item?.limitToggle}
+                    onChange={(e) => editContainerFun(index, "limitToggle", e)}
                     className="switch"
                   />
                 </div>
@@ -86,7 +119,11 @@ const CreateAllowancePop = () => {
               <div id="employee_wrap" className="employee_wrap_description">
                 <div id="input_wrap">
                   <label htmlFor="input">Description</label>
-                  <textarea type="text" placeholder="Description" />
+                  <textarea type="text"
+                    value={item?.description}
+                    placeholder="Description"
+                    onChange={(e) => editContainerFun(index, "description", e.target.value)}
+                  />
                 </div>
               </div>
             </div>

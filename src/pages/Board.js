@@ -71,7 +71,6 @@ const Board = () => {
 
   const [policyPop, setPolicyPop] = useState(false)
   const [createLeavePop, setCreateLeavePop] = useState("")
-  const [createLeaveSave, setCreateLeaveSave] = useState("")
   const [createLeaveName, setCreateLeaveName] = useState("")
   const [createLeaveType, setCreateLeaveType] = useState("")
   const [createLeaveColor, setCreateLeaveColor] = useState("")
@@ -140,9 +139,8 @@ const Board = () => {
     setButtonProcess(true)
     axios({
       method: type === "delete" ? "Delete" : "PUT",
-      url: `${urlGlobal}/api/v2/leaves${
-        type !== "delete" ? "/" + type : ""
-      }/${leaveId}`,
+      url: `${urlGlobal}/api/v2/leaves${type !== "delete" ? "/" + type : ""
+        }/${leaveId}`,
       headers: headers,
     })
       .then(async res => {
@@ -405,6 +403,7 @@ const Board = () => {
       label: createLeaveName,
       value: createLeaveType,
       description: createLeaveColor,
+      color: createLeaveColor.hex,
     }
     setButtonProcess(true)
     axios({
@@ -453,20 +452,20 @@ const Board = () => {
               {sideToggle === 1
                 ? "Home"
                 : sideToggle === 2
-                ? "Calendar"
-                : sideToggle === 3
-                ? userDataMain?.role === "admin"
-                  ? "Admin Portal"
-                  : "User Portal"
-                : sideToggle === 4
-                ? "Settings"
-                : sideToggle === 5
-                ? "Employee List"
-                : sideToggle === 6
-                ? "Dashboard"
-                : sideToggle === 7
-                ? "Leave Policy"
-                : ""}{" "}
+                  ? "Calendar"
+                  : sideToggle === 3
+                    ? userDataMain?.role === "admin"
+                      ? "Admin Portal"
+                      : "User Portal"
+                    : sideToggle === 4
+                      ? "Settings"
+                      : sideToggle === 5
+                        ? "Employee List"
+                        : sideToggle === 6
+                          ? "Dashboard"
+                          : sideToggle === 7
+                            ? "Leave Policy"
+                            : ""}{" "}
             </h2>
             <div id="mini_block">
               {sideToggle === 1 &&
@@ -636,13 +635,13 @@ const Board = () => {
           deleteUserState
             ? addUser(null, null, deleteUserState?.id)
             : logoutState
-            ? logOut()
-            : approveLeave(
+              ? logOut()
+              : approveLeave(
                 descType === "approve"
                   ? "approve"
                   : descType === "reject"
-                  ? "reject"
-                  : "delete",
+                    ? "reject"
+                    : "delete",
                 descId
               )
           setVisible(false)
@@ -660,12 +659,12 @@ const Board = () => {
           buttonProcess
             ? "Processing..."
             : logoutState || deleteUserState
-            ? "Proceed"
-            : descType === "approve"
-            ? "Approve"
-            : descType === "reject"
-            ? "Reject"
-            : "Delete"
+              ? "Proceed"
+              : descType === "approve"
+                ? "Approve"
+                : descType === "reject"
+                  ? "Reject"
+                  : "Delete"
         }
         cancelText="Back"
         okButtonProps={{
@@ -686,13 +685,13 @@ const Board = () => {
             {deleteUserState
               ? `Do you want to delete (${deleteUserState?.name})`
               : "Do you want to " +
-                (logoutState
-                  ? "Logout"
-                  : descType === "approve"
+              (logoutState
+                ? "Logout"
+                : descType === "approve"
                   ? "Approve"
                   : descType === "reject"
-                  ? "Reject"
-                  : "Delete")}
+                    ? "Reject"
+                    : "Delete")}
             ?
           </p>
           {deleteUserState && (

@@ -5,13 +5,13 @@ export const AllowanceContainer = styled.div`
     height: 100%;
 
     #admin #message #message_block1 {
-      grid-template-columns: 6% 35% 35% 22% !important;
+      grid-template-columns: 6% 35% 40% 17% !important
     }
     #admin #message #message_block2 {
       height: 30vw;
     }
     #admin #message_block2 #task_container {
-      grid-template-columns: 6% 35% 35% 22% !important;
+      grid-template-columns: 6% 35% 40% 17% !important
     }
     #admin #message_block2 #task_container #btns img {
       width: 26px;

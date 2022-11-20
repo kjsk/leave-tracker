@@ -1,13 +1,8 @@
-import React, { useState } from "react"
+import React from "react"
 import { AddAllowancePopStyles } from "../Allowance/styles"
 import { Switch } from "antd"
-import { PlusCircleOutlined } from "@ant-design/icons"
 
 const EditAllowance = ({
-  container,
-  setContainer,
-  editAllowanceData,
-  editAllowanceObj,
   name,
   setName,
   type,
@@ -19,9 +14,6 @@ const EditAllowance = ({
   status,
   SetStatus,
 }) => {
-  const onChange = checked => {
-    console.log(`switch to ${checked}`)
-  }
 
   return (
     <AddAllowancePopStyles>

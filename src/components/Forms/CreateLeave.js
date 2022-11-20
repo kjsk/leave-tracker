@@ -1,4 +1,5 @@
 import React from "react"
+import { TwitterPicker } from "react-color"
 import { CreateLeaveStyle } from "../Allowance/styles"
 
 const CreateLeave = ({
@@ -9,11 +10,16 @@ const CreateLeave = ({
   createLeaveColor,
   setCreateLeaveColor,
   CreateLeaveFun,
-  buttonProcess,
-  setButtonProcess,
-  createLeavePop,
-  setCreateLeavePop,
+  buttonProcess
 }) => {
+
+  const ErrorFun = () => {
+    return (
+      createLeaveName?.length < 2 ||
+      createLeaveType.length < 2 ||
+      createLeaveColor.length < 2
+    )
+  }
   return (
     <CreateLeaveStyle>
       <div id="add_employee_main">
@@ -23,7 +29,7 @@ const CreateLeave = ({
               style={{
                 color:
                   createLeaveName?.length < 2 &&
-                  createLeaveName?.length != 0 &&
+                  createLeaveName?.length !== 0 &&
                   "red",
               }}
               htmlFor="input"
@@ -42,7 +48,7 @@ const CreateLeave = ({
               style={{
                 color:
                   createLeaveType.length < 5 &&
-                  createLeaveType?.length != 0 &&
+                  createLeaveType?.length !== 0 &&
                   "red",
               }}
               htmlFor="input"
@@ -61,7 +67,7 @@ const CreateLeave = ({
               style={{
                 color:
                   createLeaveColor.length < 2 &&
-                  createLeaveColor.length != 0 &&
+                  createLeaveColor.length !== 0 &&
                   "red",
               }}
               htmlFor="input"
@@ -70,21 +76,26 @@ const CreateLeave = ({
             </label>
             <input
               type="text"
-              value={createLeaveColor}
+              value={createLeaveColor.hex}
               placeholder="Set color for leave"
               onChange={e => setCreateLeaveColor(e.target.value)}
+              disabled
+            />
+            <TwitterPicker
+              color={createLeaveColor}
+              onChangeComplete={e => {
+                setCreateLeaveColor(e)
+              }}
             />
           </div>
           <button
             onClick={() => {
               CreateLeaveFun()
             }}
-            style={{ background: buttonProcess && `gray` }}
-            disabled={
-              createLeaveName?.length < 2 &&
-              createLeaveType.length < 2 &&
-              createLeaveColor.length < 2
-            }
+            style={{
+              background: ErrorFun() ? `gray` : "",
+            }}
+            disabled={ErrorFun()}
           >
             {buttonProcess ? "Processing..." : "Continue"}
           </button>

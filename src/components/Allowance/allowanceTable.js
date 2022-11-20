@@ -14,12 +14,15 @@ import {
 } from "../../utils/urls"
 import { AllowanceTableViewStyles } from "./styles"
 import AddAllowancePop from "./addAllowancePop"
+import EmptyRoster from "../EmptyRoster"
 
 const AllowanceTableView = ({
   policyDataObj,
   policyName,
   setOpenAllowance,
 }) => {
+
+  const [btnProgress, setBtnProgress] = useState(false);
   const [editAllowancePop, setEditAllowancePop] = useState(false)
   const [allowanceData, setAllowanceData] = useState([])
 
@@ -53,6 +56,12 @@ const AllowanceTableView = ({
   const [allowancelimit, SetAllowanceLimit] = useState(0)
   const [allowancelimitStatus, SetAllowanceLimitStatus] = useState(true)
   const [allowanceDescription, SetAllowanceDescription] = useState("")
+
+  // Delete allowance setState
+  const [deleteAllowaceObj, setDeleteAllowanceObj] = useState({
+    policyId: "",
+    allowanceId: ""
+  })
 
   console.log("allowancename", allowancename)
   console.log("allowancetype", allowancetype)
@@ -137,23 +146,9 @@ const AllowanceTableView = ({
       .catch(err => console.log("Error", err))
   }
 
-  // Call to delete Allowance
-  const DeleteAPIFun = (policyId, allowanceId) => {
-    axios({
-      url: deleteAllowanceAPI(policyId, allowanceId),
-      method: "DELETE",
-      headers: headers,
-    })
-      .then(res => {
-        console.log("res", res)
-        OpenPolicy(policyId)
-      })
-      .catch(err => console.log("Error", err))
-  }
-
   // Add allowance Function
   const AddAllowanceFun = policyId => {
-    console.log("policyIdpolicyId", policyId)
+    setBtnProgress(true);
     axios({
       url: addAllowanceAPI(policyId),
       method: "POST",
@@ -168,19 +163,44 @@ const AllowanceTableView = ({
     })
       .then(res => {
         if (res?.data) {
-          OpenPolicy(policyId)
-          setAddAllowancePop(false)
-          setAllowanceName("")
-          SetAllowanceType("")
-          SetAllowanceDays("")
-          SetAllowanceLimit("")
-          SetAllowanceLimitStatus(true)
-          SetAllowanceDescription("")
+          OpenPolicy(policyId);
+          setBtnProgress(false);
+          setAddAllowancePop(false);
+          setAllowanceName("");
+          SetAllowanceType("");
+          SetAllowanceDays("");
+          SetAllowanceLimit("");
+          SetAllowanceLimitStatus(true);
+          SetAllowanceDescription("");
         }
       })
       .catch(err => {
+        console.log("Error", err);
+        setBtnProgress(false);
+        setAddAllowancePop(false);
+      })
+  }
+
+
+  // Call to delete Allowance Function
+  const DeleteAPIFun = (policyId, allowanceId) => {
+    setBtnProgress(true)
+    axios({
+      url: deleteAllowanceAPI(policyId, allowanceId),
+      method: "DELETE",
+      headers: headers,
+    })
+      .then(_res => {
+        setDeleteAllowanceObj({
+          policyId: "",
+          allowanceId: ""
+        })
+        setBtnProgress(false)
+        OpenPolicy(policyId)
+      })
+      .catch(err => {
+        setBtnProgress(false);
         console.log("Error", err)
-        setAddAllowancePop(false)
       })
   }
   return (
@@ -207,55 +227,56 @@ const AllowanceTableView = ({
               </button>
             </div>
           </div>
-          <div id="message">
-            <div id="message_block1">
-              <h3>SNo</h3>
-              <h3>Allowance</h3>
-              <h3>Allowance Type</h3>
-              <h3>Amount</h3>
-              <h3>Max Limit</h3>
-              <h3>Action</h3>
-            </div>
-            <div id="message_block2">
-              {allowanceData?.allowances?.length ? (
-                <>
-                  {allowanceData?.allowances.map((item, index) => (
-                    <div id="task_container">
-                      <p>{index + 1}</p>
-                      <p>{item?.name}</p>
-                      <p>{item?.type}</p>
-                      <p>{item?.amount}</p>
-                      <p>
-                        {item?.maxLimit > 0
-                          ? item?.maxLimitAmount
-                          : "Not Applicable"}
-                      </p>
-                      <div id="btns">
-                        <img
-                          src={Edit_user}
-                          alt="Edit_user"
-                          role="presentation"
-                          onClick={() => EditAllowanceFun(item)}
-                        />
-                        <DeleteOutlined
-                          style={{
-                            color: `red`,
-                            marginLeft: `15px`,
-                            fontSize: `23px`,
-                          }}
-                          onClick={() => {
-                            DeleteAPIFun(policyDataObj, item?.id)
-                          }}
-                        />
-                      </div>
+          {allowanceData?.allowances?.length ? (
+            <div id="message">
+              <div id="message_block1">
+                <h3>SNo</h3>
+                <h3>Allowance</h3>
+                <h3>Allowance Type</h3>
+                <h3>Amount</h3>
+                <h3>Max Limit</h3>
+                <h3>Action</h3>
+              </div>
+              <div id="message_block2">
+                {allowanceData?.allowances.map((item, index) => (
+                  <div id="task_container">
+                    <p>{index + 1}</p>
+                    <p>{item?.name}</p>
+                    <p>{item?.type}</p>
+                    <p>{item?.amount}</p>
+                    <p>
+                      {item?.maxLimit > 0
+                        ? item?.maxLimitAmount
+                        : "Not Applicable"}
+                    </p>
+                    <div id="btns">
+                      <img
+                        src={Edit_user}
+                        alt="Edit_user"
+                        role="presentation"
+                        onClick={() => EditAllowanceFun(item)}
+                      />
+                      <DeleteOutlined
+                        style={{
+                          color: `red`,
+                          marginLeft: `15px`,
+                          fontSize: `23px`,
+                        }}
+                        onClick={() => {
+                          setDeleteAllowanceObj({
+                            policyId: policyDataObj,
+                            allowanceId: item?.id
+                          })
+                        }}
+                      />
                     </div>
-                  ))}
-                </>
-              ) : (
-                "No Data"
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          ) :
+            (<EmptyRoster text="No Allowance Under Added!" />)}
+
         </div>
 
         {/* Edit allowance modal */}
@@ -268,8 +289,6 @@ const AllowanceTableView = ({
           okText={"Update"}
         >
           <EditAllowance
-            editAllowanceData={editAllowanceData}
-            editAllowanceObj={editAllowanceObj}
             name={name}
             setName={setName}
             type={type}
@@ -290,7 +309,7 @@ const AllowanceTableView = ({
             AddAllowanceFun(policyDataObj)
           }}
           onCancel={() => setAddAllowancePop(false)}
-          okText={"Add Allowance"}
+          okText={btnProgress ? "Processing.." : "Add Allowance"}
         >
           <AddAllowancePop
             container={container}
@@ -309,8 +328,40 @@ const AllowanceTableView = ({
             SetAllowanceDescription={SetAllowanceDescription}
           />
         </Modal>
+
+        {/* Delete Allowance modal */}
+        <Modal
+          title="Confirmation"
+          centered
+          visible={deleteAllowaceObj?.policyId}
+          onOk={() => {
+            DeleteAPIFun(deleteAllowaceObj?.policyId, deleteAllowaceObj?.allowanceId)
+          }}
+          onCancel={() => {
+            setDeleteAllowanceObj({
+              policyId: "",
+              allowanceId: ""
+            })
+          }}
+          width={1000}
+          okText={btnProgress ? "Processing.." : "Delete"}
+          cancelText="Cancel"
+        >
+          <>
+            <p
+              style={{
+                fontSize: `22px`,
+                color: `#333333`,
+                fontWeight: `600`,
+                margin: `30px 0`,
+              }}
+            >
+              Do you want to delete Allowance ?
+            </p>
+          </>
+        </Modal>
       </div>
-    </AllowanceTableViewStyles>
+    </AllowanceTableViewStyles >
   )
 }
 export default AllowanceTableView
