@@ -115,7 +115,7 @@ const AddEmployee = ({
               <input
                 type="text"
                 value={leaveType?.label}
-                placeholder="user@fidisys.com"
+                placeholder="Select policy"
                 onClick={() => setLeaveDrop(!leaveDrop)}
               />
             </Dropdown>
