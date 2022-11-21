@@ -2,6 +2,7 @@ import React from "react"
 import { LeaveContainers } from "./styles"
 
 const LeaveType = ({ leaveFun, setLeaveDrop, userDataMain }) => {
+  console.log("kkkk", userDataMain)
   return (
     <LeaveContainers>
       {userDataMain?.map((item, index) => (

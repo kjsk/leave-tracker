@@ -115,7 +115,7 @@ const Login = () => {
       method: "POST",
       url: adminRegisterAPI(),
       data: {
-        email: `irshad@fidisys.com`,
+        email: email,
         name: name,
         uId: uId,
       },
@@ -160,7 +160,7 @@ const Login = () => {
       method: "POST",
       url: adminLoginAPI(),
       data: {
-        email: `irshad@fidisys.com`,
+        email: email,
       },
       headers: headers,
     })
@@ -312,7 +312,6 @@ const Login = () => {
       "allowances": newAllowanceSet(container),
     }
 
-    console.log("policyData", policyData)
     axios(
       {
         url: createPolicyAPI(),

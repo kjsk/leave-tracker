@@ -29,6 +29,8 @@ const SideModal = ({
 }) => {
   const { RangePicker } = DatePicker
 
+  console.log("userDataMain", userDataMain)
+
   const [pushTime, setPushTime] = useState([])
 
   const [leaveType, setLeaveType] = useState({ label: "", value: "" })
@@ -300,6 +302,7 @@ const SideModal = ({
                 pushTime &&
                   daysCalc() &&
                   reason.length > 5 &&
+                  allowanceType?.label !== "" &&
                   leaveType?.label !== ""
                   ? "#3751FF"
                   : "gray",
@@ -314,6 +317,7 @@ const SideModal = ({
               pushTime &&
                 daysCalc() &&
                 reason.length > 5 &&
+                allowanceType?.label !== "" &&
                 leaveType?.label !== ""
                 ? false
                 : true

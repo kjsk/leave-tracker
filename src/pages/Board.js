@@ -408,7 +408,7 @@ const Board = () => {
     const obj = {
       label: createLeaveName,
       value: createLeaveType,
-      description: createLeaveColor,
+      description: createLeaveName,
       color: createLeaveColor.hex,
     }
     setButtonProcess(true)
@@ -474,7 +474,6 @@ const Board = () => {
                             : ""}{" "}
             </h2>
             <div id="mini_block">
-              <button onClick={() => setPopup(true)}>Apply Leave</button>
               {sideToggle === 1 &&
                 sideToggle !== 7 &&
                 userDataMain?.role !== "admin" && (
@@ -734,7 +733,7 @@ const Board = () => {
 
       {/* ADD LEAVE POPUP */}
       <Modal
-        title="Create Leave"
+        title="Create Leave Type"
         centered
         visible={createLeavePop}
         onCancel={() => {

@@ -44,7 +44,8 @@ const UsersList = ({
                       </div>
                       <p>{item?.jobRole ? item?.jobRole : "Employee"}</p>
                       <p>
-                        {item.allowance?.cos?.used + item.allowance?.gen?.used}
+                        {/* {item.allowance?.cos?.used + item.allowance?.gen?.used} */}
+                        0
                       </p>
                       <p
                         style={{
@@ -54,8 +55,8 @@ const UsersList = ({
                           textOverflow: "ellipsis",
                         }}
                       >
-                        {item.allowance?.cos?.remaining +
-                          item.allowance?.gen?.remaining}
+                        {/* {item.allowance?.cos?.remaining +
+                          item.allowance?.gen?.remaining} */}0
                       </p>
                       <div id="btns">
                         <img

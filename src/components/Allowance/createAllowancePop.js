@@ -1,9 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { CreateAllowancePopStyles } from "./styles"
 import { Switch, Dropdown } from "antd"
 import { PlusCircleOutlined, MinusOutlined } from "@ant-design/icons"
 import LeaveType from "../leavePopup/leave_type"
 import { monthData } from "../../utils/mockdata"
+import { getAllLeaveTypesAPI, getHeaders } from "../../utils/urls"
+import axios from "axios"
 
 const CreateAllowancePop = (props) => {
   const {
@@ -18,6 +20,46 @@ const CreateAllowancePop = (props) => {
     setEndMonth,
     endMonthObj
   } = props;
+
+
+  const userData =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
+
+  // common headers
+  // const headers = getHeaders(userData?.tokens?.accessToken)
+
+
+  // useEffect(() => {
+  //   getAllLeaveTypes()
+  // }, [])
+
+
+  // const [leaveTypes, setLeaveTypes] = useState([])
+  // const [leaveDrop, setLeaveDrop] = useState(false)
+
+  // const getAllLeaveTypes = () => {
+  //   axios({
+  //     url: getAllLeaveTypesAPI(),
+  //     method: "GET",
+  //     headers: headers
+  //   }).then((res) => {
+  //     console.log("res", res)
+  //     setLeaveTypes(res?.data)
+  //   }).catch((err) => {
+  //     console.log("Error", err)
+  //   })
+  // }
+
+
+  const leaveFun = (e, label) => {
+    // setLeaveType({
+    //   label: label,
+    //   value: e,
+    // })
+  }
+
+  // const [typeOpen, setTypeOpen] = useState(false)
 
   return (
     <CreateAllowancePopStyles>

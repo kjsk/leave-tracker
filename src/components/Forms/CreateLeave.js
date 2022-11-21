@@ -26,12 +26,12 @@ const CreateLeave = ({
         <div id="employee_wrap">
           <div id="input_wrap">
             <label
-              style={{
-                color:
-                  createLeaveName?.length < 2 &&
-                  createLeaveName?.length !== 0 &&
-                  "red",
-              }}
+              // style={{
+              //   color:
+              //     createLeaveName?.length < 2 &&
+              //     createLeaveName?.length !== 0 &&
+              //     "red",
+              // }}
               htmlFor="input"
             >
               Leave Name*
@@ -45,12 +45,12 @@ const CreateLeave = ({
           </div>
           <div id="input_wrap">
             <label
-              style={{
-                color:
-                  createLeaveType.length < 5 &&
-                  createLeaveType?.length !== 0 &&
-                  "red",
-              }}
+              // style={{
+              //   color:
+              //     createLeaveType.length < 5 &&
+              //     createLeaveType?.length == 0 &&
+              //     "red",
+              // }}
               htmlFor="input"
             >
               Leave Type*
@@ -64,19 +64,19 @@ const CreateLeave = ({
           </div>
           <div id="input_wrap">
             <label
-              style={{
-                color:
-                  createLeaveColor.length < 2 &&
-                  createLeaveColor.length !== 0 &&
-                  "red",
-              }}
+              // style={{
+              //   color:
+              //     createLeaveColor?.hex.length < 2 &&
+              //     createLeaveColor?.hex.length == 0 &&
+              //     "red",
+              // }}
               htmlFor="input"
             >
               Leave Theme*
             </label>
             <input
               type="text"
-              value={createLeaveColor.hex}
+              value={createLeaveColor?.hex}
               placeholder="Set color for leave"
               onChange={e => setCreateLeaveColor(e.target.value)}
               disabled

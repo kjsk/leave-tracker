@@ -18,9 +18,12 @@ const Home = ({
   CompoLoader,
 }) => {
   const calcLeaves = 24 - leaveApproved?.length
+
+  console.log("getNewUserLeave", getNewUserLeave)
+  console.log("userDataMain", userDataMain)
   return (
     <>
-      {userDataMain?.role === "admin" && getNewUserLeave ? (
+      {/* {userDataMain?.role === "admin" ? (
         <div id="score">
           {userDataMain?.role === "admin" ? (
             <div id="score_card">
@@ -124,7 +127,51 @@ const Home = ({
             <p>Loss of pay</p>
           </div>
         </div>
-      )}
+      )} */}
+
+      <div id="score">
+        {userDataMain?.role === "admin" ? (
+          <div id="score_card">
+            <h2 id="score">
+              {leavePending?.length < 10
+                ? `0${leavePending?.length}`
+                : leavePending?.length}
+            </h2>
+            <p>Action Needed</p>
+          </div>
+        ) : (
+          <div id="score_card">
+            <h2 id="score">
+              {calcLeaves < 10 ? `0${calcLeaves}` : calcLeaves}
+            </h2>
+            <p>Available Leaves</p>
+          </div>
+        )}
+        <div id="score_card">
+          <h2 id="score">
+            {leaveApproved?.length < 10
+              ? `0${leaveApproved?.length}`
+              : leaveApproved?.length}
+          </h2>
+          <p>Approved Leaves</p>
+        </div>
+        <div id="score_card">
+          <h2 id="score">
+            {leavePending?.length < 10
+              ? `0${leavePending?.length}`
+              : leavePending?.length}
+          </h2>
+          <p>Pending Leaves Requests</p>
+        </div>
+        <div id="score_card">
+          <h2 id="score">
+            {leaveRejected?.length < 10
+              ? `0${leaveRejected?.length}`
+              : leaveRejected?.length}
+          </h2>
+          <p>Rejected Leaves</p>
+        </div>
+      </div>
 
       <p id="refresh" onClick={getLeaves} role="presentation">
         <RedoOutlined />
@@ -191,10 +238,10 @@ const Home = ({
                             item?.status === "pending"
                               ? "#CB5A08"
                               : item?.status === "approved"
-                              ? "#00D241"
-                              : item?.status === "rejected"
-                              ? "#FF0000"
-                              : "",
+                                ? "#00D241"
+                                : item?.status === "rejected"
+                                  ? "#FF0000"
+                                  : "",
                           fontWeight: `bold`,
                         }}
                         onClick={() => openLeaveDetailsFun(item, "home")}
@@ -203,10 +250,10 @@ const Home = ({
                         {item?.status === "pending"
                           ? "Pending"
                           : item?.status === "approved"
-                          ? "Approved"
-                          : item?.status === "rejected"
-                          ? "Rejected"
-                          : ""}
+                            ? "Approved"
+                            : item?.status === "rejected"
+                              ? "Rejected"
+                              : ""}
                       </p>
                       {item?.status === "pending" && (
                         <p

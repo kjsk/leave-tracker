@@ -91,3 +91,8 @@ export const createLeaveAPI = () => {
 export const createPolicyAPI = () => {
   return `${baseURL}/api/v2/policies`
 }
+
+
+export const getAllLeaveTypesAPI = () => {
+  return `${baseURL}/api/v2/leavetypes`
+}

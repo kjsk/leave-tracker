@@ -110,16 +110,18 @@ const SideBar = ({
             {barOpen && "Employee List"}
           </li>
         )}
-        <li
-          className={sideToggle === 7 && "active"}
-          role="presentation"
-          onClick={() => {
-            conditionalFun(7)
-          }}
-        >
-          <img src={sideToggle === 7 ? Calendar2 : Calendar} alt="img" />
-          {barOpen && "Leave Policy"}
-        </li>
+        {userDataMain?.role === "admin" &&
+          <li
+            className={sideToggle === 7 && "active"}
+            role="presentation"
+            onClick={() => {
+              conditionalFun(7)
+            }}
+          >
+            <img src={sideToggle === 7 ? Calendar2 : Calendar} alt="img" />
+            {barOpen && "Leave Policy"}
+          </li>
+        }
       </ul>
       <ul>
         <li
