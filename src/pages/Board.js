@@ -63,11 +63,14 @@ const Board = () => {
   const [descId, setDescId] = useState("")
   const [name, setName] = useState("")
   const [Email, setEMail] = useState("")
+  const [selectPolicy, setSelectPolicy] = useState("")
+  const [leaveType, setLeaveType] = useState({ label: "", value: "" })
   const [logoutState, setLogoutState] = useState(false)
   const [deleteUserState, setdeleteUserState] = useState(false)
   const [userConform, setUserConform] = useState("")
   const [buttonProcess, setButtonProcess] = useState(false)
   const [LeaveDrop, setLeaveDrop] = useState(false)
+  const [allowanceDrop, setAllowanceDrop] = useState(false)
 
   const [policyPop, setPolicyPop] = useState(false)
   const [createLeavePop, setCreateLeavePop] = useState("")
@@ -159,7 +162,7 @@ const Board = () => {
   }
 
   // Call to add employee
-  const addUser = (name, Email, id) => {
+  const addUser = (name, Email, leaveType, id) => {
     setActiveLoader(true)
     setButtonProcess(true)
     let conditionAPI
@@ -170,6 +173,8 @@ const Board = () => {
         headers: headers,
       })
     } else {
+
+      console.log("leaveType", leaveType)
       const userEmail = Email.toLowerCase()
       conditionAPI = axios({
         method: "POST",
@@ -177,6 +182,7 @@ const Board = () => {
         data: {
           name: name,
           email: userEmail,
+          policyId: leaveType?.value
         },
         headers: headers,
       })
@@ -468,6 +474,7 @@ const Board = () => {
                             : ""}{" "}
             </h2>
             <div id="mini_block">
+              <button onClick={() => setPopup(true)}>Apply Leave</button>
               {sideToggle === 1 &&
                 sideToggle !== 7 &&
                 userDataMain?.role !== "admin" && (
@@ -538,6 +545,7 @@ const Board = () => {
         onClose={() => {
           setPopup(false)
           setLeaveDrop(false)
+          setAllowanceDrop(false)
         }}
         width="fit-content"
       >
@@ -549,6 +557,8 @@ const Board = () => {
           userDataMain={userDataMain}
           setActiveLoader={setActiveLoader}
           playAudio={playAudio}
+          allowanceDrop={allowanceDrop}
+          setAllowanceDrop={setAllowanceDrop}
           openNotificationWithIcon={openNotificationWithIcon}
           {...commonProps}
         />
@@ -566,10 +576,15 @@ const Board = () => {
         cancelButtonProps={{ style: { display: "none" } }}
       >
         <AddEmployee
+          headers={headers}
           name={name}
           Email={Email}
           setName={setName}
           setEMail={setEMail}
+          selectPolicy={selectPolicy}
+          setSelectPolicy={setSelectPolicy}
+          leaveType={leaveType}
+          setLeaveType={setLeaveType}
           addUser={addUser}
           error={error}
           buttonProcess={buttonProcess}

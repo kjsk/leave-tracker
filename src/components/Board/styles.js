@@ -757,8 +757,11 @@ export const EmployeeFormStyle = styled.div`
     border: none;
     outline-color: #1874d2;
   }
-  #input_wrap:nth-child(2) {
+  #input_wrap {
     margin-top: 32px;
+  }
+  #input_wrap:nth-child(1) {
+    margin-top: 0;
   }
   #add_employee_main button {
     height: 48px;

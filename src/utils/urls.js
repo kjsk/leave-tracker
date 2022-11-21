@@ -60,6 +60,10 @@ export const getAllowanceByPolicy = policyId => {
   return `${baseURL}/api/v2/policies/${policyId}/allowances`
 }
 
+export const getAllowanceByUser = userId => {
+  return `${baseURL}/api/v2/users/${userId}/allowances`
+}
+
 export const updateAllowanceAPI = (policyId, allowanceId) => {
   return `${baseURL}/api/v2/policies/${policyId}/allowances/${allowanceId}`
 }
@@ -82,4 +86,8 @@ export const editPolicyAPI = policyId => {
 
 export const createLeaveAPI = () => {
   return `${baseURL}/api/v2/leavetypes`
+}
+
+export const createPolicyAPI = () => {
+  return `${baseURL}/api/v2/policies`
 }

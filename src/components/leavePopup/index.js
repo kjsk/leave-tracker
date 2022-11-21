@@ -9,6 +9,7 @@ import { DatePicker, Dropdown, Badge } from "antd"
 import LeaveType from "./leave_type"
 import { baseURL, leavesAPI } from "../../utils/urls"
 import moment from "moment"
+import { getAllowanceByUser } from "../../utils/urls"
 
 const SideModal = ({
   setLeaveDrop,
@@ -22,6 +23,8 @@ const SideModal = ({
   playAudio,
   setButtonProcess,
   buttonProcess,
+  allowanceDrop,
+  setAllowanceDrop,
   openNotificationWithIcon,
 }) => {
   const { RangePicker } = DatePicker
@@ -29,6 +32,10 @@ const SideModal = ({
   const [pushTime, setPushTime] = useState([])
 
   const [leaveType, setLeaveType] = useState({ label: "", value: "" })
+  const [allowanceType, setAllowanceType] = useState({ label: "", value: "" })
+
+  const [userAllowanceObj, setUserAllowanceObj] = useState([])
+
 
   // const [leavePer, setLeavePer] = useState("First Half");
 
@@ -49,6 +56,13 @@ const SideModal = ({
   }
   const leaveFun = (e, label) => {
     setLeaveType({
+      label: label,
+      value: e,
+    })
+  }
+
+  const allowanceFun = (e, label) => {
+    setAllowanceType({
       label: label,
       value: e,
     })
@@ -93,6 +107,7 @@ const SideModal = ({
         endStamp: pushTime[1],
         reason: reason,
         type: leaveType?.value,
+        allowanceId: allowanceType?.value,
         days: daysCalc(),
       },
       headers: headers,
@@ -134,6 +149,41 @@ const SideModal = ({
       })
   }
 
+  useEffect(() => {
+    GetAllowanceTypes(userDataMain?.id)
+  }, [])
+
+  const GetAllowanceTypes = (userId) => {
+    axios({
+      url: getAllowanceByUser(userId),
+      method: "GET",
+      headers: headers,
+    }).then((res) => {
+
+      if (res?.data) {
+        const newDataArr = res?.data;
+        console.log("res", newDataArr?.allowances)
+        ArrSetFun(newDataArr?.allowances)
+      }
+    }).catch((err) => {
+      console.log("Error", err)
+    })
+  }
+
+  // Arr values set Function
+  const ArrSetFun = (arr) => {
+    if (arr?.length) {
+      let tempArr = []
+      arr.map((item) => {
+        tempArr.push({
+          label: item?.name,
+          value: item?.id
+        })
+      })
+      setUserAllowanceObj(tempArr)
+    }
+  }
+
   return (
     <PopupContainer>
       <div id="popup">
@@ -168,7 +218,10 @@ const SideModal = ({
         >
           <div
             id="name_block"
-            onClick={() => setLeaveDrop(!LeaveDrop)}
+            onClick={() => {
+              setLeaveDrop(!LeaveDrop);
+              setAllowanceDrop(false);
+            }}
             role="presentation"
           >
             <img src={leave_type} alt="img" />
@@ -181,9 +234,44 @@ const SideModal = ({
             />
           </div>
         </Dropdown>
+
+        {/* Allowance type dropdown */}
+        <Dropdown
+          overlay={
+            <LeaveType
+              leaveFun={allowanceFun}
+              setLeaveDrop={setAllowanceDrop}
+              userDataMain={userAllowanceObj}
+            />
+          }
+          placement="bottomLeft"
+          trigger={["click"]}
+          visible={allowanceDrop}
+        >
+          <div
+            id="name_block"
+            onClick={() => {
+              setLeaveDrop(false);
+              setAllowanceDrop(!allowanceDrop)
+            }}
+            role="presentation"
+          >
+            <img src={leave_type} alt="img" />
+            <input
+              type="text"
+              value={allowanceType?.label}
+              id="input"
+              placeholder="Select Allowance type"
+              autoComplete="off"
+            />
+          </div>
+        </Dropdown>
         <div
           id="name_block"
-          onClick={() => setLeaveDrop(false)}
+          onClick={() => {
+            setLeaveDrop(false);
+            setAllowanceDrop(false)
+          }}
           role="presentation"
         >
           <img src={Edit} alt="img" />
@@ -200,7 +288,8 @@ const SideModal = ({
           <button
             onClick={() => {
               setPopup(false)
-              setLeaveDrop(false)
+              setLeaveDrop(false);
+              setAllowanceDrop(false);
             }}
           >
             Cancel
@@ -218,7 +307,8 @@ const SideModal = ({
             }}
             onClick={() => {
               createLeave(leaveType, pushTime, reason)
-              setLeaveDrop(false)
+              setLeaveDrop(false);
+              setAllowanceDrop(false);
             }}
             disabled={
               pushTime &&
@@ -233,7 +323,7 @@ const SideModal = ({
           </button>
         </div>
       </div>
-    </PopupContainer>
+    </PopupContainer >
   )
 }
 export default SideModal

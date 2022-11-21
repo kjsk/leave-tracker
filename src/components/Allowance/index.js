@@ -10,6 +10,7 @@ import {
   getHeaders,
   deletePolicyAPI,
   editPolicyAPI,
+  createPolicyAPI
 } from "../../utils/urls"
 import Edit_user from "../../data/assets/Edit_user.svg"
 import { DeleteOutlined } from "@ant-design/icons"
@@ -195,6 +196,49 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
     })
   };
 
+  // Create Allowance Function
+
+  const createPolicyAPIFun = () => {
+    const policyData = {
+      "startMonth": startMonthObj?.label,
+      "endMonth": endMonthObj?.label,
+      "name": newPolicyName,
+      "description": "New Policy",
+      "allowances": newAllowanceSet(container),
+    }
+
+    console.log("policyData", policyData)
+    axios(
+      {
+        url: createPolicyAPI(),
+        method: "POST",
+        headers: headers,
+        data: policyData
+      }).then((res) => {
+        console.log("res", res)
+      }).catch((err) => {
+        console.log("Error", err)
+      })
+  }
+
+
+  const newAllowanceSet = (container) => {
+    let tempArr = []
+    if (container?.length) {
+      container.map((item) => {
+        tempArr.push({
+          "amount": item?.days,
+          "maxLimit": item?.limitToggle,
+          "maxLimitAmount": item?.maxLimit,
+          "name": item?.name,
+          "type": item?.type,
+          "description": item?.description
+        })
+      })
+    }
+    return tempArr;
+  }
+
   return (
     <Fragment>
       {" "}
@@ -262,6 +306,9 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
       <Modal
         title="Create a policy"
         visible={policyPop}
+        onOk={() => {
+          createPolicyAPIFun()
+        }}
         onCancel={() => {
           setPolicyPop(false)
         }}
