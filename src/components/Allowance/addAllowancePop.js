@@ -1,7 +1,9 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { AddAllowancePopStyles } from "./styles"
 import { Switch } from "antd"
 import { PlusCircleOutlined } from "@ant-design/icons"
+import axios from "axios"
+import { getAllLeaveTypesAPI, getHeaders } from "../../utils/urls"
 
 const AddAllowancePop = ({
   container,
@@ -19,8 +21,38 @@ const AddAllowancePop = ({
   SetAllowanceLimitStatus,
   SetAllowanceDescription,
 }) => {
+
+
+  const userData =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
   const onChange = checked => {
     console.log(`switch to ${checked}`)
+  }
+
+  // common headers
+  const headers = getHeaders(userData?.tokens?.accessToken)
+
+
+  useEffect(() => {
+    getAllLeaveTypes()
+  }, [])
+
+
+  const [leaveTypes, setLeaveTypes] = useState([])
+  const [leaveDrop, setLeaveDrop] = useState(false)
+
+  const getAllLeaveTypes = () => {
+    axios({
+      url: getAllLeaveTypesAPI(),
+      method: "GET",
+      headers: headers
+    }).then((res) => {
+      console.log("res", res)
+      setLeaveTypes(res?.data)
+    }).catch((err) => {
+      console.log("Error", err)
+    })
   }
 
   return (
@@ -39,12 +71,17 @@ const AddAllowancePop = ({
             </div>
             <div id="input_wrap">
               <label htmlFor="input">Type</label>
-              <input
+              <select onChange={(e) => SetAllowanceType(e.target.value)}>
+                {leaveTypes?.map((item) =>
+                  <option value={item?.value}>{item?.label}</option>
+                )}
+              </select>
+              {/* <input
                 type="text"
                 placeholder="Type"
                 value={allowancetype}
                 onChange={e => SetAllowanceType(e.target.value)}
-              />
+              /> */}
             </div>
           </div>
           <div id="employee_wrap_policy">

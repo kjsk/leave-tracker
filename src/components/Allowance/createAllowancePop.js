@@ -27,29 +27,29 @@ const CreateAllowancePop = (props) => {
     JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
 
   // common headers
-  // const headers = getHeaders(userData?.tokens?.accessToken)
+  const headers = getHeaders(userData?.tokens?.accessToken)
 
 
-  // useEffect(() => {
-  //   getAllLeaveTypes()
-  // }, [])
+  useEffect(() => {
+    getAllLeaveTypes()
+  }, [])
 
 
-  // const [leaveTypes, setLeaveTypes] = useState([])
-  // const [leaveDrop, setLeaveDrop] = useState(false)
+  const [leaveTypes, setLeaveTypes] = useState([])
+  const [leaveDrop, setLeaveDrop] = useState(false)
 
-  // const getAllLeaveTypes = () => {
-  //   axios({
-  //     url: getAllLeaveTypesAPI(),
-  //     method: "GET",
-  //     headers: headers
-  //   }).then((res) => {
-  //     console.log("res", res)
-  //     setLeaveTypes(res?.data)
-  //   }).catch((err) => {
-  //     console.log("Error", err)
-  //   })
-  // }
+  const getAllLeaveTypes = () => {
+    axios({
+      url: getAllLeaveTypesAPI(),
+      method: "GET",
+      headers: headers
+    }).then((res) => {
+      console.log("res", res)
+      setLeaveTypes(res?.data)
+    }).catch((err) => {
+      console.log("Error", err)
+    })
+  }
 
 
   const leaveFun = (e, label) => {
@@ -61,8 +61,11 @@ const CreateAllowancePop = (props) => {
 
   // const [typeOpen, setTypeOpen] = useState(false)
 
+
+
   return (
     <CreateAllowancePopStyles>
+      <button onClick={() => getAllLeaveTypes()}>Click me</button>
       <div id="add_employee_main">
         <div id="employee_wrap">
           <div id="input_wrap">
@@ -124,11 +127,16 @@ const CreateAllowancePop = (props) => {
                     }} />
                 </div>
                 <div id="input_wrap">
-                  <label htmlFor="input">Type</label>
-                  <input type="text"
+                  <label htmlFor="input">Leave Type</label>
+                  <select onChange={(e) => editContainerFun(index, 'type', e.target.value)}>
+                    {leaveTypes?.map((item) =>
+                      <option value={item?.value}>{item?.label}</option>
+                    )}
+                  </select>
+                  {/* <input type="text"
                     value={item?.type}
                     placeholder="Type"
-                    onChange={(e) => editContainerFun(index, 'type', e.target.value)} />
+                    onChange={(e) => editContainerFun(index, 'type', e.target.value)} /> */}
                 </div>
               </div>
               <div id="employee_wrap_policy">

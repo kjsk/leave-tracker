@@ -239,7 +239,7 @@ const Login = () => {
         setActiveLoader(false)
         setPolicyPop(true)
       } else {
-        navigate(`/Board`)
+        navigate(`/dashboard`)
       }
     }).catch((err) => {
       setActiveLoader(false)
@@ -320,7 +320,7 @@ const Login = () => {
         data: policyData
       }).then((res) => {
         console.log("res", res)
-        navigate(`/Board`)
+        navigate(`/dashboard`)
       }).catch((err) => {
         console.log("Error", err)
       })

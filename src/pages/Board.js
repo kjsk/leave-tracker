@@ -479,7 +479,7 @@ const Board = () => {
                 userDataMain?.role !== "admin" && (
                   <button onClick={() => setPopup(true)}>Apply Leave</button>
                 )}
-              {sideToggle === 3 &&
+              {sideToggle === 5 &&
                 sideToggle !== 7 &&
                 userDataMain?.role === "admin" && (
                   <button onClick={() => setAddEmp(true)}>Add Employee</button>

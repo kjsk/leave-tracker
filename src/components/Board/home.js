@@ -19,8 +19,6 @@ const Home = ({
 }) => {
   const calcLeaves = 24 - leaveApproved?.length
 
-  console.log("getNewUserLeave", getNewUserLeave)
-  console.log("userDataMain", userDataMain)
   return (
     <>
       {/* {userDataMain?.role === "admin" ? (
@@ -130,46 +128,62 @@ const Home = ({
       )} */}
 
       <div id="score">
-        {userDataMain?.role === "admin" ? (
-          <div id="score_card">
-            <h2 id="score">
-              {leavePending?.length < 10
-                ? `0${leavePending?.length}`
-                : leavePending?.length}
-            </h2>
-            <p>Action Needed</p>
-          </div>
-        ) : (
-          <div id="score_card">
-            <h2 id="score">
-              {calcLeaves < 10 ? `0${calcLeaves}` : calcLeaves}
-            </h2>
-            <p>Available Leaves</p>
-          </div>
-        )}
         <div id="score_card">
           <h2 id="score">
-            {leaveApproved?.length < 10
-              ? `0${leaveApproved?.length}`
-              : leaveApproved?.length}
+            <span className="main_count">
+              {getNewUserLeave?.cos?.used < 10
+                ? `0${getNewUserLeave?.cos?.used}`
+                : getNewUserLeave?.cos?.used}
+            </span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">
+              {getNewUserLeave?.cos?.remaining}
+            </span>
           </h2>
-          <p>Approved Leaves</p>
+          <p>Casual leave</p>
         </div>
         <div id="score_card">
           <h2 id="score">
-            {leavePending?.length < 10
-              ? `0${leavePending?.length}`
-              : leavePending?.length}
+            <span className="main_count">
+              {getNewUserLeave?.cos?.used < 10
+                ? `0${getNewUserLeave?.cos?.used}`
+                : getNewUserLeave?.cos?.used}
+            </span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">
+              {getNewUserLeave?.cos?.remaining}
+            </span>
           </h2>
-          <p>Pending Leaves Requests</p>
+          <p>Sick leave</p>
         </div>
         <div id="score_card">
           <h2 id="score">
-            {leaveRejected?.length < 10
-              ? `0${leaveRejected?.length}`
-              : leaveRejected?.length}
+            <span className="main_count">
+              {getNewUserLeave?.gen?.used < 10
+                ? `0${getNewUserLeave?.gen?.used}`
+                : getNewUserLeave?.gen?.used}
+            </span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">
+              {getNewUserLeave?.gen?.remaining}
+            </span>
           </h2>
-          <p>Rejected Leaves</p>
+          <p>General leave</p>
+        </div>
+        <div id="score_card">
+          <h2 id="score">
+            <span className="main_count">
+              {" "}
+              {getNewUserLeave?.lop?.used < 10
+                ? `0${getNewUserLeave?.lop?.used}`
+                : getNewUserLeave?.lop?.used}
+            </span>
+            <span className="count_dash">/</span>
+            <span className="count_dash">
+              {getNewUserLeave?.lop?.remaining}
+            </span>
+          </h2>
+          <p>Loss of pay</p>
         </div>
       </div>
 

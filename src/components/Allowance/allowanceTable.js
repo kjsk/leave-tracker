@@ -119,6 +119,8 @@ const AllowanceTableView = ({
 
   // Call to update Allowance
   const Updatedata = (policyId, item) => {
+
+    console.log("typetype", type)
     axios({
       url: updateAllowanceAPI(policyId, item?.id),
       method: "PATCH",
