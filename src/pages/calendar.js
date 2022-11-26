@@ -18,7 +18,7 @@ const CalendarPage = () => {
   return (
     <BoardContainer>
       <div id="BoardContainer">
-        {/* <SideBar {...commonProps} /> */}
+        <SideBar />
         <div
           id="main_menu"
           style={{ background: "#FCFAFA" }}

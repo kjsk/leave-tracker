@@ -42,6 +42,8 @@ export const BoardContainer = styled.div`
     overflow: hidden;
   }
 
+
+${'' /* side navigation function menu */}
   #BoardContainer #side_menu {
     width: 19vw;
     height: 100%;

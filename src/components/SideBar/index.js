@@ -1,34 +1,36 @@
-import React from "react"
-import login_logo from "../../data/assets/login_logo.svg"
-import overview from "../../data/assets/overview.svg"
-import overview2 from "../../data/assets/overview_hover.svg"
-import admin from "../../data/assets/admin.svg"
-import admin2 from "../../data/assets/admin_hover.svg"
-import Calendar from "../../data/assets/Calendar.svg"
-import Calendar2 from "../../data/assets/Calendar_hover.svg"
-import settings from "../../data/assets/settings.svg"
-import settings2 from "../../data/assets/settings_hover.svg"
-import logout from "../../data/assets/logout.svg"
-import logout_hover from "../../data/assets/logout_hover.svg"
-import Employee from "../../data/assets/Employee.svg"
-import Employee_hover from "../../data/assets/Employee_hover.svg"
-import DashboardImg from "../../data/assets/dashboard.svg"
-import Dashboard_hover from "../../data/assets/dashboard_hover.svg"
-import { RightOutlined, LeftOutlined } from "@ant-design/icons"
+import React, { useEffect, useState } from "react";
+import login_logo from "../../data/assets/login_logo.svg";
+import overview from "../../data/assets/overview.svg";
+import overview2 from "../../data/assets/overview_hover.svg";
+import admin from "../../data/assets/admin.svg";
+import admin2 from "../../data/assets/admin_hover.svg";
+import Calendar from "../../data/assets/Calendar.svg";
+import Calendar2 from "../../data/assets/Calendar_hover.svg";
+import settings from "../../data/assets/settings.svg";
+import settings2 from "../../data/assets/settings_hover.svg";
+import logout from "../../data/assets/logout.svg";
+import logout_hover from "../../data/assets/logout_hover.svg";
+import Employee from "../../data/assets/Employee.svg";
+import Employee_hover from "../../data/assets/Employee_hover.svg";
+import DashboardImg from "../../data/assets/dashboard.svg";
+import Dashboard_hover from "../../data/assets/dashboard_hover.svg";
+import { RightOutlined, LeftOutlined } from "@ant-design/icons";
+import { Popover } from "antd";
+import { navigate } from "gatsby";
+import { userDataMain, logoutFun } from "../../utils/functions";
 
-const SideBar = ({
-  barOpen,
-  Popover,
-  sideToggle,
-  conditionalFun,
-  userDataMain,
-  setbarOpen,
-  setVisible,
-  setLogoutState,
-}) => {
-  const logoutFun = () => {
-    setVisible(true)
-    setLogoutState(true)
+const SideBar = ({ activeVal }) => {
+
+  const [barOpen, setbarOpen] = useState(true);
+  const [sideToggle, setSideToggle] = useState(activeVal);
+
+  useEffect(() => {
+    conditionalFun(activeVal)
+  }, [])
+
+  //set value fun
+  const conditionalFun = (value) => {
+    setSideToggle(value);
   }
   return (
     <div
@@ -54,10 +56,17 @@ const SideBar = ({
       </h1>
       <ul>
         <li
+          activeClassName="active"
           className={sideToggle === 6 && "active"}
           role="presentation"
           onClick={() => {
-            conditionalFun(6)
+            navigate("/dashboard",
+              {
+                state: {
+                  item: 6,
+                }
+              })
+            conditionalFun(6);
           }}
         >
           <img
@@ -70,6 +79,12 @@ const SideBar = ({
           className={sideToggle === 1 && "active"}
           role="presentation"
           onClick={() => {
+            navigate("/dashboard",
+              {
+                state: {
+                  item: 6,
+                }
+              })
             conditionalFun(1)
           }}
         >

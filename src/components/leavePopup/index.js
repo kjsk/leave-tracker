@@ -18,8 +18,6 @@ const SideModal = ({
   headers,
   userDataMain,
   setUserLeaveData,
-  activeLoader,
-  setActiveLoader,
   playAudio,
   setButtonProcess,
   buttonProcess,

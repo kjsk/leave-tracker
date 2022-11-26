@@ -135,8 +135,8 @@ const Dashboard = () => {
             <span>
               {graphData &&
                 graphData.sdate.split(" ")[1] +
-                  ", " +
-                  graphData.sdate.split(" ")[2]}
+                ", " +
+                graphData.sdate.split(" ")[2]}
             </span>
             <RightOutlined
               onClick={() => {
@@ -164,10 +164,10 @@ const Dashboard = () => {
           <h1>
             {graphData &&
               getDay +
-                " " +
-                graphData.sdate.split(" ")[1] +
-                ", " +
-                graphData.sdate.split(" ")[2]}
+              " " +
+              graphData.sdate.split(" ")[1] +
+              ", " +
+              graphData.sdate.split(" ")[2]}
           </h1>
           <div className="dashboard_detail_cards">
             {empLeaveData?.length >= 1 ? (
@@ -186,10 +186,10 @@ const Dashboard = () => {
                               item?.type === "cos"
                                 ? "#8E95E9"
                                 : item?.type === "gen"
-                                ? "#F0BD70"
-                                : item?.type === "lop"
-                                ? "#9FDEB3"
-                                : "",
+                                  ? "#F0BD70"
+                                  : item?.type === "lop"
+                                    ? "#9FDEB3"
+                                    : "",
                           }}
                         >
                           {item?.type}
@@ -207,9 +207,8 @@ const Dashboard = () => {
               ))
             ) : (
               <EmptyRoster
-                text={`No leaves on ${
-                  graphData && getDay + " " + graphData.sdate.split(" ")[1]
-                }`}
+                text={`No leaves on ${graphData && getDay + " " + graphData.sdate.split(" ")[1]
+                  }`}
               />
             )}
           </div>

@@ -5,7 +5,7 @@ import { nameProf } from "../utils/functions"
 import SideBar from "../components/SideBar"
 import Dashboard from "../components/Dashboard/dashboard"
 
-const DashboardMain = () => {
+const DashboardMain = ({ location }) => {
 
     // FETCHING USER STORED DATA
     const userData =
@@ -14,10 +14,15 @@ const DashboardMain = () => {
 
     const userDataMain = userData?.user;
 
+    let registerDetails = '';
+    if (location.state) {
+        registerDetails = location.state.item
+    }
+
     return (
         <BoardContainer>
             <div id="BoardContainer">
-                {/* <SideBar {...commonProps} /> */}
+                <SideBar activeVal={registerDetails} />
                 <div
                     id="main_menu"
                     style={{ background: "#FCFAFA" }}
