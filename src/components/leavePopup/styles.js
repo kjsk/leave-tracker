@@ -48,7 +48,7 @@ export const PopupContainer = styled.div`
     border-color: transparent !important;
     box-shadow: none !important;
   }
-  #popup #name_block:nth-child(6) {
+  #popup #name_block:nth-child(5) {
     height: 173px;
     padding: 31px 32px 0 31px;
   }
@@ -58,7 +58,7 @@ export const PopupContainer = styled.div`
     border-left: 1px dashed #252733;
   }
 
-  #popup #name_block:nth-child(6) {
+  #popup #name_block:nth-child(5) {
     align-items: baseline;
     padding: 31px 32px;
   }

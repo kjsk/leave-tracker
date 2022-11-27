@@ -9,7 +9,7 @@ const CreateLeave = ({
   setCreateLeaveType,
   createLeaveColor,
   setCreateLeaveColor,
-  CreateLeaveFun,
+  CreateLeaveTypeFun,
   buttonProcess
 }) => {
 
@@ -90,7 +90,7 @@ const CreateLeave = ({
           </div>
           <button
             onClick={() => {
-              CreateLeaveFun()
+              CreateLeaveTypeFun()
             }}
             style={{
               background: ErrorFun() ? `gray` : "",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react"
+import React, { useState, useEffect, Fragment, useRef } from "react"
 import EmptyRoster from "../EmptyRoster"
 import { Modal } from "antd"
 import CreateAllowancePop from "./createAllowancePop"
@@ -10,19 +10,35 @@ import {
   getHeaders,
   deletePolicyAPI,
   editPolicyAPI,
-  createPolicyAPI
+  createPolicyAPI,
+  getAllLeaveTypesAPI
 } from "../../utils/urls"
 import Edit_user from "../../data/assets/Edit_user.svg"
 import { DeleteOutlined } from "@ant-design/icons"
 import EditPolicy from "../Forms/EditPolicy"
+import CompoLoader from "../ComponentLoader";
+import AudioComponent from "../Audio";
 
-const Allowance = ({ policyPop, setPolicyPop }) => {
+const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop }) => {
+
+  // Fetch user data from local storage
+  const userData =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
+
+  // notification conformation sound function
+  const audioPlayer = useRef(null);
   const [btnProgress, setBtnProgress] = useState(false);
   const [openAllowance, setOpenAllowance] = useState(false)
+  const [activeLoader, setActiveLoader] = useState(false)
 
   const [policyData, setPolicyData] = useState([])
   const [policyDataObj, setPolicyDataObj] = useState()
   const [policyName, setPolicyName] = useState()
+
+
+  // set search dropdown value open
+  const [dropVal, setDropVal] = useState('');
 
   // Edit policy setState
   const [editPolicyName, setEditPolicyName] = useState("")
@@ -45,9 +61,20 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
     }
   ])
 
+
+  const disableFun = () => {
+    return !(newPolicyName
+      && container?.find((item) => item.name.includes("")).name
+      && container?.find((item) => item.type.includes("")).type
+      && container?.find((item) => item.days.includes("")).days
+      && container?.find((item) => item.maxLimit.includes("")).maxLimit
+      && container?.find((item) => item.description.includes("")).description)
+  }
+
   // Create policy setState
   const [newPolicyName, setNewPolicyName] = useState("");
   const [startMonthOpen, setStartMonthOpen] = useState(false);
+  const [endMonthOpen, setEndMonthOpen] = useState(false);
   const [startMonthObj, setStartMonthObj] = useState({
     label: "",
     value: ""
@@ -57,21 +84,21 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
     value: ""
   });
 
-  // Fetching userdata from local Storage
-  let localToken =
-    typeof localStorage !== "undefined" &&
-    JSON.parse(localStorage.getItem("userData"))
+  // Get leave types data
+  const [leaveTypes, setLeaveTypes] = useState([]);
 
   // Adding global headers
-  const headers = getHeaders(localToken?.tokens?.accessToken)
+  const headers = getHeaders(userData?.tokens?.accessToken)
 
   // Initial call for get policy details
   useEffect(() => {
-    GetPolicyFun()
+    GetPolicyFun();
+    getAllLeaveTypes();
   }, [])
 
   // Get policy details Function
   const GetPolicyFun = () => {
+    setActiveLoader(true);
     axios({
       url: getPolicyDataAPI(),
       method: "GET",
@@ -79,10 +106,14 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
     })
       .then(res => {
         if (res?.data) {
-          setPolicyData(res?.data)
+          setPolicyData(res?.data);
+          setActiveLoader(false);
         }
       })
-      .catch(err => console.log("Error", err))
+      .catch(err => {
+        setActiveLoader(false);
+        console.log("Error", err);
+      })
   }
 
   console.log("policyData", policyData)
@@ -102,6 +133,7 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
       headers: headers,
     })
       .then(_res => {
+        playAudio();
         setBtnProgress(false);
         setDeletePolicyID("");
         GetPolicyFun();
@@ -137,6 +169,7 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
       data: setObj,
     })
       .then(res => {
+        playAudio();
         setBtnProgress(false);
         console.log("res", res)
         setEditPolicyName("")
@@ -170,7 +203,7 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
 
   // Remove allowance container
   const RemoveContainer = index => {
-    setContainer(container.filter((item) => item.id !== index.id));
+    setContainer(container?.filter((item) => item.id !== index.id));
   };
 
   // Edit allowance array
@@ -197,7 +230,6 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
   };
 
   // Create Allowance Function
-
   const createPolicyAPIFun = () => {
     const policyData = {
       "startMonth": startMonthObj?.label,
@@ -207,7 +239,6 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
       "allowances": newAllowanceSet(container),
     }
 
-    console.log("policyData", policyData)
     axios(
       {
         url: createPolicyAPI(),
@@ -215,10 +246,28 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
         headers: headers,
         data: policyData
       }).then((res) => {
-        console.log("res", res)
+        playAudio();
+        setDropVal("");
+        getAllLeaveTypes();
+        cleanPolicyPopValues();
+        console.log("res", res);
       }).catch((err) => {
         console.log("Error", err)
       })
+  }
+
+  // Get Leave types
+  const getAllLeaveTypes = () => {
+    axios({
+      url: getAllLeaveTypesAPI(),
+      method: "GET",
+      headers: headers
+    }).then((res) => {
+      console.log("res", res)
+      setLeaveTypes(res?.data)
+    }).catch((err) => {
+      console.log("Error", err)
+    })
   }
 
 
@@ -239,60 +288,91 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
     return tempArr;
   }
 
+
+  // clean policy popup values
+  const cleanPolicyPopValues = () => {
+    setNewPolicyName("");
+    setStartMonthOpen(false);
+    setEndMonthOpen(false);
+    setStartMonthObj({
+      label: "",
+      value: ""
+    });
+    setEndMonthObj({
+      label: "",
+      value: ""
+    });
+    setContainer(
+      [{
+        id: Math.random(),
+        name: "",
+        type: "",
+        days: "",
+        maxLimit: "",
+        limitToggle: true,
+        description: ""
+      }]
+    );
+  }
   return (
     <Fragment>
+      <AudioComponent
+        audioPlayer={audioPlayer}
+      />
       {" "}
       {!openAllowance ? (
         <AllowanceContainer>
           <div id="admin_homes">
-            <div id="admin" className="admin">
-              {policyData?.length !== 0 ? (
-                <div id="message">
-                  <div id="message_block1">
-                    <h3>SNo</h3>
-                    <h3>Name</h3>
-                    <h3>Description</h3>
-                    <h3>Action</h3>
-                  </div>
-                  <div id="message_block2">
-                    {policyData?.map((item, index) => {
-                      return (
-                        <div id="task_container">
-                          <p>{index + 1}</p>
-                          <p
-                            onClick={() => OpenPolicy(item)}
-                            style={{ color: "blue" }}
-                          >
-                            {item?.name}
-                          </p>
-                          <p>{item?.description}</p>
-                          <div id="btns">
-                            <img
-                              src={Edit_user}
-                              alt="Edit_user"
-                              role="presentation"
-                              onClick={() => EditAPIDataFun(item)}
-                            />
-                            <DeleteOutlined
-                              style={{
-                                color: `red`,
-                                marginLeft: `15px`,
-                                fontSize: `23px`,
-                              }}
-                              onClick={() => {
-                                setDeletePolicyID(item?.id)
-                              }}
-                            />
+            {activeLoader ? <CompoLoader /> :
+              <div id="admin" className="admin">
+                {policyData?.length !== 0 ? (
+                  <div id="message">
+                    <div id="message_block1">
+                      <h3>SNo</h3>
+                      <h3>Name</h3>
+                      <h3>Description</h3>
+                      <h3>Action</h3>
+                    </div>
+                    <div id="message_block2">
+                      {policyData?.map((item, index) => {
+                        return (
+                          <div id="task_container">
+                            <p>{index + 1}</p>
+                            <p
+                              onClick={() => OpenPolicy(item)}
+                              style={{ color: "blue" }}
+                            >
+                              {item?.name}
+                            </p>
+                            <p>{item?.description}</p>
+                            <div id="btns">
+                              <img
+                                src={Edit_user}
+                                alt="Edit_user"
+                                role="presentation"
+                                onClick={() => EditAPIDataFun(item)}
+                              />
+                              <DeleteOutlined
+                                style={{
+                                  color: `red`,
+                                  marginLeft: `15px`,
+                                  fontSize: `23px`,
+                                }}
+                                onClick={() => {
+                                  setDeletePolicyID(item?.id)
+                                }}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
+                        )
+                      })}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <EmptyRoster text="No Policy Added!" />
-              )}
-            </div>
+                ) : (
+                  <EmptyRoster text="No Policy Added!" />
+                )}
+              </div>
+            }
           </div>
         </AllowanceContainer>
       ) : (
@@ -300,8 +380,12 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
           policyDataObj={policyDataObj}
           policyName={policyName}
           setOpenAllowance={setOpenAllowance}
+          callFrom=""
+          setCreateLeavePop={setCreateLeavePop}
+          playAudio={playAudio}
         />
       )}
+
       {/* Create policy modal */}
       <Modal
         title="Create a policy"
@@ -310,10 +394,14 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
           createPolicyAPIFun()
         }}
         onCancel={() => {
-          setPolicyPop(false)
+          setPolicyPop(false);
+          cleanPolicyPopValues();
         }}
         cancelButtonProps={{
           style: { border: "1px solid #3751FF", color: "#3751FF" },
+        }}
+        okButtonProps={{
+          disabled: disableFun()
         }}
       >
         <CreateAllowancePop
@@ -323,15 +411,24 @@ const Allowance = ({ policyPop, setPolicyPop }) => {
           editContainerFun={editContainerFun}
           setNewPolicyName={setNewPolicyName}
           setStartMonth={setStartMonth}
+          startMonthOpen={startMonthOpen}
           setStartMonthOpen={setStartMonthOpen}
+          endMonthOpen={endMonthOpen}
+          setEndMonthOpen={setEndMonthOpen}
           startMonthObj={startMonthObj}
           setEndMonth={setEndMonth}
           endMonthObj={endMonthObj}
+          setCreateLeavePop={setCreateLeavePop}
+          CreateLeaveTypeFun={CreateLeaveTypeFun}
+          dropVal={dropVal}
+          setDropVal={setDropVal}
+          leaveTypes={leaveTypes}
         />
       </Modal>
+
       {/* Edit policy modal */}
       <Modal
-        title="Edit a policy"
+        title="Create a policy"
         visible={editPolicyPop}
         onOk={() => {
           EditAPIFun(policyDataObj)

@@ -448,7 +448,7 @@ const Board = () => {
         />
       </audio>
       <div id="BoardContainer">
-        <SideBar {...commonProps} />
+        <SideBar />
         <div
           id="main_menu"
           style={{ background: sideToggle === 1 ? "white" : "#FCFAFA" }}

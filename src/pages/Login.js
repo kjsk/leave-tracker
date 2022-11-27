@@ -22,10 +22,9 @@ import UserNote from "../components/userNote/UserNote"
 import CreateAllowancePop from "../components/Allowance/createAllowancePop"
 
 const Login = () => {
-  let localToken =
+  const userData =
     typeof localStorage !== "undefined" &&
-    JSON.parse(localStorage.getItem("userData"))
-
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
   const [btnDisable, setBtnDisable] = useState(false)
   const [activeLoader, setActiveLoader] = useState(false)
   const [modalDisplay, setModalDisplay] = useState(false)
@@ -53,7 +52,7 @@ const Login = () => {
 
   // Create policy setState
   const [newPolicyName, setNewPolicyName] = useState("");
-  const [startMonthOpen, setStartMonthOpen] = useState(false);
+  const [setStartMonthOpen] = useState(false);
   const [startMonthObj, setStartMonthObj] = useState({
     label: "",
     value: ""
@@ -63,10 +62,10 @@ const Login = () => {
     value: ""
   });
 
-  const headers = getHeaders(localToken?.tokens?.accessToken)
+  const headers = getHeaders(userData?.tokens?.accessToken)
 
   useEffect(() => {
-    if (localToken) {
+    if (userData) {
       typeof localStorage !== `undefined` && localStorage.removeItem("userData")
       signInWithGoogle()
     }
@@ -190,7 +189,7 @@ const Login = () => {
     }).then(res => {
       if (
         res?.data?.org?.orgName === "Default" &&
-        localToken?.user?.role === "admin"
+        userData?.user?.role === "admin"
       ) {
         setModalDisplay(true)
         setActiveLoader(false)
@@ -217,7 +216,7 @@ const Login = () => {
     }).then(res => {
       if (
         res?.data?.org?.orgName === "Default" &&
-        localToken?.user?.role === "admin"
+        userData?.user?.role === "admin"
       ) {
         setModalDisplay(true)
         setActiveLoader(false)

@@ -1,10 +1,9 @@
-import React from "react"
-import { Result } from "antd"
-import SideBar from "../components/SideBar"
-import Avatar from "../components/Avatar/index"
-import { CalendarOutlined } from "@ant-design/icons"
-import { BoardContainer } from "../components/Board/styles"
-import { nameProf } from "../utils/functions"
+import React from "react";
+import { Result } from "antd";
+import SideBar from "../components/SideBar";
+import { CalendarOutlined } from "@ant-design/icons";
+import { BoardContainer } from "../components/Board/styles";
+import HeaderMain from "../components/header";
 
 const CalendarPage = () => {
 
@@ -23,21 +22,11 @@ const CalendarPage = () => {
           id="main_menu"
           style={{ background: "#FCFAFA" }}
         >
-          <div id="header">
-            <h2 id="title">Calendar</h2>
-            <div id="mini_block">
-              <div id="mini_block_name">
-                <Avatar name={userDataMain?.name} nameProf={nameProf} />
-                <p id="name_main">
-                  {userDataMain?.name}
-                  <span>{userDataMain?.role}</span>
-                </p>
-                {/* <img src={userDataMain?.photoURL} alt="img" id="profile" /> */}
-              </div>
-            </div>
-            {/* Button code goes here */}
-            <div id="mini_block"></div>
-          </div>
+          {/* userData header */}
+          <HeaderMain
+            title="Calendar"
+            userDataMain={userDataMain}
+          />
           {/* Calendar */}
           <Result
             icon={<CalendarOutlined />}

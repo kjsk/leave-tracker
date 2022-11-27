@@ -4,7 +4,7 @@ export const envURL = {
   prod: `https://prod-fidisyslt.herokuapp.com`,
 }
 
-export const baseURL = envURL?.dev
+export const baseURL = envURL?.prod
 
 export const getHeaders = token => {
   return {
@@ -95,4 +95,19 @@ export const createPolicyAPI = () => {
 
 export const getAllLeaveTypesAPI = () => {
   return `${baseURL}/api/v2/leavetypes`
+}
+
+export const getUserAllowanceByIdAPI = (userId) => {
+  return `${baseURL}/api/v2/users/${userId}/allowances`
+}
+
+export const deleteUserAllowanceByIdAPI = (userId, allowanceId) => {
+  return `${baseURL}/api/v2/users/${userId}/allowances/${allowanceId}`
+}
+export const editUserAllowanceByIdAPI = (userId, allowanceId) => {
+  return `${baseURL}/api/v2/users/${userId}/allowances/${allowanceId}`
+}
+
+export const addUsersAllowanceAPI = userId => {
+  return `${baseURL}/api/v2/users/${userId}/allowances`
 }

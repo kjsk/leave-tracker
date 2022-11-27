@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import login_logo from "../../data/assets/login_logo.svg";
-import overview from "../../data/assets/overview.svg";
-import overview2 from "../../data/assets/overview_hover.svg";
+// import overview from "../../data/assets/overview.svg";
+// import overview2 from "../../data/assets/overview_hover.svg";
 import admin from "../../data/assets/admin.svg";
 import admin2 from "../../data/assets/admin_hover.svg";
 import Calendar from "../../data/assets/Calendar.svg";
@@ -15,23 +15,24 @@ import Employee_hover from "../../data/assets/Employee_hover.svg";
 import DashboardImg from "../../data/assets/dashboard.svg";
 import Dashboard_hover from "../../data/assets/dashboard_hover.svg";
 import { RightOutlined, LeftOutlined } from "@ant-design/icons";
-import { Popover } from "antd";
-import { navigate } from "gatsby";
-import { userDataMain, logoutFun } from "../../utils/functions";
+import { Popover, Modal } from "antd";
+import {
+  Link
+  // Route, Routes, HashRouter 
+} from "gatsby";
+import { logoutFun } from "../../utils/functions";
 
-const SideBar = ({ activeVal }) => {
+const SideBar = () => {
+
+  // Fetch user data from local storage
+  const userData =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
+  const userDataMain = userData?.user;
 
   const [barOpen, setbarOpen] = useState(true);
-  const [sideToggle, setSideToggle] = useState(activeVal);
+  const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    conditionalFun(activeVal)
-  }, [])
-
-  //set value fun
-  const conditionalFun = (value) => {
-    setSideToggle(value);
-  }
   return (
     <div
       id="side_menu"
@@ -55,110 +56,116 @@ const SideBar = ({ activeVal }) => {
         {barOpen && "Leave Tracker"}
       </h1>
       <ul>
-        <li
+        <Link
+          to="/dashboard"
           activeClassName="active"
-          className={sideToggle === 6 && "active"}
+          className="side_link"
           role="presentation"
-          onClick={() => {
-            navigate("/dashboard",
-              {
-                state: {
-                  item: 6,
-                }
-              })
-            conditionalFun(6);
-          }}
         >
-          <img
-            src={sideToggle === 6 ? Dashboard_hover : DashboardImg}
-            alt="img"
-          />
+          <img src={DashboardImg} alt="img" className="link_img" />
+          <img src={Dashboard_hover} alt="img" className="active_img" />
           {barOpen && "Dashboard"}
-        </li>
-        <li
-          className={sideToggle === 1 && "active"}
+        </Link>
+        <Link
+          to="/calendar"
+          activeClassName="active"
+          className="side_link"
           role="presentation"
-          onClick={() => {
-            navigate("/dashboard",
-              {
-                state: {
-                  item: 6,
-                }
-              })
-            conditionalFun(1)
-          }}
         >
-          <img src={sideToggle === 1 ? overview2 : overview} alt="img" />
-          {barOpen && "Home"}
-        </li>
-        <li
-          className={sideToggle === 2 && "active"}
-          role="presentation"
-          onClick={() => {
-            conditionalFun(2)
-          }}
-        >
-          <img src={sideToggle === 2 ? Calendar2 : Calendar} alt="img" />
+          <img src={Calendar} alt="img" className="link_img" />
+          <img src={Calendar2} alt="img" className="active_img" />
           {barOpen && "Calendar"}
-        </li>
-        <li
-          className={sideToggle === 3 && "active"}
+        </Link>
+        <Link
+          to="/leaveRequests"
+          activeClassName="active"
+          className="side_link"
           role="presentation"
-          onClick={() => {
-            conditionalFun(3)
-          }}
         >
-          <img src={sideToggle === 3 ? admin2 : admin} alt="img" />
-          {userDataMain?.role === "admin"
-            ? barOpen && "Admin Portal"
-            : barOpen && "User Portal"}
-        </li>
+          <img src={admin} alt="img" className="link_img" />
+          <img src={admin2} alt="img" className="active_img" />
+          Leave Requests
+        </Link>
         {userDataMain?.role === "admin" && (
-          <li
-            className={sideToggle === 5 && "active"}
+          <Link
+            to="/employeeList"
+            activeClassName="active"
+            className="side_link"
             role="presentation"
-            onClick={() => {
-              conditionalFun(5)
-            }}
           >
-            <img src={sideToggle === 5 ? Employee_hover : Employee} alt="img" />
+            <img src={Employee} alt="img" className="link_img" />
+            <img src={Employee_hover} alt="img" className="active_img" />
             {barOpen && "Employee List"}
-          </li>
+          </Link>
         )}
         {userDataMain?.role === "admin" &&
-          <li
-            className={sideToggle === 7 && "active"}
+          <Link
+            to="/leavePolicy"
+            activeClassName="active"
+            className="side_link"
             role="presentation"
-            onClick={() => {
-              conditionalFun(7)
-            }}
           >
-            <img src={sideToggle === 7 ? Calendar2 : Calendar} alt="img" />
+            <img src={Calendar} alt="img" className="link_img" />
+            <img src={Calendar2} alt="img" className="active_img" />
             {barOpen && "Leave Policy"}
-          </li>
+          </Link>
         }
       </ul>
       <ul>
-        <li
-          className={sideToggle === 4 && "active"}
+        <Link
+          to="/settings"
+          activeClassName="active"
+          className="side_link"
           role="presentation"
-          onClick={() => {
-            conditionalFun(4)
-          }}
         >
-          <img src={sideToggle === 4 ? settings2 : settings} alt="img" />
+          <img src={settings} alt="img" className="link_img" />
+          <img src={settings2} alt="img" className="active_img" />
           {barOpen && "Settings"}
-        </li>
+        </Link>
       </ul>
 
       <ul id="logout">
-        <li onClick={logoutFun} role="presentation">
+        <li className="side_link" onClick={() => setVisible(true)} role="presentation">
           {" "}
           <img src={logout_hover} alt="img" className="imghover" />
           <img src={logout} alt="img" className="image" />
           {barOpen && "logout"}
         </li>
       </ul>
+
+      {/* LEAVE ACTION TAKEN POPUP (APPROVE, REJECT, DELETE, User delete, Logout ) */}
+      <Modal
+        title="Confirmation"
+        centered
+        visible={visible}
+        onOk={() => {
+          setVisible(false);
+          logoutFun();
+        }}
+        onCancel={() => {
+          setVisible(false);
+        }}
+        width={1000}
+        okText="Logout"
+        cancelText="Back"
+        okButtonProps={{
+          backgroundColor: "red"
+        }}
+        className="reject"
+      >
+        <>
+          <p
+            style={{
+              fontSize: `22px`,
+              color: `#333333`,
+              fontWeight: `600`,
+              margin: `30px 0`,
+            }}
+          >
+            Do you want to Logout
+          </p>
+        </>
+      </Modal>
     </div>
   )
 }

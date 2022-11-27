@@ -1,10 +1,11 @@
 import React from "react"
-import { BoardContainer } from "../components/Board/styles"
+import { Result } from "antd"
 import SideBar from "../components/SideBar"
-import HeaderMain from "../components/header"
-import Dashboard from "../components/Dashboard/dashboard"
+import { SettingOutlined } from "@ant-design/icons"
+import { BoardContainer } from "../components/Board/styles"
+import HeaderMain from "../components/header";
 
-const DashboardMain = () => {
+const SettingsPage = () => {
 
     // FETCHING USER STORED DATA
     const userData =
@@ -21,16 +22,18 @@ const DashboardMain = () => {
                     id="main_menu"
                     style={{ background: "#FCFAFA" }}
                 >
-                    {/* userData header */}
                     <HeaderMain
-                        title="Dashboard"
+                        title="Settings"
                         userDataMain={userDataMain}
                     />
-                    {/* Dashboard */}
-                    <Dashboard />
+                    {/* Calendar */}
+                    <Result
+                        icon={<SettingOutlined />}
+                        title="Hello, Settings coming soon!"
+                    />
                 </div>
             </div>
         </BoardContainer>
     )
 }
-export default DashboardMain
+export default SettingsPage

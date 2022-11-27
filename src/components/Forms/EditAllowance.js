@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { AddAllowancePopStyles } from "../Allowance/styles"
 import { Switch } from "antd"
-import axios from "axios"
-import { getAllLeaveTypesAPI, getHeaders } from "../../utils/urls"
+import DropDownCompo from "../DropDown"
 
 const EditAllowance = ({
   name,
@@ -15,40 +14,13 @@ const EditAllowance = ({
   SetLimit,
   status,
   SetStatus,
+  leaveTypes,
+  setLeaveTypes,
+  dropVal,
+  setDropVal,
+  setCreateLeavePop,
 }) => {
 
-
-  const userData =
-    typeof localStorage !== "undefined" &&
-    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
-  const onChange = checked => {
-    console.log(`switch to ${checked}`)
-  }
-
-  // common headers
-  const headers = getHeaders(userData?.tokens?.accessToken)
-
-
-  useEffect(() => {
-    getAllLeaveTypes()
-  }, [])
-
-
-  const [leaveTypes, setLeaveTypes] = useState([])
-  const [leaveDrop, setLeaveDrop] = useState(false)
-
-  const getAllLeaveTypes = () => {
-    axios({
-      url: getAllLeaveTypesAPI(),
-      method: "GET",
-      headers: headers
-    }).then((res) => {
-      console.log("res", res)
-      setLeaveTypes(res?.data)
-    }).catch((err) => {
-      console.log("Error", err)
-    })
-  }
 
   return (
     <AddAllowancePopStyles>
@@ -66,24 +38,22 @@ const EditAllowance = ({
             </div>
             <div id="input_wrap">
               <label htmlFor="input">Type</label>
-              <select onChange={(e) => SetType(e.target.value)}>
-                {leaveTypes?.map((item) =>
-                  <option value={item?.value}>{item?.label}</option>
-                )}
-              </select>
-              {/* <input
-                type="text"
-                placeholder="Type"
-                value={type}
-                onChange={e => SetType(e.target.value)}
-              /> */}
+              <DropDownCompo
+                arrayData={leaveTypes}
+                dropVal={dropVal}
+                setDropVal={setDropVal}
+                index={1}
+                setCreateLeavePop={setCreateLeavePop}
+                setValFun={(value) => SetType(value)}
+                editvalue={type}
+              />
             </div>
           </div>
           <div id="employee_wrap_policy">
             <div id="input_wrap">
               <label htmlFor="input">No of Days</label>
               <input
-                type="text"
+                type="number"
                 placeholder="No of Days"
                 value={days}
                 onChange={e => SetDays(e.target.value)}
@@ -94,7 +64,7 @@ const EditAllowance = ({
               <input
                 type="number"
                 placeholder="Max Limit"
-                value={status ? limit : 0}
+                value={status && !(limit > days) ? limit : 0}
                 onChange={e => SetLimit(e.target.value >= 1 && e.target.value)}
                 disabled={!status}
               />

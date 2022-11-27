@@ -1,17 +1,17 @@
-import React, { useState, useRef } from "react"
-import { BoardContainer } from "../components/Board/styles"
-import { Modal, notification } from "antd"
-import axios from "axios"
-import NotificationSound from "../utils/notification.mp3"
-import Avatar from "../components/Avatar/index"
-import Allowance from "../components/Allowance"
+import React, { Fragment, useState, useRef } from "react";
+import { BoardContainer } from "../components/Board/styles";
+import { Modal } from "antd";
+import axios from "axios";
+import Allowance from "../components/Allowance";
 import {
     getHeaders,
     createLeaveAPI,
-} from "../utils/urls"
-import { nameProf } from "../utils/functions"
-import SideBar from "../components/SideBar"
-import CreateLeave from "../components/Forms/CreateLeave"
+} from "../utils/urls";
+import SideBar from "../components/SideBar";
+import HeaderMain from "../components/header";
+import CreateLeave from "../components/Forms/CreateLeave";
+import { playAudio, openNotificationWithIcon } from "../utils/functions";
+import AudioComponent from "../components/Audio";
 
 const Board = () => {
     const userData =
@@ -31,19 +31,9 @@ const Board = () => {
     const headers = getHeaders(userData?.tokens?.accessToken)
 
     // notification conformation sound function
-    const audioPlayer = useRef(null)
+    const audioPlayer = useRef(null) // set audio ref
 
-    function playAudio() {
-        audioPlayer.current.play()
-    }
-    const openNotificationWithIcon = (type, data) => {
-        notification[type]({
-            message: data,
-            placement: "top",
-        })
-    }
-
-    const CreateLeaveFun = () => {
+    const CreateLeaveTypeFun = () => {
         const obj = {
             label: createLeaveName,
             value: createLeaveType,
@@ -58,62 +48,51 @@ const Board = () => {
             data: obj,
         })
             .then(res => {
-                if (res.data) {
-                    playAudio()
-                    openNotificationWithIcon(`success`, "Leave type added!")
-                    setCreateLeavePop(false)
-                    setButtonProcess(false)
-                    setCreateLeaveName("")
-                    setCreateLeaveType("")
-                    setCreateLeaveColor("")
-                }
+                playAudio();
+                openNotificationWithIcon(`success`, "Leave type added!");
+                setCreateLeavePop(false);
+                setButtonProcess(false);
+                setCreateLeaveName("");
+                setCreateLeaveType("");
+                setCreateLeaveColor("");
             })
             .catch(err => {
-                openNotificationWithIcon(`Error`, "Oops!")
-                setCreateLeavePop(false)
-                setButtonProcess(false)
-                console.log("Error", err)
+                openNotificationWithIcon(`error`, "Oops!");
+                setCreateLeavePop(false);
+                setButtonProcess(false);
+                console.log("Error", err);
             })
     }
 
     return (
         <BoardContainer>
-            <audio ref={audioPlayer} src={NotificationSound}>
-                <track
-                    src="captions_es.vtt"
-                    kind="captions"
-                    srclang="es"
-                    label="spanish_captions"
-                />
-            </audio>
+            <AudioComponent
+                audioPlayer={audioPlayer}
+            />
             <div id="BoardContainer">
-                {/* <SideBar {...commonProps} /> */}
+                <SideBar />
                 <div
                     id="main_menu"
                     style={{ background: "#FCFAFA" }}
                 >
-                    <div id="header">
-                        <h2 id="title">Leave Policy</h2>
-                        <div id="mini_block">
-                            {userDataMain?.role === "admin" && (
-                                <button onClick={() => setCreateLeavePop(true)}>
-                                    Add Leavetype
-                                </button>
-                            )}
-                            {userDataMain?.role === "admin" && (
-                                <button onClick={() => setPolicyPop(true)}>Add Policy</button>
-                            )}
-                            <div id="mini_block_name">
-                                <Avatar name={userDataMain?.name} nameProf={nameProf} />
-                                <p id="name_main">
-                                    {userDataMain?.name}
-                                    <span>{userDataMain?.role}</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Custom header component */}
+                    <HeaderMain
+                        title="Leave Policy"
+                        userDataMain={userDataMain}
+                        buttonFun={
+                            <Fragment>
+                                {userDataMain?.role === "admin" && (<button onClick={() => setPolicyPop(true)}>Add Policy</button>)}
+                            </Fragment>
+                        }
+                    />
                     {/* Policy */}
-                    <Allowance policyPop={policyPop} setPolicyPop={setPolicyPop} />
+                    <Allowance
+                        policyPop={policyPop}
+                        playAudio={() => playAudio(audioPlayer)}
+                        setPolicyPop={setPolicyPop}
+                        CreateLeaveTypeFun={CreateLeaveTypeFun}
+                        setCreateLeavePop={setCreateLeavePop}
+                    />
                 </div>
             </div>
 
@@ -136,7 +115,7 @@ const Board = () => {
                     setCreateLeaveType={setCreateLeaveType}
                     createLeaveColor={createLeaveColor}
                     setCreateLeaveColor={setCreateLeaveColor}
-                    CreateLeaveFun={CreateLeaveFun}
+                    CreateLeaveTypeFun={CreateLeaveTypeFun}
                     buttonProcess={buttonProcess}
                     setButtonProcess={setButtonProcess}
                     createLeavePop={createLeavePop}

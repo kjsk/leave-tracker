@@ -1,59 +1,27 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { AddAllowancePopStyles } from "./styles"
 import { Switch } from "antd"
-import { PlusCircleOutlined } from "@ant-design/icons"
-import axios from "axios"
-import { getAllLeaveTypesAPI, getHeaders } from "../../utils/urls"
+import DropDownCompo from "../DropDown"
 
 const AddAllowancePop = ({
-  container,
-  setContainer,
   allowancename,
-  allowancetype,
   allowancedays,
   allowancelimit,
   allowancelimitStatus,
-  allowanceDescription,
+  // allowanceDescription,
   setAllowanceName,
   SetAllowanceType,
   SetAllowanceDays,
   SetAllowanceLimit,
   SetAllowanceLimitStatus,
-  SetAllowanceDescription,
+  // SetAllowanceDescription,
+  leaveTypes,
+  // setLeaveTypes,
+  dropVal,
+  setDropVal,
+  setCreateLeavePop
 }) => {
 
-
-  const userData =
-    typeof localStorage !== "undefined" &&
-    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
-  const onChange = checked => {
-    console.log(`switch to ${checked}`)
-  }
-
-  // common headers
-  const headers = getHeaders(userData?.tokens?.accessToken)
-
-
-  useEffect(() => {
-    getAllLeaveTypes()
-  }, [])
-
-
-  const [leaveTypes, setLeaveTypes] = useState([])
-  const [leaveDrop, setLeaveDrop] = useState(false)
-
-  const getAllLeaveTypes = () => {
-    axios({
-      url: getAllLeaveTypesAPI(),
-      method: "GET",
-      headers: headers
-    }).then((res) => {
-      console.log("res", res)
-      setLeaveTypes(res?.data)
-    }).catch((err) => {
-      console.log("Error", err)
-    })
-  }
 
   return (
     <AddAllowancePopStyles>
@@ -71,24 +39,22 @@ const AddAllowancePop = ({
             </div>
             <div id="input_wrap">
               <label htmlFor="input">Type</label>
-              <select onChange={(e) => SetAllowanceType(e.target.value)}>
-                {leaveTypes?.map((item) =>
-                  <option value={item?.value}>{item?.label}</option>
-                )}
-              </select>
-              {/* <input
-                type="text"
-                placeholder="Type"
-                value={allowancetype}
-                onChange={e => SetAllowanceType(e.target.value)}
-              /> */}
+              <DropDownCompo
+                arrayData={leaveTypes}
+                dropVal={dropVal}
+                setDropVal={setDropVal}
+                index={1}
+                setCreateLeavePop={setCreateLeavePop}
+                setValFun={(value) => SetAllowanceType(value)}
+                editvalue=""
+              />
             </div>
           </div>
           <div id="employee_wrap_policy">
             <div id="input_wrap">
               <label htmlFor="input">No of Days</label>
               <input
-                type="text"
+                type="number"
                 placeholder="No of Days"
                 value={allowancedays}
                 onChange={e => SetAllowanceDays(e.target.value)}
@@ -99,7 +65,7 @@ const AddAllowancePop = ({
               <input
                 type="number"
                 placeholder="Max Limit"
-                value={allowancelimitStatus ? allowancelimit : 0}
+                value={allowancelimitStatus && !(allowancelimit > allowancedays) ? allowancelimit : 0}
                 onChange={e =>
                   SetAllowanceLimit(e.target.value >= 1 && e.target.value)
                 }
@@ -112,18 +78,6 @@ const AddAllowancePop = ({
                 defaultChecked
                 onChange={e => SetAllowanceLimitStatus(e)}
                 className="switch"
-              />
-            </div>
-          </div>
-
-          <div id="employee_wrap" className="employee_wrap_description">
-            <div id="input_wrap">
-              <label htmlFor="input">Description</label>
-              <textarea
-                type="text"
-                value={allowanceDescription}
-                placeholder="Description"
-                onChange={e => SetAllowanceDescription(e.target.value)}
               />
             </div>
           </div>

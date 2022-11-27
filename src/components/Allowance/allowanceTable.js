@@ -5,48 +5,50 @@ import EditAllowance from "../Forms/EditAllowance"
 import { Modal } from "antd"
 import axios from "axios"
 import {
-  getPolicyDataAPI,
   getAllowanceByPolicy,
   updateAllowanceAPI,
   getHeaders,
   deleteAllowanceAPI,
   addAllowanceAPI,
+  getUserAllowanceByIdAPI,
+  deleteUserAllowanceByIdAPI,
+  editUserAllowanceByIdAPI,
+  addUsersAllowanceAPI,
+  getAllLeaveTypesAPI
 } from "../../utils/urls"
 import { AllowanceTableViewStyles } from "./styles"
 import AddAllowancePop from "./addAllowancePop"
 import EmptyRoster from "../EmptyRoster"
+import CompoLoader from "../ComponentLoader";
 
 const AllowanceTableView = ({
   policyDataObj,
   policyName,
   setOpenAllowance,
+  callFrom,
+  setCreateLeavePop,
+  playAudio
 }) => {
+
+
+  // Fetch user data from local storage
+  const userData =
+    typeof localStorage !== "undefined" &&
+    JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
 
   const [btnProgress, setBtnProgress] = useState(false);
   const [editAllowancePop, setEditAllowancePop] = useState(false)
   const [allowanceData, setAllowanceData] = useState([])
+  const [activeLoader, setActiveLoader] = useState(false);
 
+  // Edit allowance data
   const [editAllowanceData, setEditAllowanceData] = useState({})
-  const [editAllowanceObj, setEditAllowanceObj] = useState({
-    amount: 6,
-    name: "casual Leave Allowance 8",
-    maxLimit: true,
-    type: "CL",
-    maxLimitAmount: 3,
-  })
 
   const [name, setName] = useState("")
   const [type, SetType] = useState("")
   const [days, SetDays] = useState("")
   const [limit, SetLimit] = useState("")
   const [status, SetStatus] = useState(false)
-  const [container, setContainer] = useState({
-    amount: "",
-    maxLimit: true,
-    maxLimitAmount: "",
-    name: "",
-    type: "",
-  })
 
   // Add alowance setState
   const [addAllowancePop, setAddAllowancePop] = useState(false)
@@ -55,7 +57,6 @@ const AllowanceTableView = ({
   const [allowancedays, SetAllowanceDays] = useState("")
   const [allowancelimit, SetAllowanceLimit] = useState(0)
   const [allowancelimitStatus, SetAllowanceLimitStatus] = useState(true)
-  const [allowanceDescription, SetAllowanceDescription] = useState("")
 
   // Delete allowance setState
   const [deleteAllowaceObj, setDeleteAllowanceObj] = useState({
@@ -63,51 +64,43 @@ const AllowanceTableView = ({
     allowanceId: ""
   })
 
-  console.log("allowancename", allowancename)
-  console.log("allowancetype", allowancetype)
-  console.log("allowancedays", allowancedays)
-  console.log("allowancelimit", allowancelimit)
-  console.log("allowancelimitStatus", allowancelimitStatus)
-  console.log("allowanceDescription", allowanceDescription)
 
-  // Local token
-  let localToken =
-    typeof localStorage !== "undefined" &&
-    JSON.parse(localStorage.getItem("userData"))
-  const headers = getHeaders(localToken?.tokens?.accessToken)
+  // get all leave types
+  const [leaveTypes, setLeaveTypes] = useState([])
+  const [dropVal, setDropVal] = useState("");
+
+  // Headers
+  const headers = getHeaders(userData?.tokens?.accessToken);
 
   useEffect(() => {
-    OpenPolicy(policyDataObj)
+    OpenPolicy(policyDataObj);
+    getAllLeaveTypes();
   }, [])
 
+  // Get allowance data bu user and policy id
   const OpenPolicy = policyId => {
-    console.log("policyIdpolicyId", policyId)
+    setActiveLoader(true);
     axios({
-      url: getAllowanceByPolicy(policyId),
+      url: callFrom == "users" ? getUserAllowanceByIdAPI(policyId) : getAllowanceByPolicy(policyId),
       method: "GET",
       headers: headers,
     })
       .then(res => {
         if (res?.data) {
-          setAllowanceData(res?.data)
+          setActiveLoader(false);
+          setAllowanceData(res?.data);
         }
       })
-      .catch(err => console.log("Error", err))
+      .catch(err => {
+        setActiveLoader(false);
+        console.log("Error", err);
+      })
   }
-
-  console.log("allowanceData", allowanceData)
 
   // Set data for Edit allowance
   const EditAllowanceFun = item => {
     setEditAllowancePop(true)
     setEditAllowanceData(item)
-    setEditAllowanceObj({
-      amount: item?.amount,
-      name: item?.name,
-      maxLimit: true,
-      type: item?.type,
-      maxLimitAmount: item?.maxLimit,
-    })
     if (item) {
       setName(item?.name)
       SetType(item?.type)
@@ -119,10 +112,10 @@ const AllowanceTableView = ({
 
   // Call to update Allowance
   const Updatedata = (policyId, item) => {
-
+    setBtnProgress(true)
     console.log("typetype", type)
     axios({
-      url: updateAllowanceAPI(policyId, item?.id),
+      url: callFrom == "users" ? editUserAllowanceByIdAPI(policyId, item?.id) : updateAllowanceAPI(policyId, item?.id),
       method: "PATCH",
       headers: headers,
       data: {
@@ -143,16 +136,21 @@ const AllowanceTableView = ({
           SetDays("")
           SetLimit(true)
           SetStatus("")
+          setBtnProgress(false)
+          playAudio();
         }
       })
-      .catch(err => console.log("Error", err))
+      .catch(err => {
+        setBtnProgress(false)
+        console.log("Error", err)
+      })
   }
 
   // Add allowance Function
   const AddAllowanceFun = policyId => {
     setBtnProgress(true);
     axios({
-      url: addAllowanceAPI(policyId),
+      url: callFrom == "users" ? addUsersAllowanceAPI(policyId) : addAllowanceAPI(policyId),
       method: "POST",
       headers: headers,
       data: {
@@ -173,22 +171,39 @@ const AllowanceTableView = ({
           SetAllowanceDays("");
           SetAllowanceLimit("");
           SetAllowanceLimitStatus(true);
-          SetAllowanceDescription("");
+          getAllLeaveTypes();
+          playAudio();
         }
       })
       .catch(err => {
+        getAllLeaveTypes();
         console.log("Error", err);
         setBtnProgress(false);
         setAddAllowancePop(false);
       })
   }
 
+  // Get all leave types
+  const getAllLeaveTypes = () => {
+    axios({
+      url: getAllLeaveTypesAPI(),
+      method: "GET",
+      headers: headers
+    }).then((res) => {
+      console.log("res", res)
+      setLeaveTypes(res?.data)
+    }).catch((err) => {
+      console.log("Error", err)
+    })
+  }
+
+
 
   // Call to delete Allowance Function
   const DeleteAPIFun = (policyId, allowanceId) => {
     setBtnProgress(true)
     axios({
-      url: deleteAllowanceAPI(policyId, allowanceId),
+      url: callFrom == "users" ? deleteUserAllowanceByIdAPI(policyId, allowanceId) : deleteAllowanceAPI(policyId, allowanceId),
       method: "DELETE",
       headers: headers,
     })
@@ -199,12 +214,14 @@ const AllowanceTableView = ({
         })
         setBtnProgress(false)
         OpenPolicy(policyId)
+        playAudio();
       })
       .catch(err => {
         setBtnProgress(false);
         console.log("Error", err)
       })
   }
+
   return (
     <AllowanceTableViewStyles>
       <div id="admin_home">
@@ -229,66 +246,73 @@ const AllowanceTableView = ({
               </button>
             </div>
           </div>
-          {allowanceData?.allowances?.length ? (
-            <div id="message">
-              <div id="message_block1">
-                <h3>SNo</h3>
-                <h3>Allowance</h3>
-                <h3>Allowance Type</h3>
-                <h3>Amount</h3>
-                <h3>Max Limit</h3>
-                <h3>Action</h3>
-              </div>
-              <div id="message_block2">
-                {allowanceData?.allowances.map((item, index) => (
-                  <div id="task_container">
-                    <p>{index + 1}</p>
-                    <p>{item?.name}</p>
-                    <p>{item?.type}</p>
-                    <p>{item?.amount}</p>
-                    <p>
-                      {item?.maxLimit > 0
-                        ? item?.maxLimitAmount
-                        : "Not Applicable"}
-                    </p>
-                    <div id="btns">
-                      <img
-                        src={Edit_user}
-                        alt="Edit_user"
-                        role="presentation"
-                        onClick={() => EditAllowanceFun(item)}
-                      />
-                      <DeleteOutlined
-                        style={{
-                          color: `red`,
-                          marginLeft: `15px`,
-                          fontSize: `23px`,
-                        }}
-                        onClick={() => {
-                          setDeleteAllowanceObj({
-                            policyId: policyDataObj,
-                            allowanceId: item?.id
-                          })
-                        }}
-                      />
-                    </div>
+          {activeLoader ? <CompoLoader /> :
+            <>
+              {allowanceData?.allowances?.length ? (
+                <div id="message">
+                  <div id="message_block1">
+                    <h3>SNo</h3>
+                    <h3>Allowance</h3>
+                    <h3>Allowance Type</h3>
+                    <h3>Amount</h3>
+                    <h3>Max Limit</h3>
+                    <h3>Action</h3>
                   </div>
-                ))}
-              </div>
-            </div>
-          ) :
-            (<EmptyRoster text="No Allowance Under Added!" />)}
-
+                  <div id="message_block2">
+                    {allowanceData?.allowances.map((item, index) => (
+                      <div id="task_container">
+                        <p>{index + 1}</p>
+                        <p>{item?.name}</p>
+                        <p>{item?.type}</p>
+                        <p>{item?.amount}</p>
+                        <p>
+                          {item?.maxLimit > 0
+                            ? item?.maxLimitAmount
+                            : "Not Applicable"}
+                        </p>
+                        <div id="btns">
+                          <img
+                            src={Edit_user}
+                            alt="Edit_user"
+                            role="presentation"
+                            onClick={() => EditAllowanceFun(item)}
+                          />
+                          <DeleteOutlined
+                            style={{
+                              color: `red`,
+                              marginLeft: `15px`,
+                              fontSize: `23px`,
+                            }}
+                            onClick={() => {
+                              setDeleteAllowanceObj({
+                                policyId: policyDataObj,
+                                allowanceId: item?.id
+                              })
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) :
+                (<EmptyRoster text="No Allowance Under Added!" />)}
+            </>
+          }
         </div>
 
         {/* Edit allowance modal */}
         <Modal
+          title="Edit Allowance"
           visible={editAllowancePop}
           onCancel={() => setEditAllowancePop(false)}
           onOk={() => {
             Updatedata(policyDataObj, editAllowanceData)
           }}
-          okText={"Update"}
+          okText={btnProgress ? "Processing.." : "Update"}
+          okButtonProps={{
+            disabled: !(name && type && days && limit)
+          }}
         >
           <EditAllowance
             name={name}
@@ -301,33 +325,45 @@ const AllowanceTableView = ({
             SetLimit={SetLimit}
             status={status}
             SetStatus={SetStatus}
+            leaveTypes={leaveTypes}
+            setLeaveTypes={setLeaveTypes}
+            dropVal={dropVal}
+            setDropVal={setDropVal}
+            setCreateLeavePop={setCreateLeavePop}
           />
         </Modal>
 
         {/* Add allowance modal */}
         <Modal
+          title="Add Allowance"
           visible={addAllowancePop}
           onOk={() => {
             AddAllowanceFun(policyDataObj)
           }}
           onCancel={() => setAddAllowancePop(false)}
           okText={btnProgress ? "Processing.." : "Add Allowance"}
+          okButtonProps={{
+            disabled: !(allowancename && allowancetype && allowancedays)
+          }}
         >
           <AddAllowancePop
-            container={container}
-            setContainer={setContainer}
             allowancename={allowancename}
             allowancetype={allowancetype}
             allowancedays={allowancedays}
             allowancelimit={allowancelimit}
             allowancelimitStatus={allowancelimitStatus}
-            allowanceDescription={allowanceDescription}
+            // allowanceDescription={allowanceDescription}
             setAllowanceName={setAllowanceName}
             SetAllowanceType={SetAllowanceType}
             SetAllowanceDays={SetAllowanceDays}
             SetAllowanceLimit={SetAllowanceLimit}
             SetAllowanceLimitStatus={SetAllowanceLimitStatus}
-            SetAllowanceDescription={SetAllowanceDescription}
+            // SetAllowanceDescription={SetAllowanceDescription}
+            leaveTypes={leaveTypes}
+            // setLeaveTypes={setLeaveTypes}
+            dropVal={dropVal}
+            setDropVal={setDropVal}
+            setCreateLeavePop={setCreateLeavePop}
           />
         </Modal>
 

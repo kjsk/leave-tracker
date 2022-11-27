@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { EmployeeFormStyle } from "../Board/styles"
 import {
-  getPolicyDataAPI,
-  getHeaders,
+  getPolicyDataAPI
 } from "../../utils/urls"
 import axios from "axios"
 import LeaveType from "../leavePopup/leave_type"
@@ -14,7 +13,6 @@ const AddEmployee = ({
   Email,
   setName,
   setEMail,
-  selectPolicy,
   setSelectPolicy,
   leaveType,
   setLeaveType,
@@ -32,6 +30,7 @@ const AddEmployee = ({
       label: label,
       value: e,
     })
+    setSelectPolicy(e?.label);
   }
 
   useEffect(() => {
@@ -97,7 +96,7 @@ const AddEmployee = ({
             />
           </div>
           <div id="input_wrap">
-            <label style={{ color: name?.length < 2 && error }} htmlFor="input">
+            <label style={{ color: !(leaveType?.label) && error }} htmlFor="input">
               Select policy*
             </label>
             <Dropdown
@@ -122,7 +121,8 @@ const AddEmployee = ({
           </div>
           {name?.length < 2 ||
             Email?.length < 5 ||
-            !/\S+@\S+\.\S+/.test(Email) ? (
+            !/\S+@\S+\.\S+/.test(Email) ||
+            !(leaveType?.label) ? (
             <button
               onClick={() => checkValidation()}
               style={{ background: `gray` }}

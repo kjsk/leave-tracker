@@ -12,8 +12,6 @@ import moment from "moment"
 import { getAllowanceByUser } from "../../utils/urls"
 
 const SideModal = ({
-  setLeaveDrop,
-  LeaveDrop,
   setPopup,
   headers,
   userDataMain,
@@ -27,46 +25,38 @@ const SideModal = ({
 }) => {
   const { RangePicker } = DatePicker
 
-  console.log("userDataMain", userDataMain)
+  const [pushTime, setPushTime] = useState([]);
 
-  const [pushTime, setPushTime] = useState([])
+  const [allowanceType, setAllowanceType] = useState({ label: "", value: "" });
 
-  const [leaveType, setLeaveType] = useState({ label: "", value: "" })
-  const [allowanceType, setAllowanceType] = useState({ label: "", value: "" })
-
-  const [userAllowanceObj, setUserAllowanceObj] = useState([])
+  const [userAllowanceObj, setUserAllowanceObj] = useState([]);
 
 
-  // const [leavePer, setLeavePer] = useState("First Half");
+  // const [leavePer, setLeavePer] = useState("First Half");;
 
-  const [reason, setReason] = useState("")
-  const [dayCount, setDayCount] = useState(0)
+  const [reason, setReason] = useState("");
+  const [dayCount, setDayCount] = useState(0);
 
   const onChange = date => {
-    setPushTime(date)
+    setPushTime(date);
   }
 
   // Date disable function
   const disabledDate = current => {
-    const newVar = new Date()
-    const modDate = moment(newVar).subtract(1, "days")
+    const newVar = new Date();
+    const modDate = moment(newVar).subtract(1, "days");
     return (
       modDate > current.valueOf() || current.day() === 0 || current.day() === 6
     )
-  }
-  const leaveFun = (e, label) => {
-    setLeaveType({
-      label: label,
-      value: e,
-    })
   }
 
   const allowanceFun = (e, label) => {
     setAllowanceType({
       label: label,
       value: e,
-    })
-  }
+    });
+  };
+
   const daysCalc = () => {
     let Difference_In_Time = pushTime
       ? new Date(pushTime[1]).getTime() - new Date(pushTime[0]).getTime()
@@ -95,7 +85,7 @@ const SideModal = ({
     // eslint-disable-next-line
   }, [pushTime])
 
-  const createLeave = (leaveType, pushTime, reason) => {
+  const createLeave = (allowanceType, pushTime, reason) => {
     setButtonProcess(true)
     axios({
       method: "POST",
@@ -106,7 +96,6 @@ const SideModal = ({
         startStamp: pushTime[0],
         endStamp: pushTime[1],
         reason: reason,
-        type: leaveType?.value,
         allowanceId: allowanceType?.value,
         days: daysCalc(),
       },
@@ -117,7 +106,7 @@ const SideModal = ({
         setReason("")
         setPopup(false)
         setButtonProcess(false)
-        setLeaveType({
+        setAllowanceType({
           label: "",
           value: "",
         })
@@ -150,7 +139,8 @@ const SideModal = ({
   }
 
   useEffect(() => {
-    GetAllowanceTypes(userDataMain?.id)
+    GetAllowanceTypes(userDataMain?.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const GetAllowanceTypes = (userId) => {
@@ -204,43 +194,12 @@ const SideModal = ({
             </p>
           </div>
         </Badge.Ribbon>
-        <Dropdown
-          overlay={
-            <LeaveType
-              leaveFun={leaveFun}
-              setLeaveDrop={setLeaveDrop}
-              userDataMain={userDataMain?.allowance?.leaveTypes}
-            />
-          }
-          placement="bottomLeft"
-          trigger={["click"]}
-          visible={LeaveDrop}
-        >
-          <div
-            id="name_block"
-            onClick={() => {
-              setLeaveDrop(!LeaveDrop);
-              setAllowanceDrop(false);
-            }}
-            role="presentation"
-          >
-            <img src={leave_type} alt="img" />
-            <input
-              type="text"
-              value={leaveType?.label}
-              id="input"
-              placeholder="Select leave type"
-              autoComplete="off"
-            />
-          </div>
-        </Dropdown>
-
         {/* Allowance type dropdown */}
         <Dropdown
           overlay={
             <LeaveType
               leaveFun={allowanceFun}
-              setLeaveDrop={setAllowanceDrop}
+              setAllowanceDrop={setAllowanceDrop}
               userDataMain={userAllowanceObj}
             />
           }
@@ -251,7 +210,7 @@ const SideModal = ({
           <div
             id="name_block"
             onClick={() => {
-              setLeaveDrop(false);
+              setAllowanceDrop(false);
               setAllowanceDrop(!allowanceDrop)
             }}
             role="presentation"
@@ -269,7 +228,7 @@ const SideModal = ({
         <div
           id="name_block"
           onClick={() => {
-            setLeaveDrop(false);
+            setAllowanceDrop(false);
             setAllowanceDrop(false)
           }}
           role="presentation"
@@ -288,7 +247,7 @@ const SideModal = ({
           <button
             onClick={() => {
               setPopup(false)
-              setLeaveDrop(false);
+              setAllowanceDrop(false);
               setAllowanceDrop(false);
             }}
           >
@@ -300,28 +259,26 @@ const SideModal = ({
                 pushTime &&
                   daysCalc() &&
                   reason.length > 5 &&
-                  allowanceType?.label !== "" &&
-                  leaveType?.label !== ""
+                  allowanceType?.label !== ""
                   ? "#3751FF"
                   : "gray",
               color: "white",
             }}
             onClick={() => {
-              createLeave(leaveType, pushTime, reason)
-              setLeaveDrop(false);
+              createLeave(allowanceType, pushTime, reason)
+              setAllowanceDrop(false);
               setAllowanceDrop(false);
             }}
             disabled={
               pushTime &&
                 daysCalc() &&
                 reason.length > 5 &&
-                allowanceType?.label !== "" &&
-                leaveType?.label !== ""
+                allowanceType?.label !== ""
                 ? false
                 : true
             }
           >
-            {buttonProcess ? "Process..." : "Submit"}
+            {buttonProcess ? "Processing..." : "Submit"}
           </button>
         </div>
       </div>
