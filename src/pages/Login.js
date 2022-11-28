@@ -328,18 +328,16 @@ const Login = () => {
 
   const newAllowanceSet = (container) => {
     let tempArr = []
-    if (container?.length) {
-      container.map((item) => {
-        tempArr.push({
-          "amount": item?.days,
-          "maxLimit": item?.limitToggle,
-          "maxLimitAmount": item?.maxLimit,
-          "name": item?.name,
-          "type": item?.type,
-          "description": item?.description
-        })
+    container.length && container.forEach((item) => {
+      tempArr.push({
+        "amount": item?.days,
+        "maxLimit": item?.limitToggle,
+        "maxLimitAmount": item?.maxLimit,
+        "name": item?.name,
+        "type": item?.type,
+        "description": item?.description
       })
-    }
+    })
     return tempArr;
   }
 

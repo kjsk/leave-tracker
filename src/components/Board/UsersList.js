@@ -35,7 +35,7 @@ const UsersList = ({
                   return (
                     <div id="task_container">
                       <p>{i + 1}</p>
-                      <div id="profile_box" onClick={() => OpenPolicy(item)}>
+                      <div id="profile_box" onClick={() => OpenPolicy(item)} role="presentation">
                         <Avatar name={item?.name} nameProf={nameProf} />
                         {/* <img src="https://i.pinimg.com/550x/4b/0e/d9/4b0ed906554fb9f66b1afabea90eb822.jpg" alt="img" id="profile" /> */}
                         <div id="profile_text">

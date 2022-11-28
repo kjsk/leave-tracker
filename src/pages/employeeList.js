@@ -52,6 +52,10 @@ const Board = () => {
     const [empUsed, setEmpUsed] = useState("");
     const [empLeft, setEmpLeft] = useState("");
 
+    const [openAllowance, setOpenAllowance] = useState(false);
+    const [policyDataObj, setPolicyDataObj] = useState();
+    const [policyName, setPolicyName] = useState();
+
     // common headers
     const headers = getHeaders(userData?.tokens?.accessToken);
 
@@ -197,6 +201,7 @@ const Board = () => {
             })
                 .then(resp => {
                     openNotificationWithIcon(`success`, "Changes updated");
+                    playAudio(audioPlayer);
                     console.log(resp);
                     setEditUserPop(false);
                     getUsers();
@@ -213,14 +218,10 @@ const Board = () => {
         }
     }
 
-    const [openAllowance, setOpenAllowance] = useState(false);
-    const [policyDataObj, setPolicyDataObj] = useState();
-    const [policyName, setPolicyName] = useState();
-
     const OpenPolicy = item => {
-        setOpenAllowance(true)
-        setPolicyDataObj(item?.id)
-        setPolicyName(item?.name)
+        setOpenAllowance(true);
+        setPolicyDataObj(item?.id);
+        setPolicyName(item?.name);
     }
 
 

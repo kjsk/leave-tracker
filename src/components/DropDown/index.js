@@ -34,7 +34,7 @@ const DropDownCompo = ({ arrayData, dropVal, setDropVal, index, setCreateLeavePo
                                         return ""
                                     }
                                 }).map((item) =>
-                                    <li onClick={() => { setDropVal(); setOptionFun(item) }} className="options_select" role="presentaion">{item?.label}</li>
+                                    <li onClick={() => { setDropVal(); setOptionFun(item) }} className="options_select" role="presentation">{item?.label}</li>
                                 )}
                             </ul>
                             :

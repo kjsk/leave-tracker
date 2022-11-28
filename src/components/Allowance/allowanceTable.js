@@ -75,13 +75,14 @@ const AllowanceTableView = ({
   useEffect(() => {
     OpenPolicy(policyDataObj);
     getAllLeaveTypes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Get allowance data bu user and policy id
   const OpenPolicy = policyId => {
     setActiveLoader(true);
     axios({
-      url: callFrom == "users" ? getUserAllowanceByIdAPI(policyId) : getAllowanceByPolicy(policyId),
+      url: callFrom === "users" ? getUserAllowanceByIdAPI(policyId) : getAllowanceByPolicy(policyId),
       method: "GET",
       headers: headers,
     })
@@ -115,7 +116,7 @@ const AllowanceTableView = ({
     setBtnProgress(true)
     console.log("typetype", type)
     axios({
-      url: callFrom == "users" ? editUserAllowanceByIdAPI(policyId, item?.id) : updateAllowanceAPI(policyId, item?.id),
+      url: callFrom === "users" ? editUserAllowanceByIdAPI(policyId, item?.id) : updateAllowanceAPI(policyId, item?.id),
       method: "PATCH",
       headers: headers,
       data: {
@@ -150,7 +151,7 @@ const AllowanceTableView = ({
   const AddAllowanceFun = policyId => {
     setBtnProgress(true);
     axios({
-      url: callFrom == "users" ? addUsersAllowanceAPI(policyId) : addAllowanceAPI(policyId),
+      url: callFrom === "users" ? addUsersAllowanceAPI(policyId) : addAllowanceAPI(policyId),
       method: "POST",
       headers: headers,
       data: {
@@ -203,7 +204,7 @@ const AllowanceTableView = ({
   const DeleteAPIFun = (policyId, allowanceId) => {
     setBtnProgress(true)
     axios({
-      url: callFrom == "users" ? deleteUserAllowanceByIdAPI(policyId, allowanceId) : deleteAllowanceAPI(policyId, allowanceId),
+      url: callFrom === "users" ? deleteUserAllowanceByIdAPI(policyId, allowanceId) : deleteAllowanceAPI(policyId, allowanceId),
       method: "DELETE",
       headers: headers,
     })
@@ -228,7 +229,7 @@ const AllowanceTableView = ({
         <div id="admin" className="admin">
           <div className="allowance_btn_container">
             <h3 style={{ display: "flex", fontSize: "1vw", cursor: "pointer" }}>
-              <span onClick={() => setOpenAllowance(false)}>
+              <span onClick={() => setOpenAllowance(false)} role="presentation">
                 Leave Policy /
               </span>
               <span style={{ fontWeight: "bold", marginLeft: "0.4vw" }}>

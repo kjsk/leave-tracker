@@ -34,7 +34,8 @@ const AddEmployee = ({
   }
 
   useEffect(() => {
-    GetPolicyFun()
+    GetPolicyFun();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // Get policy details Function
   const GetPolicyFun = () => {
@@ -55,7 +56,7 @@ const AddEmployee = ({
   const newAllowanceSet = (arr) => {
     let tempArr = []
     if (arr?.length) {
-      arr.map((item) => {
+      arr.forEach((item) => {
         tempArr.push({
           "label": item?.name,
           "value": item?.id

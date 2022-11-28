@@ -164,7 +164,7 @@ const SideModal = ({
   const ArrSetFun = (arr) => {
     if (arr?.length) {
       let tempArr = []
-      arr.map((item) => {
+      arr.forEach((item) => {
         tempArr.push({
           label: item?.name,
           value: item?.id

@@ -17,7 +17,7 @@ const Home = ({
   activeLoader,
   CompoLoader,
 }) => {
-  const calcLeaves = 24 - leaveApproved?.length
+  // const calcLeaves = 24 - leaveApproved?.length
 
   return (
     <>

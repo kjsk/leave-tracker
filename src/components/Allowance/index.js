@@ -10,16 +10,16 @@ import {
   getHeaders,
   deletePolicyAPI,
   editPolicyAPI,
-  createPolicyAPI,
-  getAllLeaveTypesAPI
+  createPolicyAPI
 } from "../../utils/urls"
 import Edit_user from "../../data/assets/Edit_user.svg"
 import { DeleteOutlined } from "@ant-design/icons"
 import EditPolicy from "../Forms/EditPolicy"
 import CompoLoader from "../ComponentLoader";
 import AudioComponent from "../Audio";
+import { playAudio } from "../../utils/functions"
 
-const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop }) => {
+const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop, leaveTypes }) => {
 
   // Fetch user data from local storage
   const userData =
@@ -28,6 +28,7 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
 
   // notification conformation sound function
   const audioPlayer = useRef(null);
+
   const [btnProgress, setBtnProgress] = useState(false);
   const [openAllowance, setOpenAllowance] = useState(false)
   const [activeLoader, setActiveLoader] = useState(false)
@@ -84,16 +85,13 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
     value: ""
   });
 
-  // Get leave types data
-  const [leaveTypes, setLeaveTypes] = useState([]);
-
   // Adding global headers
   const headers = getHeaders(userData?.tokens?.accessToken)
 
   // Initial call for get policy details
   useEffect(() => {
     GetPolicyFun();
-    getAllLeaveTypes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Get policy details Function
@@ -133,7 +131,7 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
       headers: headers,
     })
       .then(_res => {
-        playAudio();
+        playAudio(audioPlayer);
         setBtnProgress(false);
         setDeletePolicyID("");
         GetPolicyFun();
@@ -146,7 +144,6 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
 
   // Set policy data
   const EditAPIDataFun = item => {
-    console.log("itemitem", item)
     setPolicyDataObj(item?.id)
     setEditPolicyName(item?.name)
     setEditPolicyDesc(item?.description)
@@ -169,7 +166,7 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
       data: setObj,
     })
       .then(res => {
-        playAudio();
+        playAudio(audioPlayer);
         setBtnProgress(false);
         console.log("res", res)
         setEditPolicyName("")
@@ -238,7 +235,6 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
       "description": "New Policy",
       "allowances": newAllowanceSet(container),
     }
-
     axios(
       {
         url: createPolicyAPI(),
@@ -246,35 +242,23 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
         headers: headers,
         data: policyData
       }).then((res) => {
-        playAudio();
+        playAudio(audioPlayer);
         setDropVal("");
-        getAllLeaveTypes();
+        setPolicyPop(false);
         cleanPolicyPopValues();
+        GetPolicyFun()
         console.log("res", res);
       }).catch((err) => {
+        setPolicyPop(false);
         console.log("Error", err)
       })
-  }
-
-  // Get Leave types
-  const getAllLeaveTypes = () => {
-    axios({
-      url: getAllLeaveTypesAPI(),
-      method: "GET",
-      headers: headers
-    }).then((res) => {
-      console.log("res", res)
-      setLeaveTypes(res?.data)
-    }).catch((err) => {
-      console.log("Error", err)
-    })
   }
 
 
   const newAllowanceSet = (container) => {
     let tempArr = []
     if (container?.length) {
-      container.map((item) => {
+      container.forEach((item) => {
         tempArr.push({
           "amount": item?.days,
           "maxLimit": item?.limitToggle,
@@ -341,6 +325,7 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
                             <p
                               onClick={() => OpenPolicy(item)}
                               style={{ color: "blue" }}
+                              role="presentation"
                             >
                               {item?.name}
                             </p>
@@ -382,13 +367,13 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
           setOpenAllowance={setOpenAllowance}
           callFrom=""
           setCreateLeavePop={setCreateLeavePop}
-          playAudio={playAudio}
+          playAudio={() => playAudio(audioPlayer)}
         />
       )}
 
       {/* Create policy modal */}
       <Modal
-        title="Create a policy"
+        title="Create policy"
         visible={policyPop}
         onOk={() => {
           createPolicyAPIFun()
@@ -428,7 +413,7 @@ const Allowance = ({ policyPop, playAudio, setPolicyPop, CreateLeaveTypeFun, set
 
       {/* Edit policy modal */}
       <Modal
-        title="Create a policy"
+        title="Edit policy"
         visible={editPolicyPop}
         onOk={() => {
           EditAPIFun(policyDataObj)

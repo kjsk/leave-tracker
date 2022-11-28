@@ -121,7 +121,7 @@ const CreateAllowancePop = (props) => {
                   />
                 </div>
                 <div id="input_wrap" className="input_wrap">
-                  <label htmlFor="input">Max Limit *</label>
+                  <label htmlFor="input">Allow Max Limit *</label>
                   <Switch
                     checked={item?.limitToggle}
                     onChange={(e) => editContainerFun(index, "limitToggle", e)}
@@ -130,7 +130,7 @@ const CreateAllowancePop = (props) => {
                 </div>
               </div>
 
-              <div id="employee_wrap" className="employee_wrap_description">
+              {/* <div id="employee_wrap" className="employee_wrap_description">
                 <div id="input_wrap">
                   <label htmlFor="input">Description</label>
                   <textarea type="text"
@@ -139,7 +139,7 @@ const CreateAllowancePop = (props) => {
                     onChange={(e) => editContainerFun(index, "description", e.target.value)}
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
           )
         })}
