@@ -35,7 +35,7 @@ const EditUser = ({
             />
           </div>
         </div>
-        <div id="employee_wrap">
+        {/* <div id="employee_wrap">
           <div id="input_wrap">
             <label htmlFor="input">No.of Leave Used</label>
             <input
@@ -62,7 +62,7 @@ const EditUser = ({
               disabled
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </EditUserFormStyle>
   )

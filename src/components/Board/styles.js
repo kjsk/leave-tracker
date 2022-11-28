@@ -285,25 +285,12 @@ ${'' /* side navigation function menu */}
     margin-bottom: 1vw;
     width: 80vw;
     overflow: scroll;
+    overflow-y: hidden; /* Hide vertical scrollbar */
   }
 
   #BoardContainer #main_menu #score::-webkit-scrollbar {
-    width: 0;
-    height: 0.2vw;
-  }
-
-  #BoardContainer #main_menu #score::-webkit-scrollbar {
-    width: 0.36vw;
-  }
-
-  /* Track */
-  #BoardContainer #main_menu #score::-webkit-scrollbar-track {
-    background: none;
-  }
-
-  /* Handle */
-  #BoardContainer #main_menu #score::-webkit-scrollbar-thumb:hover {
-    background: "#f2f3f7";
+    width: 0.5vw;
+    height: 0;
   }
 
   #BoardContainer #main_menu #score #score_card {

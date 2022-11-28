@@ -1,5 +1,5 @@
 import React from "react";
-import { CreateAllowancePopStyles } from "./styles";
+import { CreateAllowancePopStyles } from "../Allowance/styles";
 import { Switch, Dropdown } from "antd";
 import { PlusCircleOutlined, MinusOutlined } from "@ant-design/icons";
 import LeaveType from "../leavePopup/leave_type";
@@ -12,6 +12,7 @@ const CreateAllowancePop = (props) => {
     AddContainer,
     RemoveContainer,
     editContainerFun,
+    newPolicyName,
     setNewPolicyName,
     setStartMonth,
     startMonthOpen,
@@ -27,13 +28,14 @@ const CreateAllowancePop = (props) => {
     leaveTypes
   } = props;
 
+
   return (
     <CreateAllowancePopStyles>
       <div id="add_employee_main">
         <div id="employee_wrap">
           <div id="input_wrap">
             <label htmlFor="input">Policy name *</label>
-            <input type="text" placeholder="Policy name"
+            <input type="text" value={newPolicyName} placeholder="Policy name"
               onChange={(e) => setNewPolicyName(e.target.value)}
             />
           </div>
@@ -114,10 +116,10 @@ const CreateAllowancePop = (props) => {
                 <div id="input_wrap">
                   <label htmlFor="input">Max Limit *</label>
                   <input type="number"
-                    value={item?.limitToggle && !(item?.maxLimit > item?.days) ? item?.maxLimit : 0}
+                    value={item?.limitToggle && !(item?.maxLimit > item?.days) && !(item?.maxLimit < 0) ? item?.maxLimit : 0}
                     placeholder="Max Limit"
                     disabled={!(item?.limitToggle)}
-                    onChange={(e) => editContainerFun(index, 'maxLimit', e.target.value)}
+                    onChange={(e) => { editContainerFun(index, 'maxLimit', e.target.value) }}
                   />
                 </div>
                 <div id="input_wrap" className="input_wrap">

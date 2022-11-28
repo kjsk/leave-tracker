@@ -47,7 +47,7 @@ export const LoginContainer = styled.div`
     text-align: center;
     letter-spacing: 0.3px;
     color: #9fa2b4;
-    margin: 12px 0 0 0;
+    margin: 12px 0 40px 0;
   }
 
   #LoginContainer button {
@@ -60,18 +60,17 @@ export const LoginContainer = styled.div`
     border: 1px solid #ededee;
     box-sizing: border-box;
     border-radius: 8px;
-    margin: 48px 0 0 0;
+    margin: 10px 0 0 0;
     cursor: pointer;
     transition: 0.5s ease-in-out;
     display: flex;
     align-items: center;
-    justify-content: center;
   }
 
   #LoginContainer button img {
     width: 20px;
     height: 20px;
-    margin: 0 20px 0 0;
+    margin: 0 20px 0 5vw;
   }
 
   #LoginContainer button:hover {

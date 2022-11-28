@@ -9,8 +9,8 @@ export const DropdownContainer = styled.div`
         flex-direction: column;
         position: absolute;
         width: 100%;
-        padding: 4px;
-        border-radius: 8px;
+        padding: 0.5vw 0.5vw 1.2vw 0.5vw;
+        border-radius: 0.5vw;
         background-clip: padding-box;
         background-color: #fff;
         z-index:5;
@@ -41,7 +41,7 @@ export const DropdownContainer = styled.div`
             cursor: pointer;
             font-size: 0.8vw;
             position: absolute;
-            bottom: 0;
+            bottom: 0.2vw;
             right:0.5vw;
                     }
     }

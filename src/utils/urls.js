@@ -2,6 +2,7 @@ export const envURL = {
   dev: `https://dev-fidisyslt.herokuapp.com`,
   stage: `https://stage-fidisyslt.herokuapp.com`,
   prod: `https://prod-fidisyslt.herokuapp.com`,
+  mockUrl: `https://leavetracker-production.up.railway.app`
 }
 
 export const baseURL = envURL?.prod;

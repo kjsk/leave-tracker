@@ -12,7 +12,7 @@ const DropDownCompo = ({ arrayData, dropVal, setDropVal, index, setCreateLeavePo
     const setOptionFun = (item) => {
         setOption(item?.label);
         setValFun(item?.value);
-    }
+    };
     return (
         <DropdownContainer>
             <div className="dropdown_container">
@@ -20,11 +20,11 @@ const DropDownCompo = ({ arrayData, dropVal, setDropVal, index, setCreateLeavePo
                     dropVal === index ? setDropVal() : setDropVal(index)
                     setOpen(true);
                 }} role="presentation">
-                    <input type="text" value={option} placeholder="search" disabled />
+                    <input type="text" value={option} placeholder="Select leave" disabled />
                 </div>
                 {dropVal === index && open &&
                     <div className="drop_options_container">
-                        <input type="search" placeholder="search" onChange={(e) => setInputLength(e.target.value)} className="search_input" style={{ height: `2vw`, fontSize: `0.8vw`, marginBottom: `1vw` }} />
+                        <input type="search" value={inputLength} placeholder="Search..." onChange={(e) => setInputLength(e.target.value)} className="search_input" style={{ height: `2.5vw`, fontSize: `0.8vw`, marginBottom: `1vw`, background: `transparent` }} />
                         {arrayData?.find((item) => item?.label?.toLowerCase()?.includes(inputLength?.toLowerCase()))?.label ?
                             <ul>
                                 {arrayData?.filter((item) => {

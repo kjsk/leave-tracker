@@ -1,5 +1,5 @@
 import React from "react"
-import { AddAllowancePopStyles } from "./styles"
+import { AddAllowancePopStyles } from "../Allowance/styles"
 import { Switch } from "antd"
 import DropDownCompo from "../DropDown"
 
@@ -29,7 +29,7 @@ const AddAllowancePop = ({
         <div id="add_allowance_container">
           <div id="employee_wrap">
             <div id="input_wrap">
-              <label htmlFor="input">Allowance name</label>
+              <label htmlFor="input">Allowance name*</label>
               <input
                 type="text"
                 placeholder="Allowance name"
@@ -38,7 +38,7 @@ const AddAllowancePop = ({
               />
             </div>
             <div id="input_wrap">
-              <label htmlFor="input">Type</label>
+              <label htmlFor="input">Type*</label>
               <DropDownCompo
                 arrayData={leaveTypes}
                 dropVal={dropVal}
@@ -52,7 +52,7 @@ const AddAllowancePop = ({
           </div>
           <div id="employee_wrap_policy">
             <div id="input_wrap">
-              <label htmlFor="input">No of Days</label>
+              <label htmlFor="input">No of Days*</label>
               <input
                 type="number"
                 placeholder="No of Days"
@@ -61,7 +61,7 @@ const AddAllowancePop = ({
               />
             </div>
             <div id="input_wrap">
-              <label htmlFor="input">Max Limit</label>
+              <label htmlFor="input">Max Limit*</label>
               <input
                 type="number"
                 placeholder="Max Limit"
@@ -73,7 +73,7 @@ const AddAllowancePop = ({
               />
             </div>
             <div id="input_wrap" className="input_wrap">
-              <label htmlFor="input">Max Limit</label>
+              <label htmlFor="input">Allow Max Limit*</label>
               <Switch
                 defaultChecked
                 onChange={e => SetAllowanceLimitStatus(e)}

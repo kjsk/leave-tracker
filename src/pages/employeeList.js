@@ -22,8 +22,10 @@ import SideBar from "../components/SideBar";
 import HeaderMain from "../components/header";
 import AudioComponent from "../components/Audio";
 import AllowanceTableView from "../components/Allowance/allowanceTable"
+import CreateLeave from "../components/Forms/CreateLeave";
+import { getAllLeaveTypes, CreateLeaveTypeFun } from "../utils/functions/Common_Functions/function"
 
-const Board = () => {
+const EmployeeList = () => {
 
     const userData =
         typeof localStorage !== "undefined" &&
@@ -43,6 +45,7 @@ const Board = () => {
     const [deleteUserState, setdeleteUserState] = useState(false);
     const [userConform, setUserConform] = useState("");
     const [buttonProcess, setButtonProcess] = useState(false);
+    const [leaveDrop, setLeaveDrop] = useState(false)
 
     // Edit user Fun setState
     const [editUserPop, setEditUserPop] = useState(false);
@@ -56,12 +59,29 @@ const Board = () => {
     const [policyDataObj, setPolicyDataObj] = useState();
     const [policyName, setPolicyName] = useState();
 
+
+
+    // create leave setState
+    const [createLeavePop, setCreateLeavePop] = useState("")
+    const [createLeaveName, setCreateLeaveName] = useState("")
+    const [createLeaveType, setCreateLeaveType] = useState("")
+    const [createLeaveColor, setCreateLeaveColor] = useState("")
+    // Get leave types data
+    const [leaveTypes, setLeaveTypes] = useState([]);
+
+    // User data setState
+    const [usersData, setUsersData] = useState([])
+
+
     // common headers
     const headers = getHeaders(userData?.tokens?.accessToken);
 
     // FETCHING LEAVE ON PAGELOAD
     useEffect(() => {
         getUsers();
+        getAllLeaveTypes({
+            setState: setLeaveTypes
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -156,7 +176,6 @@ const Board = () => {
     // setError((validation()))
 
     // Call to get users
-    const [usersData, setUsersData] = useState([])
     const getUsers = () => {
         setActiveLoader(true)
         axios({
@@ -261,6 +280,10 @@ const Board = () => {
                             policyName={policyName}
                             setOpenAllowance={setOpenAllowance}
                             callFrom="users"
+                            setCreateLeavePop={setCreateLeavePop}
+                            playAudio={() => playAudio(audioPlayer)}
+                            leaveTypes={leaveTypes}
+                            getAllLeaveTypes={() => getAllLeaveTypes({ setState: setLeaveTypes })}
                         />
                     }
                 </div>
@@ -273,7 +296,8 @@ const Board = () => {
                 centered
                 visible={addEmp}
                 onCancel={() => {
-                    setAddEmp(false)
+                    setAddEmp(false);
+                    setLeaveDrop(false)
                 }}
                 okButtonProps={{ style: { display: "none" } }}
                 cancelButtonProps={{ style: { display: "none" } }}
@@ -293,6 +317,8 @@ const Board = () => {
                     buttonProcess={buttonProcess}
                     checkValidation={checkValidation}
                     setButtonProcess={setButtonProcess}
+                    leaveDrop={leaveDrop}
+                    setLeaveDrop={setLeaveDrop}
                 />
             </Modal>
 
@@ -309,7 +335,7 @@ const Board = () => {
                     editUserFunOk()
                     setButtonProcess(true)
                 }}
-                okText={buttonProcess ? "Process..." : "Save Edit"}
+                okText={buttonProcess ? "Processing..." : "Save Edit"}
             >
                 <EditUser
                     editUserPopDetails={editUserPopDetails}
@@ -382,7 +408,45 @@ const Board = () => {
                     )}
                 </Fragment>
             </Modal>
+
+
+            {/* ADD LEAVE POPUP */}
+            <Modal
+                title="Create Leave Type"
+                centered
+                visible={createLeavePop}
+                onCancel={() => {
+                    setCreateLeavePop(false)
+                }}
+                okButtonProps={{ style: { display: "none" } }}
+                cancelButtonProps={{ style: { display: "none" } }}
+            >
+                <CreateLeave
+                    createLeaveName={createLeaveName}
+                    setCreateLeaveName={setCreateLeaveName}
+                    createLeaveType={createLeaveType}
+                    setCreateLeaveType={setCreateLeaveType}
+                    createLeaveColor={createLeaveColor}
+                    setCreateLeaveColor={setCreateLeaveColor}
+                    CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+                        audioPlayer,
+                        createLeaveName,
+                        createLeaveType,
+                        createLeaveColor,
+                        setButtonProcess,
+                        setCreateLeaveName,
+                        setCreateLeaveType,
+                        setCreateLeaveColor,
+                        setLeaveTypes,
+                        setCreateLeavePop
+                    })}
+                    buttonProcess={buttonProcess}
+                    setButtonProcess={setButtonProcess}
+                    createLeavePop={createLeavePop}
+                    setCreateLeavePop={setCreateLeavePop}
+                />
+            </Modal>
         </BoardContainer>
     )
 }
-export default Board
+export default EmployeeList

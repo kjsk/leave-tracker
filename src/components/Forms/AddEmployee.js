@@ -21,10 +21,11 @@ const AddEmployee = ({
   buttonProcess,
   checkValidation,
   setButtonProcess,
+  leaveDrop,
+  setLeaveDrop
 }) => {
 
   const [leaveArr, setLeaveArr] = useState([])
-  const [leaveDrop, setLeaveDrop] = useState(false)
   const leaveFun = (e, label) => {
     setLeaveType({
       label: label,

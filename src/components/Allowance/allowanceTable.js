@@ -13,11 +13,10 @@ import {
   getUserAllowanceByIdAPI,
   deleteUserAllowanceByIdAPI,
   editUserAllowanceByIdAPI,
-  addUsersAllowanceAPI,
-  getAllLeaveTypesAPI
+  addUsersAllowanceAPI
 } from "../../utils/urls"
 import { AllowanceTableViewStyles } from "./styles"
-import AddAllowancePop from "./addAllowancePop"
+import AddAllowancePop from "../Forms/addAllowancePop"
 import EmptyRoster from "../EmptyRoster"
 import CompoLoader from "../ComponentLoader";
 
@@ -27,7 +26,8 @@ const AllowanceTableView = ({
   setOpenAllowance,
   callFrom,
   setCreateLeavePop,
-  playAudio
+  playAudio,
+  leaveTypes
 }) => {
 
 
@@ -64,9 +64,7 @@ const AllowanceTableView = ({
     allowanceId: ""
   })
 
-
-  // get all leave types
-  const [leaveTypes, setLeaveTypes] = useState([])
+  // get all leave types setState
   const [dropVal, setDropVal] = useState("");
 
   // Headers
@@ -74,7 +72,6 @@ const AllowanceTableView = ({
 
   useEffect(() => {
     OpenPolicy(policyDataObj);
-    getAllLeaveTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -111,6 +108,18 @@ const AllowanceTableView = ({
     }
   }
 
+
+  // check edited data fun
+  const EditedData = () => {
+    let tempVar;
+    if (editAllowanceData.name !== name || editAllowanceData.type !== type || editAllowanceData.amount !== days || editAllowanceData?.maxLimitAmount !== limit || editAllowanceData?.maxLimit !== status) {
+      tempVar = false;
+    } else {
+      tempVar = true;
+    }
+    return tempVar;
+  }
+
   // Call to update Allowance
   const Updatedata = (policyId, item) => {
     setBtnProgress(true)
@@ -120,24 +129,24 @@ const AllowanceTableView = ({
       method: "PATCH",
       headers: headers,
       data: {
-        amount: days || item?.amount,
+        amount: parseInt(days) || item?.amount,
         name: name || item?.name,
         maxLimit: status,
         type: type || item?.type,
-        maxLimitAmount: limit || item?.maxLimit,
+        maxLimitAmount: parseInt(limit) || item?.maxLimit,
       },
     })
       .then(res => {
         if (res?.data) {
-          setEditAllowancePop(false)
-          setAllowanceData(res?.data)
-          OpenPolicy(policyId)
-          setName("")
-          SetType("")
-          SetDays("")
-          SetLimit(true)
-          SetStatus("")
-          setBtnProgress(false)
+          setEditAllowancePop(false);
+          setAllowanceData(res?.data);
+          OpenPolicy(policyId);
+          setName("");
+          SetType("");
+          SetDays("");
+          SetLimit(true);
+          SetStatus("");
+          setBtnProgress(false);
           playAudio();
         }
       })
@@ -155,9 +164,9 @@ const AllowanceTableView = ({
       method: "POST",
       headers: headers,
       data: {
-        amount: allowancedays,
+        amount: parseInt(allowancedays),
         maxLimit: allowancelimitStatus,
-        maxLimitAmount: allowancelimit,
+        maxLimitAmount: parseInt(allowancelimit),
         name: allowancename,
         type: allowancetype,
       },
@@ -172,30 +181,14 @@ const AllowanceTableView = ({
           SetAllowanceDays("");
           SetAllowanceLimit("");
           SetAllowanceLimitStatus(true);
-          getAllLeaveTypes();
           playAudio();
         }
       })
       .catch(err => {
-        getAllLeaveTypes();
         console.log("Error", err);
         setBtnProgress(false);
         setAddAllowancePop(false);
       })
-  }
-
-  // Get all leave types
-  const getAllLeaveTypes = () => {
-    axios({
-      url: getAllLeaveTypesAPI(),
-      method: "GET",
-      headers: headers
-    }).then((res) => {
-      console.log("res", res)
-      setLeaveTypes(res?.data)
-    }).catch((err) => {
-      console.log("Error", err)
-    })
   }
 
 
@@ -230,7 +223,7 @@ const AllowanceTableView = ({
           <div className="allowance_btn_container">
             <h3 style={{ display: "flex", fontSize: "1vw", cursor: "pointer" }}>
               <span onClick={() => setOpenAllowance(false)} role="presentation">
-                Leave Policy /
+                {callFrom === "users" ? "Employee List" : "Leave Policy"} /
               </span>
               <span style={{ fontWeight: "bold", marginLeft: "0.4vw" }}>
                 {" "}
@@ -306,13 +299,13 @@ const AllowanceTableView = ({
         <Modal
           title="Edit Allowance"
           visible={editAllowancePop}
-          onCancel={() => setEditAllowancePop(false)}
+          onCancel={() => { setEditAllowancePop(false) }}
           onOk={() => {
             Updatedata(policyDataObj, editAllowanceData)
           }}
-          okText={btnProgress ? "Processing.." : "Update"}
+          okText={btnProgress ? "Processing..." : "Update"}
           okButtonProps={{
-            disabled: !(name && type && days && limit)
+            disabled: EditedData()
           }}
         >
           <EditAllowance
@@ -327,7 +320,6 @@ const AllowanceTableView = ({
             status={status}
             SetStatus={SetStatus}
             leaveTypes={leaveTypes}
-            setLeaveTypes={setLeaveTypes}
             dropVal={dropVal}
             setDropVal={setDropVal}
             setCreateLeavePop={setCreateLeavePop}

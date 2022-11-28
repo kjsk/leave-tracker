@@ -10,6 +10,7 @@ import LeaveType from "./leave_type"
 import { baseURL, leavesAPI } from "../../utils/urls"
 import moment from "moment"
 import { getAllowanceByUser } from "../../utils/urls"
+import { openNotificationWithIcon } from "../../utils/functions";
 
 const SideModal = ({
   setPopup,
@@ -20,8 +21,7 @@ const SideModal = ({
   setButtonProcess,
   buttonProcess,
   allowanceDrop,
-  setAllowanceDrop,
-  openNotificationWithIcon,
+  setAllowanceDrop
 }) => {
   const { RangePicker } = DatePicker
 
@@ -100,28 +100,26 @@ const SideModal = ({
         days: daysCalc(),
       },
       headers: headers,
+    }).then((res) => {
+      openNotificationWithIcon(
+        `success`,
+        `Your Leave Request submitted successfully`
+      )
+      getLeaves()
+      setReason("")
+      setPopup(false)
+      setButtonProcess(false)
+      setAllowanceType({
+        label: "",
+        value: "",
+      })
+      playAudio()
+      setPushTime([])
+    }).catch((err) => {
+      openNotificationWithIcon(`error`, err?.response?.data?.message)
+      getLeaves()
+      setButtonProcess(false)
     })
-      .then(_res => {
-        getLeaves()
-        setReason("")
-        setPopup(false)
-        setButtonProcess(false)
-        setAllowanceType({
-          label: "",
-          value: "",
-        })
-        playAudio()
-        setPushTime([])
-        openNotificationWithIcon(
-          `success`,
-          `Your Leave Request submitted successfully`
-        )
-      })
-      .catch(err => {
-        getLeaves()
-        setButtonProcess(false)
-        openNotificationWithIcon(`error`, err?.response?.data?.message)
-      })
   }
   // Call to fetch the number of leaves by user
   const getLeaves = () => {
@@ -199,7 +197,7 @@ const SideModal = ({
           overlay={
             <LeaveType
               leaveFun={allowanceFun}
-              setAllowanceDrop={setAllowanceDrop}
+              setLeaveDrop={setAllowanceDrop}
               userDataMain={userAllowanceObj}
             />
           }
@@ -210,7 +208,6 @@ const SideModal = ({
           <div
             id="name_block"
             onClick={() => {
-              setAllowanceDrop(false);
               setAllowanceDrop(!allowanceDrop)
             }}
             role="presentation"

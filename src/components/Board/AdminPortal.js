@@ -75,7 +75,7 @@ const AdminPortal = ({
                 <h3>Reason</h3>
                 <h3>Action</h3>
               </div>
-              <div id="message_block2">
+              <div id="message_block2" style={{ height: `18vw` }}>
                 {userRealData?.map((item, i) => {
                   return item?.status === adminToggle ? (
                     <div id="task_container">

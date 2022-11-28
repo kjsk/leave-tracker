@@ -15,7 +15,6 @@ const EditAllowance = ({
   status,
   SetStatus,
   leaveTypes,
-  setLeaveTypes,
   dropVal,
   setDropVal,
   setCreateLeavePop,
@@ -64,13 +63,13 @@ const EditAllowance = ({
               <input
                 type="number"
                 placeholder="Max Limit"
-                value={status && !(limit > days) ? limit : 0}
-                onChange={e => SetLimit(e.target.value >= 1 && e.target.value)}
+                value={status && !(limit > days) && !(limit < 0) ? limit : 0}
+                onChange={e => SetLimit(e.target.value)}
                 disabled={!status}
               />
             </div>
             <div id="input_wrap" className="input_wrap">
-              <label htmlFor="input">Max Limit</label>
+              <label htmlFor="input">Allow Max Limit</label>
               <Switch
                 checked={status}
                 onChange={e => SetStatus(e)}

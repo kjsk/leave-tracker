@@ -2,7 +2,7 @@ import React from "react"
 import { LeaveContainers } from "./styles"
 
 const LeaveType = ({ leaveFun, setLeaveDrop, userDataMain }) => {
-  console.log("kkkk", userDataMain)
+
   return (
     <LeaveContainers>
       {userDataMain?.map((item, index) => (
@@ -10,8 +10,8 @@ const LeaveType = ({ leaveFun, setLeaveDrop, userDataMain }) => {
           role="presentation"
           key={index}
           onClick={() => {
-            leaveFun(item?.value, item?.label)
-            setLeaveDrop(false)
+            leaveFun(item?.value, item?.label);
+            setLeaveDrop(false);
           }}
         >
           {item?.label}

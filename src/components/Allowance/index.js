@@ -1,25 +1,25 @@
-import React, { useState, useEffect, Fragment, useRef } from "react"
-import EmptyRoster from "../EmptyRoster"
-import { Modal } from "antd"
-import CreateAllowancePop from "./createAllowancePop"
-import { AllowanceContainer } from "./styles"
-import AllowanceTableView from "./allowanceTable"
-import axios from "axios"
+import React, { useState, useEffect, Fragment, useRef } from "react";
+import EmptyRoster from "../EmptyRoster";
+import { Modal } from "antd";
+import CreateAllowancePop from "../Forms/createAllowancePop";
+import { AllowanceContainer } from "./styles";
+import AllowanceTableView from "./allowanceTable";
+import axios from "axios";
 import {
   getPolicyDataAPI,
   getHeaders,
   deletePolicyAPI,
-  editPolicyAPI,
-  createPolicyAPI
-} from "../../utils/urls"
+  editPolicyAPI
+} from "../../utils/urls";
 import Edit_user from "../../data/assets/Edit_user.svg"
-import { DeleteOutlined } from "@ant-design/icons"
+import { DeleteOutlined } from "@ant-design/icons";
 import EditPolicy from "../Forms/EditPolicy"
 import CompoLoader from "../ComponentLoader";
 import AudioComponent from "../Audio";
-import { playAudio } from "../../utils/functions"
+import { playAudio, openNotificationWithIcon } from "../../utils/functions";
+import { createPolicyAPIFun } from "../../utils/functions/Common_Functions/function";
 
-const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop, leaveTypes }) => {
+const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop, leaveTypes, getAllLeaveTypes }) => {
 
   // Fetch user data from local storage
   const userData =
@@ -61,16 +61,6 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
       description: ""
     }
   ])
-
-
-  const disableFun = () => {
-    return !(newPolicyName
-      && container?.find((item) => item.name.includes("")).name
-      && container?.find((item) => item.type.includes("")).type
-      && container?.find((item) => item.days.includes("")).days
-      && container?.find((item) => item.maxLimit.includes("")).maxLimit
-      && container?.find((item) => item.description.includes("")).description)
-  }
 
   // Create policy setState
   const [newPolicyName, setNewPolicyName] = useState("");
@@ -114,15 +104,13 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
       })
   }
 
-  console.log("policyData", policyData)
-
   const OpenPolicy = item => {
     setOpenAllowance(true)
     setPolicyDataObj(item?.id)
     setPolicyName(item?.name)
   }
 
-  // Call to delete Allowance
+  // Call to delete policy
   const DeleteAPIFun = policyId => {
     setBtnProgress(true);
     axios({
@@ -131,12 +119,14 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
       headers: headers,
     })
       .then(_res => {
+        openNotificationWithIcon(`success`, "Policy Deleted Successfully")
         playAudio(audioPlayer);
         setBtnProgress(false);
         setDeletePolicyID("");
         GetPolicyFun();
       })
       .catch(err => {
+        openNotificationWithIcon(`error`, "Something went wrong...")
         setBtnProgress(false);
         console.log("Error", err);
       })
@@ -153,10 +143,10 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
 
   const setObj = {
     name: editPolicyName,
-    desc: editPolicyDesc,
+    description: editPolicyDesc,
   }
 
-  // Call to delete Allowance
+  // Call for edit policy function
   const EditAPIFun = policyId => {
     setBtnProgress(true);
     axios({
@@ -166,6 +156,7 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
       data: setObj,
     })
       .then(res => {
+        openNotificationWithIcon(`success`, "Policy Updated Successfully")
         playAudio(audioPlayer);
         setBtnProgress(false);
         console.log("res", res)
@@ -175,6 +166,7 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
         setEditPolicyPop(false)
       })
       .catch(err => {
+        openNotificationWithIcon(`error`, "Something went wrong...")
         setBtnProgress(false);
         console.log("Error", err)
       })
@@ -226,34 +218,24 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
     })
   };
 
-  // Create Allowance Function
-  const createPolicyAPIFun = () => {
-    const policyData = {
-      "startMonth": startMonthObj?.label,
-      "endMonth": endMonthObj?.label,
-      "name": newPolicyName,
-      "description": "New Policy",
-      "allowances": newAllowanceSet(container),
-    }
-    axios(
-      {
-        url: createPolicyAPI(),
-        method: "POST",
-        headers: headers,
-        data: policyData
-      }).then((res) => {
-        playAudio(audioPlayer);
-        setDropVal("");
-        setPolicyPop(false);
-        cleanPolicyPopValues();
-        GetPolicyFun()
-        console.log("res", res);
-      }).catch((err) => {
-        setPolicyPop(false);
-        console.log("Error", err)
-      })
+  // button disable function
+  const disableFun = () => {
+    let condition = [];
+    let boolen = false;
+    container.forEach((item) => {
+      if (!(newPolicyName && item?.name && item?.type && item?.days && item?.maxLimit)) {
+        condition.push(true);
+      } else {
+        condition.push(false);
+      }
+    });
+    condition.forEach((element) => {
+      if (element) {
+        boolen = element;
+      }
+    });
+    return boolen;
   }
-
 
   const newAllowanceSet = (container) => {
     let tempArr = []
@@ -272,20 +254,8 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
     return tempArr;
   }
 
-
   // clean policy popup values
   const cleanPolicyPopValues = () => {
-    setNewPolicyName("");
-    setStartMonthOpen(false);
-    setEndMonthOpen(false);
-    setStartMonthObj({
-      label: "",
-      value: ""
-    });
-    setEndMonthObj({
-      label: "",
-      value: ""
-    });
     setContainer(
       [{
         id: Math.random(),
@@ -297,7 +267,19 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
         description: ""
       }]
     );
+    setNewPolicyName("");
+    setStartMonthOpen(false);
+    setEndMonthOpen(false);
+    setStartMonthObj({
+      label: "",
+      value: ""
+    });
+    setEndMonthObj({
+      label: "",
+      value: ""
+    });
   }
+
   return (
     <Fragment>
       <AudioComponent
@@ -368,6 +350,8 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
           callFrom=""
           setCreateLeavePop={setCreateLeavePop}
           playAudio={() => playAudio(audioPlayer)}
+          leaveTypes={leaveTypes}
+          getAllLeaveTypes={getAllLeaveTypes}
         />
       )}
 
@@ -376,11 +360,24 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
         title="Create policy"
         visible={policyPop}
         onOk={() => {
-          createPolicyAPIFun()
+          createPolicyAPIFun({
+            startMonthObj: { startMonthObj },
+            endMonthObj: { endMonthObj },
+            newPolicyName: { newPolicyName },
+            newAllowanceSet: { newAllowanceSet },
+            container: { container },
+            audioPlayer: { audioPlayer },
+            setDropVal: { setDropVal },
+            setPolicyPop: { setPolicyPop },
+            GetPolicyFun: { GetPolicyFun },
+            cleanPolicyPopValues: { cleanPolicyPopValues }
+          })
         }}
         onCancel={() => {
           setPolicyPop(false);
           cleanPolicyPopValues();
+          setStartMonthOpen(false);
+          setEndMonthOpen(false);
         }}
         cancelButtonProps={{
           style: { border: "1px solid #3751FF", color: "#3751FF" },
@@ -394,6 +391,7 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
           AddContainer={AddContainer}
           RemoveContainer={RemoveContainer}
           editContainerFun={editContainerFun}
+          newPolicyName={newPolicyName}
           setNewPolicyName={setNewPolicyName}
           setStartMonth={setStartMonth}
           startMonthOpen={startMonthOpen}

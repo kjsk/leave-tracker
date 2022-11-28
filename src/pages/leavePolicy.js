@@ -1,18 +1,13 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { BoardContainer } from "../components/Board/styles";
 import { Modal } from "antd";
-import axios from "axios";
 import Allowance from "../components/Allowance";
-import {
-    getHeaders,
-    createLeaveAPI,
-    getAllLeaveTypesAPI
-} from "../utils/urls";
 import SideBar from "../components/SideBar";
 import HeaderMain from "../components/header";
 import CreateLeave from "../components/Forms/CreateLeave";
-import { playAudio, openNotificationWithIcon } from "../utils/functions";
+import { playAudio } from "../utils/functions";
 import AudioComponent from "../components/Audio";
+import { getAllLeaveTypes, CreateLeaveTypeFun } from "../utils/functions/Common_Functions/function";
 
 const Board = () => {
     const userData =
@@ -31,61 +26,13 @@ const Board = () => {
     // Get leave types data
     const [leaveTypes, setLeaveTypes] = useState([]);
 
-    // common headers
-    const headers = getHeaders(userData?.tokens?.accessToken)
-
     // notification conformation sound function
     const audioPlayer = useRef(null) // set audio ref
 
     useEffect(() => {
-        getAllLeaveTypes();
+        getAllLeaveTypes({ setState: setLeaveTypes });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    // create leave function
-    const CreateLeaveTypeFun = () => {
-        setButtonProcess(true);
-        const obj = {
-            label: createLeaveName,
-            value: createLeaveType,
-            description: createLeaveName,
-            color: createLeaveColor.hex,
-        }
-        axios({
-            url: createLeaveAPI(),
-            method: "POST",
-            headers: headers,
-            data: obj,
-        }).then((res) => {
-            playAudio(audioPlayer);
-            openNotificationWithIcon(`success`, "Leave type added!");
-            setCreateLeavePop(false);
-            setButtonProcess(false);
-            setCreateLeaveName("");
-            setCreateLeaveType("");
-            setCreateLeaveColor("");
-            getAllLeaveTypes()
-        }).catch((err) => {
-            openNotificationWithIcon(`error`, "Oops!, Please try again");
-            setCreateLeavePop(false);
-            setButtonProcess(false);
-            console.log("Error", err);
-        })
-    }
-
-    // Get Leave types
-    const getAllLeaveTypes = () => {
-        axios({
-            url: getAllLeaveTypesAPI(),
-            method: "GET",
-            headers: headers
-        }).then((res) => {
-            console.log("res", res)
-            setLeaveTypes(res?.data)
-        }).catch((err) => {
-            console.log("Error", err)
-        })
-    }
+    }, []);
 
     return (
         <BoardContainer>
@@ -113,9 +60,21 @@ const Board = () => {
                         policyPop={policyPop}
                         playAudio={() => playAudio(audioPlayer)}
                         setPolicyPop={setPolicyPop}
-                        CreateLeaveTypeFun={CreateLeaveTypeFun}
+                        CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+                            audioPlayer,
+                            createLeaveName,
+                            createLeaveType,
+                            createLeaveColor,
+                            setButtonProcess,
+                            setCreateLeaveName,
+                            setCreateLeaveType,
+                            setCreateLeaveColor,
+                            setLeaveTypes,
+                            setCreateLeavePop
+                        })}
                         setCreateLeavePop={setCreateLeavePop}
                         leaveTypes={leaveTypes}
+                        getAllLeaveTypes={() => getAllLeaveTypes({ setState: setLeaveTypes })}
                     />
                 </div>
             </div>
@@ -139,7 +98,18 @@ const Board = () => {
                     setCreateLeaveType={setCreateLeaveType}
                     createLeaveColor={createLeaveColor}
                     setCreateLeaveColor={setCreateLeaveColor}
-                    CreateLeaveTypeFun={CreateLeaveTypeFun}
+                    CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+                        audioPlayer,
+                        createLeaveName,
+                        createLeaveType,
+                        createLeaveColor,
+                        setButtonProcess,
+                        setCreateLeaveName,
+                        setCreateLeaveType,
+                        setCreateLeaveColor,
+                        setLeaveTypes,
+                        setCreateLeavePop
+                    })}
                     buttonProcess={buttonProcess}
                     setButtonProcess={setButtonProcess}
                     createLeavePop={createLeavePop}

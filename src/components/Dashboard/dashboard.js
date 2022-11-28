@@ -7,7 +7,9 @@ import EmptyRoster from "../EmptyRoster"
 import { nameProf } from "../../utils/functions"
 import { getGraphData, getLeaveDetails } from "./Function/function"
 import CompoLoader from "../../components/ComponentLoader"
-import { getHeaders } from "../../utils/urls"
+import { getHeaders, getAllLeaveTypesAPI } from "../../utils/urls"
+import axios from "axios";
+import { Popover } from "antd";
 
 const Dashboard = () => {
   const userData =
@@ -24,6 +26,28 @@ const Dashboard = () => {
   const [getDaysData, setGetDaysData] = useState()
   const [empLeaveData, setEmpLeaveData] = useState([])
   const [dataLoader, setDataLoader] = useState(false)
+
+  useEffect(() => {
+    getAllLeaveTypes();
+    // eslint-disable-next-line
+  }, [])
+
+  // Get leave types data
+  const [leaveTypes, setLeaveTypes] = useState([]);
+
+  // Get Leave types
+  const getAllLeaveTypes = () => {
+    axios({
+      url: getAllLeaveTypesAPI(),
+      method: "GET",
+      headers: headers
+    }).then((res) => {
+      console.log("res", res)
+      setLeaveTypes(res?.data)
+    }).catch((err) => {
+      console.log("Error", err)
+    })
+  }
 
   const monthSetFun = () => {
     if (month > 12) {
@@ -86,12 +110,8 @@ const Dashboard = () => {
       color: ({ type }) => {
         if (type === "weekend") {
           return "gray"
-        } else if (type === "cos") {
-          return "#8E95E9"
-        } else if (type === "gen") {
-          return "#F0BD70"
-        } else if (type === "lop") {
-          return "#9FDEB3"
+        } else {
+          return leaveTypes?.find((item) => item?.value === type)?.color
         }
       },
       interactions: [
@@ -179,21 +199,14 @@ const Dashboard = () => {
                   <div className="card_container2">
                     <div className="card_name_container">
                       <div className="card_name_container1">
-                        <div
-                          className="leave_tag"
-                          style={{
-                            background:
-                              item?.type === "cos"
-                                ? "#8E95E9"
-                                : item?.type === "gen"
-                                  ? "#F0BD70"
-                                  : item?.type === "lop"
-                                    ? "#9FDEB3"
-                                    : "",
-                          }}
-                        >
-                          {item?.type}
-                        </div>
+                        <Popover content={<p>{leaveTypes?.find((itm) => itm?.value === item?.type)?.label}</p>}>
+                          <div
+                            className="leave_tag"
+                            style={{ background: leaveTypes?.find((itm) => itm?.value === item?.type)?.color }}
+                          >
+                            {item?.type}
+                          </div>
+                        </Popover>
                         <p>{item?.username}</p>
                       </div>
                       <h2>
@@ -201,7 +214,14 @@ const Dashboard = () => {
                       </h2>
                     </div>
                     <h3 className="detail">{item?.reason}</h3>
-                    <span className="day_tag">No of days: {item?.days}</span>
+                    <span className="day_tag">Date: {graphData &&
+                      getDay +
+                      " " +
+                      graphData.sdate.split(" ")[1] +
+                      ", " +
+                      graphData.sdate.split(" ")[2]}</span>
+                    <br />
+                    {/* <span className="day_tag">No of days: {item?.days}</span> */}
                   </div>
                 </div>
               ))
@@ -213,8 +233,9 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-      )}
-    </DashboardContainer>
+      )
+      }
+    </DashboardContainer >
   )
 }
 

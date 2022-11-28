@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import login_logo from "../data/assets/login_logo.svg"
 import google from "../data/assets/google.svg"
 import { navigate } from "gatsby"
@@ -15,26 +15,34 @@ import {
   createPolicyAPI,
   getPolicyDataAPI
 } from "../utils/urls"
-import { notification, Button, Modal } from "antd"
+import { Button, Modal } from "antd"
 import Loader from "../components/loader"
-// import NotificationSound from "../utils/WaterDrop.mp3"
 import UserNote from "../components/userNote/UserNote"
-import CreateAllowancePop from "../components/Allowance/createAllowancePop"
+import CreateAllowancePop from "../components/Forms/createAllowancePop"
+import CreateLeave from "../components/Forms/CreateLeave";
+import AudioComponent from "../components/Audio";
+import { playAudio, openNotificationWithIcon } from "../utils/functions";
+import { getAllLeaveTypes, CreateLeaveTypeFun, disableFun } from "../utils/functions/Common_Functions/function";
 
 const Login = () => {
   const userData =
     typeof localStorage !== "undefined" &&
     JSON.parse(localStorage.getItem("userData")) // FETCHING USER STORED DATA
-  const [btnDisable, setBtnDisable] = useState(false)
-  const [activeLoader, setActiveLoader] = useState(false)
-  const [modalDisplay, setModalDisplay] = useState(false)
-  const [visible, setVisible] = useState(false)
-  const [modalMail, setModalMail] = useState("")
-  const [validBtn, setvalidBtn] = useState(false)
 
-  const [orgName, setOrgName] = useState("")
-  const [orgInfo, setOrgInfo] = useState("")
-  const [orgCount, setOrgCount] = useState()
+  // notification conformation sound function
+  const audioPlayer = useRef(null)
+
+  const [btnDisable, setBtnDisable] = useState(false);
+  const [activeLoader, setActiveLoader] = useState(false);
+  const [modalDisplay, setModalDisplay] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [modalMail, setModalMail] = useState("");
+  const [validBtn, setvalidBtn] = useState(false);
+
+  const [orgName, setOrgName] = useState("");
+  const [orgInfo, setOrgInfo] = useState("");
+  const [orgCount, setOrgCount] = useState();
+  const [updateOrgVal, setUpdateOrgVal] = useState(0);
 
   // Create policy setState
   const [policyPop, setPolicyPop] = useState(false);
@@ -48,11 +56,12 @@ const Login = () => {
       limitToggle: true,
       description: ""
     }
-  ])
+  ]);
 
   // Create policy setState
   const [newPolicyName, setNewPolicyName] = useState("");
-  const [setStartMonthOpen] = useState(false);
+  const [startMonthOpen, setStartMonthOpen] = useState(false);
+  const [endMonthOpen, setEndMonthOpen] = useState(false);
   const [startMonthObj, setStartMonthObj] = useState({
     label: "",
     value: ""
@@ -62,7 +71,17 @@ const Login = () => {
     value: ""
   });
 
-  const headers = getHeaders(userData?.tokens?.accessToken)
+
+  const [buttonProcess, setButtonProcess] = useState(false);
+  const [createLeavePop, setCreateLeavePop] = useState("");
+  const [createLeaveName, setCreateLeaveName] = useState("");
+  const [createLeaveType, setCreateLeaveType] = useState("");
+  const [createLeaveColor, setCreateLeaveColor] = useState("");
+  // Get leave types data
+  const [leaveTypes, setLeaveTypes] = useState([]);
+  const [dropVal, setDropVal] = useState(false);
+
+  const headers = getHeaders(userData?.tokens?.accessToken);
 
   useEffect(() => {
     if (userData) {
@@ -92,7 +111,6 @@ const Login = () => {
 
     signInWithPopup(auth, provider)
       .then(result => {
-        // playAudio();
         adminRegister(
           result?.user?.displayName,
           result?.user?.email,
@@ -100,7 +118,6 @@ const Login = () => {
         )
       })
       .catch(error => {
-        // playAudio();
         openNotificationWithIcon(`error`, `You should be an fidisys employee`)
         setBtnDisable(false)
         setActiveLoader(false)
@@ -120,11 +137,8 @@ const Login = () => {
       },
     })
       .then(res => {
-        // playAudio();
-        openNotificationWithIcon(
-          `success`,
-          `${res?.data?.user?.name} registered successfully`
-        )
+        playAudio(audioPlayer);
+        openNotificationWithIcon(`success`, `${res?.data?.user?.name} registered successfully`)
         typeof localStorage !== `undefined` &&
           localStorage.setItem("userData", JSON.stringify(res.data))
         if (res?.data?.orgUpdate) {
@@ -135,7 +149,6 @@ const Login = () => {
         }
       })
       .catch(error => {
-        // playAudio();
         if (
           error?.response?.data?.message ===
           "Org already exists please contact your admin"
@@ -176,9 +189,7 @@ const Login = () => {
         setBtnDisable(false)
         setActiveLoader(false)
       })
-  }
-
-
+  };
 
   // API call and condition check for organization
   const checkOrg = (id, accessToken) => {
@@ -194,10 +205,10 @@ const Login = () => {
         setModalDisplay(true)
         setActiveLoader(false)
       } else {
-        CheckPolicyFun()
+        setUpdateOrgVal(1)
       }
     })
-  }
+  };
 
   // Call to update & add org under ADMIN
   const updateOrg = () => {
@@ -214,6 +225,7 @@ const Login = () => {
       data: sampleData,
       headers: headers,
     }).then(res => {
+      playAudio(audioPlayer);
       if (
         res?.data?.org?.orgName === "Default" &&
         userData?.user?.role === "admin"
@@ -221,10 +233,16 @@ const Login = () => {
         setModalDisplay(true)
         setActiveLoader(false)
       } else {
-        CheckPolicyFun()
+        setUpdateOrgVal(1)
       }
     })
   }
+
+
+  useEffect(() => {
+    CheckPolicyFun();
+    // eslint-disable-next-line
+  }, [updateOrgVal])
 
 
   // Check existing policy for organization
@@ -245,16 +263,6 @@ const Login = () => {
       console.log(err)
     })
   }
-
-  const openNotificationWithIcon = (type, data) => {
-    notification[type]({
-      message: data,
-      placement: "top",
-    })
-  }
-
-
-
 
   // Add allowance container
   const AddContainer = () => {
@@ -311,18 +319,19 @@ const Login = () => {
       "allowances": newAllowanceSet(container),
     }
 
-    axios(
-      {
-        url: createPolicyAPI(),
-        method: "POST",
-        headers: headers,
-        data: policyData
-      }).then((res) => {
-        console.log("res", res)
-        navigate(`/dashboard`)
-      }).catch((err) => {
-        console.log("Error", err)
-      })
+    axios({
+      url: createPolicyAPI(),
+      method: "POST",
+      headers: headers,
+      data: policyData
+    }).then((res) => {
+      playAudio(audioPlayer);
+      console.log("res", res)
+      openNotificationWithIcon(`success`, `New Policy added`)
+      navigate(`/dashboard`)
+    }).catch((err) => {
+      console.log("Error", err);
+    })
   }
 
 
@@ -341,8 +350,16 @@ const Login = () => {
     return tempArr;
   }
 
+  useEffect(() => {
+    getAllLeaveTypes({ setState: setLeaveTypes });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [policyPop]);
+
   return (
     <LoginContainer>
+      <AudioComponent
+        audioPlayer={audioPlayer}
+      />
       {activeLoader && <Loader />}
       {visible ? (
         <div id="userNote">
@@ -436,14 +453,24 @@ const Login = () => {
               <img src={login_logo} alt="login_logo" />
               <h2>Log In to Leave Tracker</h2>
               <h4>Connect with Google Account</h4>
-              <button
-                onClick={signInWithGoogle}
-                disabled={btnDisable}
-                style={{ background: btnDisable ? "gray" : "#FCFDFE" }}
-              >
-                <img src={google} alt="img" />
-                Sign in with Google
-              </button>
+              <>
+                <button
+                  onClick={signInWithGoogle}
+                  disabled={btnDisable}
+                  style={{ background: btnDisable ? "gray" : "#FCFDFE" }}
+                >
+                  <img src={google} alt="img" />
+                  Login as Admin
+                </button>
+                <button
+                  onClick={signInWithGoogle}
+                  disabled={btnDisable}
+                  style={{ background: btnDisable ? "gray" : "#FCFDFE" }}
+                >
+                  <img src={google} alt="img" />
+                  Login as User
+                </button>
+              </>
             </div>
           )}
         </>
@@ -462,6 +489,10 @@ const Login = () => {
         cancelButtonProps={{
           style: { border: "1px solid #3751FF", color: "#3751FF" },
         }}
+        okButtonProps={{
+          disabled: disableFun({ container, newPolicyName })
+        }}
+        okText={buttonProcess ? "Processing..." : "Submit"}
       >
         <CreateAllowancePop
           container={container}
@@ -470,10 +501,67 @@ const Login = () => {
           editContainerFun={editContainerFun}
           setNewPolicyName={setNewPolicyName}
           setStartMonth={setStartMonth}
+          startMonthOpen={startMonthOpen}
           setStartMonthOpen={setStartMonthOpen}
+          endMonthOpen={endMonthOpen}
+          setEndMonthOpen={setEndMonthOpen}
           startMonthObj={startMonthObj}
           setEndMonth={setEndMonth}
           endMonthObj={endMonthObj}
+          setCreateLeavePop={setCreateLeavePop}
+          CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+            audioPlayer,
+            createLeaveName,
+            createLeaveType,
+            createLeaveColor,
+            setButtonProcess,
+            setCreateLeaveName,
+            setCreateLeaveType,
+            setCreateLeaveColor,
+            setLeaveTypes,
+            setCreateLeavePop
+          })}
+          dropVal={dropVal}
+          setDropVal={setDropVal}
+          leaveTypes={leaveTypes}
+        />
+      </Modal>
+
+
+      {/* ADD LEAVE POPUP */}
+      <Modal
+        title="Create Leave Type"
+        centered
+        visible={createLeavePop}
+        onCancel={() => {
+          setCreateLeavePop(false)
+        }}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+      >
+        <CreateLeave
+          createLeaveName={createLeaveName}
+          setCreateLeaveName={setCreateLeaveName}
+          createLeaveType={createLeaveType}
+          setCreateLeaveType={setCreateLeaveType}
+          createLeaveColor={createLeaveColor}
+          setCreateLeaveColor={setCreateLeaveColor}
+          CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+            audioPlayer,
+            createLeaveName,
+            createLeaveType,
+            createLeaveColor,
+            setButtonProcess,
+            setCreateLeaveName,
+            setCreateLeaveType,
+            setCreateLeaveColor,
+            setLeaveTypes,
+            setCreateLeavePop
+          })}
+          buttonProcess={buttonProcess}
+          setButtonProcess={setButtonProcess}
+          createLeavePop={createLeavePop}
+          setCreateLeavePop={setCreateLeavePop}
         />
       </Modal>
     </LoginContainer>
