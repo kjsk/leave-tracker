@@ -172,6 +172,18 @@ const SideModal = ({
     }
   }
 
+  const submitDisFun = () => {
+    let tempVar;
+    if (pushTime && daysCalc() &&
+      reason.length > 5 &&
+      allowanceType?.label !== "") {
+      tempVar = true
+    } else {
+      tempVar = false
+    }
+    return tempVar
+  }
+
   return (
     <PopupContainer>
       <div id="popup">
@@ -252,28 +264,16 @@ const SideModal = ({
           </button>
           <button
             style={{
-              background:
-                pushTime &&
-                  daysCalc() &&
-                  reason.length > 5 &&
-                  allowanceType?.label !== ""
-                  ? "#3751FF"
-                  : "gray",
+              background: submitDisFun() ? "#3751FF" : "gray",
               color: "white",
+              cursor: submitDisFun() ? "pointer" : "not-allowed"
             }}
             onClick={() => {
               createLeave(allowanceType, pushTime, reason)
               setAllowanceDrop(false);
               setAllowanceDrop(false);
             }}
-            disabled={
-              pushTime &&
-                daysCalc() &&
-                reason.length > 5 &&
-                allowanceType?.label !== ""
-                ? false
-                : true
-            }
+            disabled={submitDisFun() ? false : true}
           >
             {buttonProcess ? "Processing..." : "Submit"}
           </button>
