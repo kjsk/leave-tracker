@@ -2,10 +2,10 @@ export const envURL = {
   dev: `https://dev-fidisyslt.herokuapp.com`,
   stage: `https://stage-fidisyslt.herokuapp.com`,
   prod: `https://prod-fidisyslt.herokuapp.com`,
-  mockUrl: `https://leavetracker-production.up.railway.app`
+  mockUrl: `https://leavetracker-production.up.railway.app`,
 }
 
-export const baseURL = envURL?.prod;
+export const baseURL = envURL?.mockUrl
 
 export const getHeaders = token => {
   return {
@@ -93,12 +93,11 @@ export const createPolicyAPI = () => {
   return `${baseURL}/api/v2/policies`
 }
 
-
 export const getAllLeaveTypesAPI = () => {
   return `${baseURL}/api/v2/leavetypes`
 }
 
-export const getUserAllowanceByIdAPI = (userId) => {
+export const getUserAllowanceByIdAPI = userId => {
   return `${baseURL}/api/v2/users/${userId}/allowances`
 }
 
