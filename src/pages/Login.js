@@ -95,13 +95,13 @@ const Login = () => {
     setActiveLoader(true)
     setBtnDisable(true)
     const firebaseConfig = {
-      apiKey: "AIzaSyDfrrgmSPERncXsNZwkkTU17GyI1gyqlIg",
-      authDomain: "leave-tracker-applicatio-d51b2.firebaseapp.com",
-      projectId: "leave-tracker-applicatio-d51b2",
-      storageBucket: "leave-tracker-applicatio-d51b2.appspot.com",
-      messagingSenderId: "40042950399",
-      appId: "1:40042950399:web:e71861c5700098a8d2e6ca",
-    }
+      apiKey: "AIzaSyB3C2dHZEdZgsmggMds1V-uIP_v7aX69Qg",
+      authDomain: "fidi-stage.firebaseapp.com",
+      projectId: "fidi-stage",
+      storageBucket: "fidi-stage.appspot.com",
+      messagingSenderId: "838089228517",
+      appId: "1:838089228517:web:05c99ddebd3ed7780f140c"
+    };
     // Initialize Firebase
     const app = initializeApp(firebaseConfig)
 

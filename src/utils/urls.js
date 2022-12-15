@@ -1,11 +1,13 @@
 export const envURL = {
   dev: `https://dev-fidisyslt.herokuapp.com`,
   stage: `https://stage-fidisyslt.herokuapp.com`,
-  prod: `https://prod-fidisyslt.herokuapp.com`,
-  mockUrl: `https://leavetracker-production.up.railway.app`
+  prod: `http://localhost:5000`,
+  mockUrl: `https://leavetracker-production.up.railway.app`,
+  nyl: `https://icon.nyl.technology`,
+  adaptable:`https://fidi-leave.adaptable.app`
 }
 
-export const baseURL = envURL?.prod;
+export const baseURL = envURL?.adaptable;
 
 export const getHeaders = token => {
   return {
