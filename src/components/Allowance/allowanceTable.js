@@ -19,6 +19,7 @@ import { AllowanceTableViewStyles } from "./styles"
 import AddAllowancePop from "../Forms/addAllowancePop"
 import EmptyRoster from "../EmptyRoster"
 import CompoLoader from "../ComponentLoader";
+import { openNotificationWithIcon } from "../../utils/functions";
 
 const AllowanceTableView = ({
   policyDataObj,
@@ -148,11 +149,13 @@ const AllowanceTableView = ({
           SetStatus("");
           setBtnProgress(false);
           playAudio();
+          openNotificationWithIcon(`success`, "Updated Successfully")
         }
       })
       .catch(err => {
-        setBtnProgress(false)
-        console.log("Error", err)
+        setBtnProgress(false);
+        openNotificationWithIcon(`success`, "Deleted Successfully!");
+        console.log("Error", err);
       })
   }
 
@@ -182,12 +185,14 @@ const AllowanceTableView = ({
           SetAllowanceLimit("");
           SetAllowanceLimitStatus(true);
           playAudio();
+          openNotificationWithIcon(`success`, "Allowance Added Successfully!");
         }
       })
       .catch(err => {
         console.log("Error", err);
         setBtnProgress(false);
         setAddAllowancePop(false);
+        openNotificationWithIcon(`success`, "Something went wrong!");
       })
   }
 
@@ -209,10 +214,12 @@ const AllowanceTableView = ({
         setBtnProgress(false)
         OpenPolicy(policyId)
         playAudio();
+        openNotificationWithIcon(`success`, "Deleted Successfully!");
       })
       .catch(err => {
         setBtnProgress(false);
-        console.log("Error", err)
+        openNotificationWithIcon(`success`, "Something went wrong!");
+        console.log("Error", err);
       })
   }
 

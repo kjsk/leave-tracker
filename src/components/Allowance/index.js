@@ -6,6 +6,7 @@ import { AllowanceContainer } from "./styles";
 import AllowanceTableView from "./allowanceTable";
 import axios from "axios";
 import {
+  createPolicyAPI,
   getPolicyDataAPI,
   getHeaders,
   deletePolicyAPI,
@@ -17,9 +18,10 @@ import EditPolicy from "../Forms/EditPolicy"
 import CompoLoader from "../ComponentLoader";
 import AudioComponent from "../Audio";
 import { playAudio, openNotificationWithIcon } from "../../utils/functions";
-import { createPolicyAPIFun } from "../../utils/functions/Common_Functions/function";
 
-const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop, leaveTypes, getAllLeaveTypes }) => {
+const Allowance = (props) => {
+
+  const { policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeavePop, leaveTypes, getAllLeaveTypes } = props;
 
   // Fetch user data from local storage
   const userData =
@@ -254,6 +256,36 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
     return tempArr;
   }
 
+  // Create Policy Function
+  const createPolicyAPIFun = () => {
+
+    const policyData = {
+      "startMonth": startMonthObj?.label,
+      "endMonth": endMonthObj?.label,
+      "name": newPolicyName,
+      "description": "New Policy",
+      "allowances": newAllowanceSet(container),
+    }
+    axios({
+      url: createPolicyAPI(),
+      method: "POST",
+      headers: headers,
+      data: policyData
+    }).then((res) => {
+      openNotificationWithIcon(`success`, "Policy Added Successfully")
+      playAudio(audioPlayer);
+      setDropVal("");
+      setPolicyPop(false);
+      cleanPolicyPopValues();
+      GetPolicyFun()
+      console.log("res", res);
+    }).catch((err) => {
+      openNotificationWithIcon(`error`, "Something went wrong...")
+      setPolicyPop(false);
+      console.log("Error", err)
+    })
+  }
+
   // clean policy popup values
   const cleanPolicyPopValues = () => {
     setContainer(
@@ -360,18 +392,7 @@ const Allowance = ({ policyPop, setPolicyPop, CreateLeaveTypeFun, setCreateLeave
         title="Create policy"
         visible={policyPop}
         onOk={() => {
-          createPolicyAPIFun({
-            startMonthObj: { startMonthObj },
-            endMonthObj: { endMonthObj },
-            newPolicyName: { newPolicyName },
-            newAllowanceSet: { newAllowanceSet },
-            container: { container },
-            audioPlayer: { audioPlayer },
-            setDropVal: { setDropVal },
-            setPolicyPop: { setPolicyPop },
-            GetPolicyFun: { GetPolicyFun },
-            cleanPolicyPopValues: { cleanPolicyPopValues }
-          })
+          createPolicyAPIFun()
         }}
         onCancel={() => {
           setPolicyPop(false);

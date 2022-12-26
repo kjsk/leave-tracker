@@ -308,6 +308,22 @@ const Login = () => {
     })
   };
 
+  const newAllowanceSet = (container) => {
+    let tempArr = []
+    container?.length && container.forEach((item) => {
+      tempArr.push({
+        "amount": item?.days,
+        "maxLimit": item?.limitToggle,
+        "maxLimitAmount": item?.maxLimit,
+        "name": item?.name,
+        "type": item?.type,
+        "description": item?.description
+      })
+    })
+    return tempArr;
+  }
+
+
   // Create Allowance Function
 
   const createPolicyAPIFun = () => {
@@ -334,24 +350,8 @@ const Login = () => {
     })
   }
 
-
-  const newAllowanceSet = (container) => {
-    let tempArr = []
-    container.length && container.forEach((item) => {
-      tempArr.push({
-        "amount": item?.days,
-        "maxLimit": item?.limitToggle,
-        "maxLimitAmount": item?.maxLimit,
-        "name": item?.name,
-        "type": item?.type,
-        "description": item?.description
-      })
-    })
-    return tempArr;
-  }
-
   useEffect(() => {
-    getAllLeaveTypes({ setState: setLeaveTypes });
+    getAllLeaveTypes({ setState: setLeaveTypes, token: userData?.tokens?.accessToken });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [policyPop]);
 
@@ -510,6 +510,7 @@ const Login = () => {
           endMonthObj={endMonthObj}
           setCreateLeavePop={setCreateLeavePop}
           CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+            token: userData?.tokens?.accessToken,
             audioPlayer,
             createLeaveName,
             createLeaveType,
@@ -519,7 +520,7 @@ const Login = () => {
             setCreateLeaveType,
             setCreateLeaveColor,
             setLeaveTypes,
-            setCreateLeavePop
+            setCreateLeavePop,
           })}
           dropVal={dropVal}
           setDropVal={setDropVal}
@@ -547,6 +548,7 @@ const Login = () => {
           createLeaveColor={createLeaveColor}
           setCreateLeaveColor={setCreateLeaveColor}
           CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+            token: userData?.tokens?.accessToken,
             audioPlayer,
             createLeaveName,
             createLeaveType,

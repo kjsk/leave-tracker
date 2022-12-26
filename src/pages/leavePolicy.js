@@ -30,7 +30,7 @@ const Board = () => {
     const audioPlayer = useRef(null) // set audio ref
 
     useEffect(() => {
-        getAllLeaveTypes({ setState: setLeaveTypes });
+        getAllLeaveTypes({ setState: setLeaveTypes, token: userData?.tokens?.accessToken });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -61,6 +61,7 @@ const Board = () => {
                         playAudio={() => playAudio(audioPlayer)}
                         setPolicyPop={setPolicyPop}
                         CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+                            token: userData?.tokens?.accessToken,
                             audioPlayer,
                             createLeaveName,
                             createLeaveType,
@@ -74,7 +75,7 @@ const Board = () => {
                         })}
                         setCreateLeavePop={setCreateLeavePop}
                         leaveTypes={leaveTypes}
-                        getAllLeaveTypes={() => getAllLeaveTypes({ setState: setLeaveTypes })}
+                        getAllLeaveTypes={() => getAllLeaveTypes({ setState: setLeaveTypes, token: userData?.tokens?.accessToken })}
                     />
                 </div>
             </div>
@@ -99,6 +100,7 @@ const Board = () => {
                     createLeaveColor={createLeaveColor}
                     setCreateLeaveColor={setCreateLeaveColor}
                     CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+                        token: userData?.tokens?.accessToken,
                         audioPlayer,
                         createLeaveName,
                         createLeaveType,

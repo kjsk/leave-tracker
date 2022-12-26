@@ -80,7 +80,8 @@ const EmployeeList = () => {
     useEffect(() => {
         getUsers();
         getAllLeaveTypes({
-            setState: setLeaveTypes
+            setState: setLeaveTypes,
+            token: userData?.tokens?.accessToken
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -429,6 +430,7 @@ const EmployeeList = () => {
                     createLeaveColor={createLeaveColor}
                     setCreateLeaveColor={setCreateLeaveColor}
                     CreateLeaveTypeFun={() => CreateLeaveTypeFun({
+                        token: userData?.tokens?.accessToken,
                         audioPlayer,
                         createLeaveName,
                         createLeaveType,

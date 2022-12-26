@@ -18,11 +18,11 @@ const headers = getHeaders(userData?.tokens?.accessToken)
 
 // common function Get Leave types
 export const getAllLeaveTypes = (props) => {
-    const { setState } = props;
+    const { setState, token } = props;
     axios({
         url: getAllLeaveTypesAPI(),
         method: "GET",
-        headers: headers
+        headers: getHeaders(token)
     }).then((res) => {
         setState(res?.data?.map((item) => ({ ...item, isSelected: false })));
     }).catch((err) => {
@@ -33,6 +33,7 @@ export const getAllLeaveTypes = (props) => {
 // create leave function
 export const CreateLeaveTypeFun = (props) => {
     const {
+        token,
         audioPlayer,
         createLeaveName,
         createLeaveType,
@@ -54,7 +55,7 @@ export const CreateLeaveTypeFun = (props) => {
     axios({
         url: createLeaveAPI(),
         method: "POST",
-        headers: headers,
+        headers: getHeaders(token),
         data: obj,
     }).then((_res) => {
         playAudio(audioPlayer);
