@@ -93,12 +93,11 @@ export const createPolicyAPI = () => {
   return `${baseURL}/api/v2/policies`
 }
 
-
 export const getAllLeaveTypesAPI = () => {
   return `${baseURL}/api/v2/leavetypes`
 }
 
-export const getUserAllowanceByIdAPI = (userId) => {
+export const getUserAllowanceByIdAPI = userId => {
   return `${baseURL}/api/v2/users/${userId}/allowances`
 }
 
