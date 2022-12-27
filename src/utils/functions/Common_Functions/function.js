@@ -66,7 +66,8 @@ export const CreateLeaveTypeFun = (props) => {
         setCreateLeaveType("");
         setCreateLeaveColor("");
         getAllLeaveTypes({
-            setState: setLeaveTypes
+            setState: setLeaveTypes,
+            token: token
         });
     }).catch((_err) => {
         openNotificationWithIcon(`error`, "Oops!, Please try again");
